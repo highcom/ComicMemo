@@ -17,18 +17,19 @@ import android.widget.Button;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class AddButtonAdapter extends SimpleAdapter {
+public class ListViewAdapter extends SimpleAdapter {
 
     // private Context context;
     private LayoutInflater inflater;
     private List<? extends Map<String, ?>> listData;
 
     public class ViewHolder {
-        TextView line1;
-        TextView line2;
+        TextView title;
+        TextView comment;
+        TextView number;
     }
 
-    public AddButtonAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
+    public ListViewAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
         // TODO 自動生成されたコンストラクター・スタブ
         // this.context = context;
@@ -49,20 +50,23 @@ public class AddButtonAdapter extends SimpleAdapter {
             // view = inflater.inflate(R.layout.raw, null);
 
             holder = new ViewHolder();
-            holder.line1 = (TextView) view.findViewById(android.R.id.text1);
-            holder.line2 = (TextView) view.findViewById(android.R.id.text2);
+            holder.title = (TextView) view.findViewById(android.R.id.title);
+            holder.comment = (TextView) view.findViewById(R.id.comment);
+            holder.number = (TextView) view.findViewById(R.id.number);
 
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
-        String text1 = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
-        String text2 = ((HashMap<?, ?>) listData.get(position)).get("comment").toString();
-        holder.line1.setText(text1);
-        holder.line2.setText(text2);
+        String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
+        String comment = ((HashMap<?, ?>) listData.get(position)).get("comment").toString();
+        String number = ((HashMap<?, ?>) listData.get(position)).get("number").toString();
+        holder.title.setText(title);
+        holder.comment.setText(comment);
+        holder.number.setText(number);
 
-        Button btn = (Button) view.findViewById(R.id.button1);
+        Button btn = (Button) view.findViewById(R.id.addbutton);
         btn.setTag(position);
 
         btn.setOnClickListener(new OnClickListener() {
@@ -70,10 +74,10 @@ public class AddButtonAdapter extends SimpleAdapter {
             public void onClick(View arg0) {
                 // TODO 自動生成されたメソッド・スタブ
                 Log.v("buttonクリック", "ポジション：　" + position);
-                if (holder.line2.getVisibility() == android.view.View.GONE) {
-                    holder.line2.setVisibility(View.VISIBLE);
+                if (holder.comment.getVisibility() == android.view.View.GONE) {
+                    holder.comment.setVisibility(View.VISIBLE);
                 } else
-                    holder.line2.setVisibility(View.GONE);
+                    holder.comment.setVisibility(View.GONE);
             }
         });
 

@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-public class ComicMemo extends ActionBarActivity {
+public class ComicMemo extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +26,11 @@ public class ComicMemo extends ActionBarActivity {
             data = new HashMap<String, String>();
             data.put("title", "タイトル欄" + i);
             data.put("comment", "COMMENT欄" + i);
+            data.put("number", i + "巻");
             dataList.add(data);
         }
 
-        AddButtonAdapter adapter = new AddButtonAdapter(
+        ListViewAdapter adapter = new ListViewAdapter(
                 this,
                 dataList,
                 R.layout.row,
