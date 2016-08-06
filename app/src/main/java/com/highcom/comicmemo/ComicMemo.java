@@ -8,19 +8,26 @@ import java.util.Map;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Button;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 public class ComicMemo extends Activity {
+
+    Map<String, String> data;
+    List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_memo);
-        List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 
-        Map<String, String> data;
         int MAXDATA = 10;
         for (int i = 0; i < MAXDATA; i++) {
             data = new HashMap<String, String>();
@@ -30,7 +37,7 @@ public class ComicMemo extends Activity {
             dataList.add(data);
         }
 
-        ListViewAdapter adapter = new ListViewAdapter(
+        final ListViewAdapter adapter = new ListViewAdapter(
                 this,
                 dataList,
                 R.layout.row,
@@ -38,8 +45,43 @@ public class ComicMemo extends Activity {
                 new int[] { android.R.id.text1,
                         android.R.id.text2 });
 
-        ListView listView = (ListView) findViewById(R.id.listView1);
-        listView.setAdapter(adapter);//
+        listView = (ListView) findViewById(R.id.listView1);
+        listView.setAdapter(adapter);
+        listView.setTextFilterEnabled(true);
+
+        Button btn = (Button) findViewById(R.id.add);
+
+        btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // TODO 自動生成されたメソッド・スタブ
+                data = new HashMap<String, String>();
+                data.put("title", "タイトル欄");
+                data.put("comment", "COMMENT欄");
+                data.put("number", "0巻");
+                dataList.add(data);
+                listView.setAdapter(adapter);
+            }
+        });
+
+        SearchView searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.setQueryHint("検索文字を入力");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchWord) {
+                if (TextUtils.isEmpty(searchWord)) {
+                    listView.clearTextFilter();
+                } else {
+                    listView.setFilterText(searchWord.toString());
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -63,4 +105,5 @@ public class ComicMemo extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
