@@ -8,6 +8,7 @@ import java.util.Map;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,12 +56,17 @@ public class ComicMemo extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO 自動生成されたメソッド・スタブ
+                //Intent intent = new Intent();
+                Intent intent = new Intent(ComicMemo.this, InputMemo.class);
+                //intent.setClassName("com.highcom.comicmemo", "com.highcom.comicmemo.InputMemo");
+                startActivity(intent);
+                /*
                 data = new HashMap<String, String>();
                 data.put("title", "タイトル欄");
                 data.put("comment", "COMMENT欄");
                 data.put("number", "0巻");
                 dataList.add(data);
-                listView.setAdapter(adapter);
+                listView.setAdapter(adapter);*/
             }
         });
 
