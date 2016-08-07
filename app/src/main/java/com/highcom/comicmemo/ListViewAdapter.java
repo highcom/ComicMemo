@@ -22,11 +22,13 @@ public class ListViewAdapter extends SimpleAdapter {
     // private Context context;
     private LayoutInflater inflater;
     private List<? extends Map<String, ?>> listData;
+    public static boolean delbtnEnable = false;
 
     public class ViewHolder {
         TextView title;
         TextView comment;
         TextView number;
+        Button   deletebtn;
     }
 
     public ListViewAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
@@ -80,6 +82,22 @@ public class ListViewAdapter extends SimpleAdapter {
                     holder.comment.setVisibility(View.GONE);
             }
         });
+
+        holder.deletebtn = (Button) view.findViewById(R.id.deletebutton);
+        if (delbtnEnable) {
+            holder.deletebtn.setVisibility(View.VISIBLE);
+            // 削除ボタンを押下された行を削除する
+            holder.deletebtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    // TODO 自動生成されたメソッド・スタブ
+                    ComicMemo.dataList.remove(position);
+                    ComicMemo.listView.setAdapter(ComicMemo.adapter);
+                }
+            });
+        } else {
+            holder.deletebtn.setVisibility(View.GONE);
+        }
 
         return view;
     }

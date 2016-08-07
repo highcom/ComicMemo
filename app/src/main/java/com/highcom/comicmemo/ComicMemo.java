@@ -21,8 +21,9 @@ import android.view.View.OnClickListener;
 public class ComicMemo extends Activity {
 
     Map<String, String> data;
-    List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
-    ListView listView;
+    public static List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    public static ListView listView;
+    public static ListViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class ComicMemo extends Activity {
             dataList.add(data);
         }
 
-        final ListViewAdapter adapter = new ListViewAdapter(
+        adapter = new ListViewAdapter(
                 this,
                 dataList,
                 R.layout.row,
@@ -50,9 +51,22 @@ public class ComicMemo extends Activity {
         listView.setAdapter(adapter);
         listView.setTextFilterEnabled(true);
 
-        Button btn = (Button) findViewById(R.id.add);
+        Button editbtn = (Button) findViewById(R.id.edit);
+        editbtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // TODO 自動生成されたメソッド・スタブ
+                if (ListViewAdapter.delbtnEnable) {
+                    ListViewAdapter.delbtnEnable = false;
+                } else {
+                    ListViewAdapter.delbtnEnable = true;
+                }
+                listView.setAdapter(adapter);
+            }
+        });
 
-        btn.setOnClickListener(new OnClickListener() {
+        Button addbtn = (Button) findViewById(R.id.add);
+        addbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 // TODO 自動生成されたメソッド・スタブ
