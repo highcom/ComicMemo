@@ -26,8 +26,9 @@ public class ListViewAdapter extends SimpleAdapter {
 
     public class ViewHolder {
         TextView title;
-        TextView comment;
         TextView number;
+        TextView comment;
+        TextView inputdate;
         Button   deletebtn;
     }
 
@@ -53,8 +54,9 @@ public class ListViewAdapter extends SimpleAdapter {
 
             holder = new ViewHolder();
             holder.title = (TextView) view.findViewById(android.R.id.title);
-            holder.comment = (TextView) view.findViewById(R.id.comment);
             holder.number = (TextView) view.findViewById(R.id.number);
+            holder.comment = (TextView) view.findViewById(R.id.comment);
+            holder.inputdate = (TextView) view.findViewById(R.id.inputdate);
 
             view.setTag(holder);
         } else {
@@ -62,11 +64,13 @@ public class ListViewAdapter extends SimpleAdapter {
         }
 
         String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
-        String comment = ((HashMap<?, ?>) listData.get(position)).get("comment").toString();
         String number = ((HashMap<?, ?>) listData.get(position)).get("number").toString();
+        String comment = ((HashMap<?, ?>) listData.get(position)).get("comment").toString();
+        String inputdate = ((HashMap<?, ?>) listData.get(position)).get("inputdate").toString();
         holder.title.setText(title);
         holder.comment.setText(comment);
         holder.number.setText(number);
+        holder.inputdate.setText(inputdate);
 
         Button btn = (Button) view.findViewById(R.id.addbutton);
         btn.setTag(position);

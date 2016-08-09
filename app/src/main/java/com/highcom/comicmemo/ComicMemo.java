@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -34,8 +36,9 @@ public class ComicMemo extends Activity {
         for (int i = 0; i < MAXDATA; i++) {
             data = new HashMap<String, String>();
             data.put("title", "タイトル欄" + i);
-            data.put("comment", "COMMENT欄" + i);
             data.put("number", i + "巻");
+            data.put("comment", "COMMENT欄" + i);
+            data.put("inputdate", getNowDate());
             dataList.add(data);
         }
 
@@ -47,7 +50,7 @@ public class ComicMemo extends Activity {
                 new int[] { android.R.id.text1,
                         android.R.id.text2 });
 
-        listView = (ListView) findViewById(R.id.listView1);
+        listView = (ListView) findViewById(R.id.comicListView);
         listView.setAdapter(adapter);
         listView.setTextFilterEnabled(true);
 
@@ -126,4 +129,9 @@ public class ComicMemo extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public static String getNowDate(){
+        Date date = new Date();
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        return sdf.format(date);
+    }
 }
