@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
@@ -27,11 +29,31 @@ public class ComicMemo extends Activity {
     public static ListView listView;
     public static ListViewAdapter adapter;
 
+    private static SQLiteDatabase rdb;
+    public static SQLiteDatabase wdb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_memo);
 
+        ListDataOpenHelper helper = new ListDataOpenHelper(this);
+        rdb = helper.getReadableDatabase();
+        wdb = helper.getWritableDatabase();
+        Cursor cur = rdb.query("comicdata", new String[] { "title", "number", "comment", "inputdate" }, null, null, null, null, null);
+
+        boolean mov = cur.moveToFirst();
+        while (mov) {
+            data = new HashMap<String, String>();
+            data.put("title", cur.getString(0));
+            data.put("number", cur.getString(1));
+            data.put("comment", cur.getString(2));
+            data.put("inputdate", cur.getString(3));
+            dataList.add(data);
+            mov = cur.moveToNext();
+        }
+
+        /*
         int MAXDATA = 10;
         for (int i = 0; i < MAXDATA; i++) {
             data = new HashMap<String, String>();
@@ -41,6 +63,7 @@ public class ComicMemo extends Activity {
             data.put("inputdate", getNowDate());
             dataList.add(data);
         }
+        */
 
         adapter = new ListViewAdapter(
                 this,
@@ -58,7 +81,7 @@ public class ComicMemo extends Activity {
         editbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                // TODO 自動生成されたメソッド・スタブ
+                // 編集状態の変更
                 if (ListViewAdapter.delbtnEnable) {
                     ListViewAdapter.delbtnEnable = false;
                 } else {
@@ -72,7 +95,6 @@ public class ComicMemo extends Activity {
         addbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                // TODO 自動生成されたメソッド・スタブ
                 //Intent intent = new Intent();
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
                 //intent.setClassName("com.highcom.comicmemo", "com.highcom.comicmemo.InputMemo");
@@ -127,6 +149,13 @@ public class ComicMemo extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        rdb.close();
+        wdb.close();
+        super.onDestroy();
     }
 
     public static String getNowDate(){

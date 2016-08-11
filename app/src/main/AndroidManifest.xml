@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".InputMemo"></activity>
+        <activity android:name=".ListDataOpenHelper" ></activity>
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,6 @@ public class ListViewAdapter extends SimpleAdapter {
 
     public ListViewAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
-        // TODO 自動生成されたコンストラクター・スタブ
         // this.context = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.listData = data;
@@ -94,7 +94,10 @@ public class ListViewAdapter extends SimpleAdapter {
             holder.deletebtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
-                    // TODO 自動生成されたメソッド・スタブ
+                    // データベースから削除する
+                    ComicMemo.wdb.delete("comicdata", "title=?", new String[] { holder.title.getText().toString() });
+
+                    // 行から削除する
                     ComicMemo.dataList.remove(position);
                     ComicMemo.listView.setAdapter(ComicMemo.adapter);
                 }

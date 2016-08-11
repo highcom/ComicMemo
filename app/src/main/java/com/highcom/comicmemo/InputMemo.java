@@ -1,14 +1,15 @@
 package com.highcom.comicmemo;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
+import android.content.ContentValues;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by koichi on 2016/08/07.
@@ -23,7 +24,6 @@ public class InputMemo extends Activity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                // TODO 自動生成されたメソッド・スタブ
                 finish();
             }
         });
@@ -36,6 +36,14 @@ public class InputMemo extends Activity {
                 EditText editTitle = (EditText) findViewById(R.id.editTitle);
                 EditText editNumber = (EditText) findViewById(R.id.editNumber);
                 EditText editMemo = (EditText) findViewById(R.id.editMemo);
+
+                // データベースに追加する
+                ContentValues addValues = new ContentValues();
+                addValues.put("title", editTitle.getText().toString());
+                addValues.put("number", editNumber.getText().toString() + "巻");
+                addValues.put("comment", editMemo.getText().toString());
+                addValues.put("inputdate", ComicMemo.getNowDate());
+                long id = ComicMemo.wdb.insert("comicdata", editTitle.getText().toString(), addValues);
 
                 Map<String, String> data = new HashMap<String, String>();
                 data.put("title", editTitle.getText().toString());
