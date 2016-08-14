@@ -3,12 +3,9 @@ package com.highcom.comicmemo;
 /**
  * Created by koichi on 2015/06/28.
  */
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ListViewAdapter extends SimpleAdapter {
 
@@ -78,12 +79,17 @@ public class ListViewAdapter extends SimpleAdapter {
         btn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                // TODO 自動生成されたメソッド・スタブ
-                Log.v("buttonクリック", "ポジション：　" + position);
-                if (holder.comment.getVisibility() == android.view.View.GONE) {
-                    holder.comment.setVisibility(View.VISIBLE);
-                } else
-                    holder.comment.setVisibility(View.GONE);
+                // 巻数を+1する
+                Integer num = Integer.parseInt(holder.number.getText().toString());
+                // 999を上限とする
+                if (num < 999) {
+                    num++;
+                }
+                holder.number.setText(num.toString());
+                // データベースを更新する
+                ContentValues updateValues = new ContentValues();
+                updateValues.put("number", num);
+                ComicMemo.wdb.update("comicdata", updateValues, "title=?", new String[] { holder.title.getText().toString() });
             }
         });
 

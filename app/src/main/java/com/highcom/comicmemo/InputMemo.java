@@ -35,19 +35,20 @@ public class InputMemo extends Activity {
                 // 入力データを登録する
                 EditText editTitle = (EditText) findViewById(R.id.editTitle);
                 EditText editNumber = (EditText) findViewById(R.id.editNumber);
+                Integer chgNumber = Integer.parseInt(editNumber.getText().toString());
                 EditText editMemo = (EditText) findViewById(R.id.editMemo);
 
                 // データベースに追加する
                 ContentValues addValues = new ContentValues();
                 addValues.put("title", editTitle.getText().toString());
-                addValues.put("number", editNumber.getText().toString() + "巻");
+                addValues.put("number", chgNumber.toString());
                 addValues.put("comment", editMemo.getText().toString());
                 addValues.put("inputdate", ComicMemo.getNowDate());
                 long id = ComicMemo.wdb.insert("comicdata", editTitle.getText().toString(), addValues);
 
                 Map<String, String> data = new HashMap<String, String>();
                 data.put("title", editTitle.getText().toString());
-                data.put("number", editNumber.getText().toString() + "巻");
+                data.put("number", chgNumber.toString());
                 data.put("comment", editMemo.getText().toString());
                 data.put("inputdate", ComicMemo.getNowDate());
                 ComicMemo.dataList.add(data);
