@@ -14,13 +14,15 @@
             android:layout_height="wrap_content"
             android:text="削除"
             android:visibility="gone"
+            android:textColor="@color/blue"
+            android:background="@layout/original_button"
             android:id="@+id/deletebutton" />
 
         <TextView
             android:id="@android:id/title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1.0"
             android:text="TextView"
             android:textSize="18dp" />
 
@@ -43,9 +45,10 @@
 
         <Button
             android:id="@+id/addbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.01"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:textColor="@color/blue"
+            android:background="@layout/original_button"
             android:text="＋" />
 
     </LinearLayout>

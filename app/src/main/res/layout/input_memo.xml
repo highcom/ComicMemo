@@ -14,6 +14,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="戻る"
+            android:textColor="@color/blue"
+            android:background="@layout/no_frame_button"
             android:id="@+id/cancel" />
 
         <TextView
@@ -28,8 +30,9 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right"
             android:text="完了"
+            android:textColor="@color/blue"
+            android:background="@layout/no_frame_button"
             android:id="@+id/done" />
 
     </LinearLayout>
