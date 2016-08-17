@@ -16,9 +16,11 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Button;
+import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -76,6 +78,22 @@ public class ComicMemo extends Activity {
         listView = (ListView) findViewById(R.id.comicListView);
         listView.setAdapter(adapter);
         listView.setTextFilterEnabled(true);
+        // アイテムクリック時ののイベントを追加
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent,
+                                    View view, int pos, long id) {
+
+                // 選択アイテムを取得
+                //ListView listView = (ListView)parent;
+                //View view = (View)listView.getChildAt(pos);
+                //ViewHolder holder = (ViewHolder) view.getTag();
+
+                // 通知ダイアログを表示
+                Toast.makeText(ComicMemo.this,
+                        "Click!" + pos , Toast.LENGTH_LONG
+                ).show();
+            }
+        });
 
         Button editbtn = (Button) findViewById(R.id.edit);
         editbtn.setOnClickListener(new OnClickListener() {

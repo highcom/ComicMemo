@@ -16,6 +16,8 @@
             android:visibility="gone"
             android:textColor="@color/blue"
             android:background="@layout/original_button"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
             android:id="@+id/deletebutton" />
 
         <TextView
@@ -49,6 +51,8 @@
             android:layout_height="50dp"
             android:textColor="@color/blue"
             android:background="@layout/original_button"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
             android:text="＋" />
 
     </LinearLayout>
