@@ -14,9 +14,11 @@ public class ListDataOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table comicdata(" + " title text not null,"
+        db.execSQL("create table comicdata("
+                + "id long not null,"
+                + "title text,"
                 + "number text,"
-                + "comment text,"
+                + "memo text,"
                 + "inputdate text"
                 + ");");
     }

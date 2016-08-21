@@ -8,6 +8,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Activity;
@@ -26,12 +27,12 @@ import android.view.View.OnClickListener;
 
 public class ComicMemo extends Activity {
 
-    Map<String, String> data;
+    public static Map<String, String> data;
     public static List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
     public static ListView listView;
     public static ListViewAdapter adapter;
 
-    private static SQLiteDatabase rdb;
+    public static SQLiteDatabase rdb;
     public static SQLiteDatabase wdb;
 
     @Override
@@ -42,15 +43,16 @@ public class ComicMemo extends Activity {
         ListDataOpenHelper helper = new ListDataOpenHelper(this);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
-        Cursor cur = rdb.query("comicdata", new String[] { "title", "number", "comment", "inputdate" }, null, null, null, null, null);
+        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, null);
 
         boolean mov = cur.moveToFirst();
         while (mov) {
             data = new HashMap<String, String>();
-            data.put("title", cur.getString(0));
-            data.put("number", cur.getString(1));
-            data.put("comment", cur.getString(2));
-            data.put("inputdate", cur.getString(3));
+            data.put("id", cur.getString(0));
+            data.put("title", cur.getString(1));
+            data.put("number", cur.getString(2));
+            data.put("memo", cur.getString(3));
+            data.put("inputdate", cur.getString(4));
             dataList.add(data);
             mov = cur.moveToNext();
         }
@@ -82,19 +84,23 @@ public class ComicMemo extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent,
                                     View view, int pos, long id) {
-
-                // 選択アイテムを取得
-                //ListView listView = (ListView)parent;
-                //View view = (View)listView.getChildAt(pos);
-                //ViewHolder holder = (ViewHolder) view.getTag();
-
-                // 通知ダイアログを表示
-                Toast.makeText(ComicMemo.this,
-                        "Click!" + pos , Toast.LENGTH_LONG
-                ).show();
+                // 編集状態でない場合は入力画面に遷移しない
+                if (ListViewAdapter.delbtnEnable == false) {
+                    return;
+                }
+                // 入力画面を生成
+                Intent intent = new Intent(ComicMemo.this, InputMemo.class);
+                // 選択アイテムを設定
+                ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
+                intent.putExtra("ID", holder.id.longValue());
+                intent.putExtra("TITLE", holder.title.getText().toString());
+                intent.putExtra("NUMBER", holder.number.getText().toString());
+                intent.putExtra("MEMO", holder.memo.getText().toString());
+                startActivity(intent);
             }
         });
 
+        // 編集ボタン処理
         Button editbtn = (Button) findViewById(R.id.edit);
         editbtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -109,6 +115,7 @@ public class ComicMemo extends Activity {
             }
         });
 
+        // 追加ボタン処理
         Button addbtn = (Button) findViewById(R.id.add);
         addbtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -116,14 +123,8 @@ public class ComicMemo extends Activity {
                 //Intent intent = new Intent();
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
                 //intent.setClassName("com.highcom.comicmemo", "com.highcom.comicmemo.InputMemo");
+                intent.putExtra("ID", DatabaseUtils.queryNumEntries(rdb, "comicdata"));
                 startActivity(intent);
-                /*
-                data = new HashMap<String, String>();
-                data.put("title", "タイトル欄");
-                data.put("comment", "COMMENT欄");
-                data.put("number", "0巻");
-                dataList.add(data);
-                listView.setAdapter(adapter);*/
             }
         });
 
@@ -145,6 +146,25 @@ public class ComicMemo extends Activity {
                 return false;
             }
         });
+    }
+
+    // データの一覧を更新する
+    public static void reflesh() {
+        dataList.clear();
+
+        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, null);
+
+        boolean mov = cur.moveToFirst();
+        while (mov) {
+            data = new HashMap<String, String>();
+            data.put("id", cur.getString(0));
+            data.put("title", cur.getString(1));
+            data.put("number", cur.getString(2));
+            data.put("memo", cur.getString(3));
+            data.put("inputdate", cur.getString(4));
+            dataList.add(data);
+            mov = cur.moveToNext();
+        }
     }
 
     @Override

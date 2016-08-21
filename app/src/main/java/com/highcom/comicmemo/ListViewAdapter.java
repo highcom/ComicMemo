@@ -27,9 +27,10 @@ public class ListViewAdapter extends SimpleAdapter {
     public static boolean delbtnEnable = false;
 
     public class ViewHolder {
+        Long  id;
         TextView title;
         TextView number;
-        TextView comment;
+        TextView memo;
         TextView inputdate;
         Button   deletebtn;
     }
@@ -54,9 +55,10 @@ public class ListViewAdapter extends SimpleAdapter {
             // view = inflater.inflate(R.layout.raw, null);
 
             holder = new ViewHolder();
+            holder.id = new Long(position);
             holder.title = (TextView) view.findViewById(android.R.id.title);
             holder.number = (TextView) view.findViewById(R.id.number);
-            holder.comment = (TextView) view.findViewById(R.id.comment);
+            holder.memo = (TextView) view.findViewById(R.id.memo);
             holder.inputdate = (TextView) view.findViewById(R.id.inputdate);
 
             view.setTag(holder);
@@ -66,16 +68,18 @@ public class ListViewAdapter extends SimpleAdapter {
 
         String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
         String number = ((HashMap<?, ?>) listData.get(position)).get("number").toString();
-        String comment = ((HashMap<?, ?>) listData.get(position)).get("comment").toString();
+        String memo = ((HashMap<?, ?>) listData.get(position)).get("memo").toString();
         String inputdate = ((HashMap<?, ?>) listData.get(position)).get("inputdate").toString();
+        holder.id = new Long(position);
         holder.title.setText(title);
-        holder.comment.setText(comment);
         holder.number.setText(number);
+        holder.memo.setText(memo);
         holder.inputdate.setText(inputdate);
 
         Button btn = (Button) view.findViewById(R.id.addbutton);
         btn.setTag(position);
 
+        // カウント追加ボタン処理
         btn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -89,10 +93,11 @@ public class ListViewAdapter extends SimpleAdapter {
                 // データベースを更新する
                 ContentValues updateValues = new ContentValues();
                 updateValues.put("number", num);
-                ComicMemo.wdb.update("comicdata", updateValues, "title=?", new String[] { holder.title.getText().toString() });
+                ComicMemo.wdb.update("comicdata", updateValues, "id=?", new String[] { holder.id.toString() });
             }
         });
 
+        // 削除ボタン処理
         holder.deletebtn = (Button) view.findViewById(R.id.deletebutton);
         if (delbtnEnable) {
             holder.deletebtn.setVisibility(View.VISIBLE);
@@ -101,7 +106,7 @@ public class ListViewAdapter extends SimpleAdapter {
                 @Override
                 public void onClick(View arg0) {
                     // データベースから削除する
-                    ComicMemo.wdb.delete("comicdata", "title=?", new String[] { holder.title.getText().toString() });
+                    ComicMemo.wdb.delete("comicdata", "id=?", new String[] { holder.id.toString() });
 
                     // 行から削除する
                     ComicMemo.dataList.remove(position);
