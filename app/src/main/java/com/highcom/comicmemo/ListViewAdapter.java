@@ -6,6 +6,7 @@ package com.highcom.comicmemo;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,12 +89,16 @@ public class ListViewAdapter extends SimpleAdapter {
                 // 999を上限とする
                 if (num < 999) {
                     num++;
+                    holder.number.setTextColor(Color.RED);
                 }
                 holder.number.setText(num.toString());
+                holder.inputdate.setText(ComicMemo.getNowDate());
                 // データベースを更新する
                 ContentValues updateValues = new ContentValues();
                 updateValues.put("number", num);
+                updateValues.put("inputdate", ComicMemo.getNowDate());
                 ComicMemo.wdb.update("comicdata", updateValues, "id=?", new String[] { holder.id.toString() });
+                ComicMemo.reflesh();
             }
         });
 

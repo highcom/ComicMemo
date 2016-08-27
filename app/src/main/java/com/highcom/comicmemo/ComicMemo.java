@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -141,7 +143,9 @@ public class ComicMemo extends Activity {
                 if (TextUtils.isEmpty(searchWord)) {
                     listView.clearTextFilter();
                 } else {
-                    listView.setFilterText(searchWord.toString());
+                    //listView.setFilterText(searchWord.toString());
+                    Filter filter = ((Filterable) listView.getAdapter()).getFilter();
+                    filter.filter(searchWord.toString());
                 }
                 return false;
             }
