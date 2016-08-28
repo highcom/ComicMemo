@@ -15,16 +15,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
-public class ListViewAdapter extends SimpleAdapter {
+public class ListViewAdapter extends SimpleAdapter implements Filterable {
 
     // private Context context;
     private LayoutInflater inflater;
     private List<? extends Map<String, ?>> listData;
+    private List<? extends Map<String, ?>> orig;
     public static boolean delbtnEnable = false;
 
     public class ViewHolder {
@@ -41,6 +45,46 @@ public class ListViewAdapter extends SimpleAdapter {
         // this.context = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.listData = data;
+    }
+
+    @Override
+    public int getCount() {
+        if (listData != null) {
+            return listData.size();
+        } else {
+            return 0;
+        }
+    }
+
+    public Filter getFilter() {
+        return new Filter() {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                final FilterResults oReturn = new FilterResults();
+                final ArrayList<Map<String, ?>> results = new ArrayList<Map<String, ?>>();
+                if (orig == null)
+                    orig = listData;
+                if (constraint != null) {
+                    if (orig != null && orig.size() > 0) {
+                        for (final Map<String, ?> g : orig) {
+                            if (g.get("title").toString().toLowerCase().contains(constraint.toString()))
+                                results.add(g);
+                        }
+                    }
+                    oReturn.values = results;
+                }
+                return oReturn;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                listData = (ArrayList<Map<String, String>>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
