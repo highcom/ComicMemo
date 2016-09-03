@@ -140,11 +140,13 @@ public class ComicMemo extends Activity {
 
             @Override
             public boolean onQueryTextChange(String searchWord) {
+                Filter filter = ((Filterable) listView.getAdapter()).getFilter();
                 if (TextUtils.isEmpty(searchWord)) {
                     listView.clearTextFilter();
+                    filter.filter(null);
+
                 } else {
                     //listView.setFilterText(searchWord.toString());
-                    Filter filter = ((Filterable) listView.getAdapter()).getFilter();
                     filter.filter(searchWord.toString());
                 }
                 return false;

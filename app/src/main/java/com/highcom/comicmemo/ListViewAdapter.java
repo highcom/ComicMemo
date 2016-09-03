@@ -73,6 +73,8 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
                         }
                     }
                     oReturn.values = results;
+                } else {
+                    oReturn.values = orig;
                 }
                 return oReturn;
             }
@@ -111,13 +113,15 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
             holder = (ViewHolder) view.getTag();
         }
 
+        String id = ((HashMap<?, ?>) listData.get(position)).get("id").toString();
         String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
         String number = ((HashMap<?, ?>) listData.get(position)).get("number").toString();
         String memo = ((HashMap<?, ?>) listData.get(position)).get("memo").toString();
         String inputdate = ((HashMap<?, ?>) listData.get(position)).get("inputdate").toString();
-        holder.id = new Long(position);
+        holder.id = new Long(id);
         holder.title.setText(title);
         holder.number.setText(number);
+        holder.number.setTextColor(Color.GRAY);
         holder.memo.setText(memo);
         holder.inputdate.setText(inputdate);
 
