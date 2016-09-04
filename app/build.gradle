@@ -17,9 +17,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+                // Rename APK
+                def newName
+                if (variant.buildType.name.equals("release")) {
+                    newName = "ComicMemo.apk"
+                } else {
+                    newName = "ComicMemoDebug.apk"
+                }
+                output.outputFile = new File(output.outputFile.parent, newName)
+            }
+        }
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services-ads:9.2.0'
 }

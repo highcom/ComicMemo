@@ -26,21 +26,30 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class ComicMemo extends Activity {
 
     public static Map<String, String> data;
-    public static List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    public static List<Map<String, String>> dataList;
     public static ListView listView;
     public static ListViewAdapter adapter;
 
     public static SQLiteDatabase rdb;
     public static SQLiteDatabase wdb;
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_memo);
+        dataList = new ArrayList<Map<String, String>>();
+
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         ListDataOpenHelper helper = new ListDataOpenHelper(this);
         rdb = helper.getReadableDatabase();
@@ -199,6 +208,7 @@ public class ComicMemo extends Activity {
     public void onDestroy() {
         rdb.close();
         wdb.close();
+        mAdView.destroy();
         super.onDestroy();
     }
 
