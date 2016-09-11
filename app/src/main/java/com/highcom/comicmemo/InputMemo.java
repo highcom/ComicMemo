@@ -48,7 +48,10 @@ public class InputMemo extends Activity {
                 // 入力データを登録する
                 EditText editTitle = (EditText) findViewById(R.id.editTitle);
                 EditText editNumber = (EditText) findViewById(R.id.editNumber);
-                Integer chgNumber = Integer.parseInt(editNumber.getText().toString());
+                Integer chgNumber = 0;
+                if (!editNumber.getText().toString().equals("")) {
+                    chgNumber = Integer.parseInt(editNumber.getText().toString());
+                }
                 EditText editMemo = (EditText) findViewById(R.id.editMemo);
 
                 // データベースに追加or編集する
