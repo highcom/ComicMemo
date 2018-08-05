@@ -164,6 +164,12 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
                     // 行から削除する
                     ComicMemo.dataList.remove(position);
                     ComicMemo.listView.setAdapter(ComicMemo.adapter);
+
+                    // データ一覧を更新する
+                    ComicMemo.reflesh();
+
+                    // フィルタしている場合はフィルタデータの一覧も更新する
+                    ComicMemo.setSearchWordFilter();
                 }
             });
         } else {

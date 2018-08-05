@@ -12,7 +12,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -38,6 +37,8 @@ public class ComicMemo extends Activity {
 
     public static SQLiteDatabase rdb;
     public static SQLiteDatabase wdb;
+
+    public static String searchViewWord;
 
     private AdView mAdView;
 
@@ -149,15 +150,8 @@ public class ComicMemo extends Activity {
 
             @Override
             public boolean onQueryTextChange(String searchWord) {
-                Filter filter = ((Filterable) listView.getAdapter()).getFilter();
-                if (TextUtils.isEmpty(searchWord)) {
-                    listView.clearTextFilter();
-                    filter.filter(null);
-
-                } else {
-                    //listView.setFilterText(searchWord.toString());
-                    filter.filter(searchWord.toString());
-                }
+                searchViewWord = searchWord;
+                setSearchWordFilter();
                 return false;
             }
         });
@@ -179,6 +173,18 @@ public class ComicMemo extends Activity {
             data.put("inputdate", cur.getString(4));
             dataList.add(data);
             mov = cur.moveToNext();
+        }
+    }
+
+    public static void setSearchWordFilter() {
+        Filter filter = ((Filterable) listView.getAdapter()).getFilter();
+        if (TextUtils.isEmpty(searchViewWord)) {
+            listView.clearTextFilter();
+            filter.filter(null);
+
+        } else {
+            //listView.setFilterText(searchWord.toString());
+            filter.filter(searchViewWord.toString());
         }
     }
 

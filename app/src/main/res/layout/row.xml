@@ -17,6 +17,10 @@
             android:textColor="@color/blue"
             android:background="@layout/original_button"
             android:focusableInTouchMode="false"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:focusable="false"
             android:id="@+id/deletebutton" />
 
@@ -48,11 +52,16 @@
 
         <Button
             android:id="@+id/addbutton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textColor="@color/blue"
             android:background="@layout/original_button"
             android:focusableInTouchMode="false"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:focusable="false"
             android:text="＋" />
 
