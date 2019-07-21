@@ -4,10 +4,8 @@ package com.highcom.comicmemo;
  * Created by koichi on 2015/06/28.
  */
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +28,12 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
     private List<? extends Map<String, ?>> listData;
     private List<? extends Map<String, ?>> orig;
     public static boolean delbtnEnable = false;
+    private AdapterListener adapterListener;
+
+    public interface AdapterListener {
+        void onAdapterAddBtnClicked(ViewHolder holder);
+        void onAdapterDelBtnClicked(ViewHolder holder);
+    }
 
     public class ViewHolder {
         Long  id;
@@ -40,11 +44,12 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
         Button   deletebtn;
     }
 
-    public ListViewAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
+    public ListViewAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to, AdapterListener listener) {
         super(context, data, resource, from, to);
         // this.context = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.listData = data;
+        this.adapterListener = listener;
     }
 
     @Override
@@ -125,28 +130,14 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
         holder.memo.setText(memo);
         holder.inputdate.setText(inputdate);
 
-        Button btn = (Button) view.findViewById(R.id.addbutton);
-        btn.setTag(position);
+        Button addbtn = (Button) view.findViewById(R.id.addbutton);
+        addbtn.setTag(position);
 
         // カウント追加ボタン処理
-        btn.setOnClickListener(new OnClickListener() {
+        addbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                // 巻数を+1する
-                Integer num = Integer.parseInt(holder.number.getText().toString());
-                // 999を上限とする
-                if (num < 999) {
-                    num++;
-                    holder.number.setTextColor(Color.RED);
-                }
-                holder.number.setText(num.toString());
-                holder.inputdate.setText(ComicMemo.getNowDate());
-                // データベースを更新する
-                ContentValues updateValues = new ContentValues();
-                updateValues.put("number", num);
-                updateValues.put("inputdate", ComicMemo.getNowDate());
-                ComicMemo.wdb.update("comicdata", updateValues, "id=?", new String[] { holder.id.toString() });
-                ComicMemo.reflesh();
+                adapterListener.onAdapterAddBtnClicked(holder);
             }
         });
 
@@ -158,18 +149,7 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
             holder.deletebtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
-                    // データベースから削除する
-                    ComicMemo.wdb.delete("comicdata", "id=?", new String[] { holder.id.toString() });
-
-                    // 行から削除する
-                    ComicMemo.dataList.remove(position);
-                    ComicMemo.listView.setAdapter(ComicMemo.adapter);
-
-                    // データ一覧を更新する
-                    ComicMemo.reflesh();
-
-                    // フィルタしている場合はフィルタデータの一覧も更新する
-                    ComicMemo.setSearchWordFilter();
+                    adapterListener.onAdapterDelBtnClicked(holder);
                 }
             });
         } else {

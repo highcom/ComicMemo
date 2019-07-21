@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public class InputMemo extends Activity {
 
+    private boolean isEdit;
     private long id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class InputMemo extends Activity {
 
         // 渡されたデータを取得する
         Intent intent = getIntent();
+        isEdit = intent.getBooleanExtra("EDIT", false);
         id = intent.getLongExtra("ID", -1);
         ((EditText)findViewById(R.id.editTitle)).setText(intent.getStringExtra("TITLE"));
         ((EditText)findViewById(R.id.editNumber)).setText(intent.getStringExtra("NUMBER"));
@@ -54,29 +56,14 @@ public class InputMemo extends Activity {
                 }
                 EditText editMemo = (EditText) findViewById(R.id.editMemo);
 
+                Map<String, String> data = new HashMap<String, String>();
+                data.put("id", Long.valueOf(id).toString());
+                data.put("title", editTitle.getText().toString());
+                data.put("number", chgNumber.toString());
+                data.put("memo", editMemo.getText().toString());
+                data.put("inputdate", ListDataManager.getInstance().getNowDate());
                 // データベースに追加or編集する
-                ContentValues addValues = new ContentValues();
-                addValues.put("id", id);
-                addValues.put("title", editTitle.getText().toString());
-                addValues.put("number", chgNumber.toString());
-                addValues.put("memo", editMemo.getText().toString());
-                addValues.put("inputdate", ComicMemo.getNowDate());
-                // idが合計データ数より小さい場合はデータ編集
-                if (id < DatabaseUtils.queryNumEntries(ComicMemo.rdb, "comicdata")) {
-                    ComicMemo.wdb.update("comicdata", addValues, "id=?", new String[] { Long.valueOf(id).toString() });
-                } else {
-                    long retid = ComicMemo.wdb.insert("comicdata", Long.valueOf(id).toString(), addValues);
-                    Map<String, String> data = new HashMap<String, String>();
-                    data.put("id", Long.valueOf(id).toString());
-                    data.put("title", editTitle.getText().toString());
-                    data.put("number", chgNumber.toString());
-                    data.put("memo", editMemo.getText().toString());
-                    data.put("inputdate", ComicMemo.getNowDate());
-                    ComicMemo.dataList.add(data);
-                }
-
-                ComicMemo.listView.setAdapter(ComicMemo.adapter);
-                ComicMemo.reflesh();
+                ListDataManager.getInstance().setData(isEdit, data);
                 // 詳細画面を終了
                 finish();
             }

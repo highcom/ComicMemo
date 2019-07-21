@@ -1,15 +1,9 @@
 package com.highcom.comicmemo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -22,23 +16,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Button;
-import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class ComicMemo extends Activity {
+public class ComicMemo extends Activity implements ListViewAdapter.AdapterListener {
 
-    public static Map<String, String> data;
-    public static List<Map<String, String>> dataList;
-    public static ListView listView;
-    public static ListViewAdapter adapter;
+    private ListDataManager manager;
+    private ListView listView;
+    private ListViewAdapter adapter;
 
-    public static SQLiteDatabase rdb;
-    public static SQLiteDatabase wdb;
-
-    public static String searchViewWord;
+    private String searchViewWord;
 
     private AdView mAdView;
 
@@ -46,48 +35,21 @@ public class ComicMemo extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_memo);
-        dataList = new ArrayList<Map<String, String>>();
 
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        ListDataOpenHelper helper = new ListDataOpenHelper(this);
-        rdb = helper.getReadableDatabase();
-        wdb = helper.getWritableDatabase();
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, null);
-
-        boolean mov = cur.moveToFirst();
-        while (mov) {
-            data = new HashMap<String, String>();
-            data.put("id", cur.getString(0));
-            data.put("title", cur.getString(1));
-            data.put("number", cur.getString(2));
-            data.put("memo", cur.getString(3));
-            data.put("inputdate", cur.getString(4));
-            dataList.add(data);
-            mov = cur.moveToNext();
-        }
-
-        /*
-        int MAXDATA = 10;
-        for (int i = 0; i < MAXDATA; i++) {
-            data = new HashMap<String, String>();
-            data.put("title", "タイトル欄" + i);
-            data.put("number", i + "巻");
-            data.put("comment", "COMMENT欄" + i);
-            data.put("inputdate", getNowDate());
-            dataList.add(data);
-        }
-        */
+        manager = ListDataManager.createInstance(this);
 
         adapter = new ListViewAdapter(
                 this,
-                dataList,
+                manager.getDataList(),
                 R.layout.row,
                 new String[] { "title", "comment" },
                 new int[] { android.R.id.text1,
-                        android.R.id.text2 });
+                        android.R.id.text2 },
+                this);
 
         listView = (ListView) findViewById(R.id.comicListView);
         listView.setAdapter(adapter);
@@ -104,6 +66,7 @@ public class ComicMemo extends Activity {
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
                 // 選択アイテムを設定
                 ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
+                intent.putExtra("EDIT", true);
                 intent.putExtra("ID", holder.id.longValue());
                 intent.putExtra("TITLE", holder.title.getText().toString());
                 intent.putExtra("NUMBER", holder.number.getText().toString());
@@ -132,10 +95,9 @@ public class ComicMemo extends Activity {
         addbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                //Intent intent = new Intent();
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
-                //intent.setClassName("com.highcom.comicmemo", "com.highcom.comicmemo.InputMemo");
-                intent.putExtra("ID", DatabaseUtils.queryNumEntries(rdb, "comicdata"));
+                intent.putExtra("EDIT", false);
+                intent.putExtra("ID", manager.getNewId());
                 startActivity(intent);
             }
         });
@@ -157,26 +119,7 @@ public class ComicMemo extends Activity {
         });
     }
 
-    // データの一覧を更新する
-    public static void reflesh() {
-        dataList.clear();
-
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, null);
-
-        boolean mov = cur.moveToFirst();
-        while (mov) {
-            data = new HashMap<String, String>();
-            data.put("id", cur.getString(0));
-            data.put("title", cur.getString(1));
-            data.put("number", cur.getString(2));
-            data.put("memo", cur.getString(3));
-            data.put("inputdate", cur.getString(4));
-            dataList.add(data);
-            mov = cur.moveToNext();
-        }
-    }
-
-    public static void setSearchWordFilter() {
+    private void setSearchWordFilter() {
         Filter filter = ((Filterable) listView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
             listView.clearTextFilter();
@@ -212,15 +155,40 @@ public class ComicMemo extends Activity {
 
     @Override
     public void onDestroy() {
-        rdb.close();
-        wdb.close();
+        manager.closeData();
         mAdView.destroy();
         super.onDestroy();
     }
 
-    public static String getNowDate(){
-        Date date = new Date();
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        return sdf.format(date);
+    @Override
+    public void onAdapterAddBtnClicked(ListViewAdapter.ViewHolder holder) {
+        // 巻数を+1する
+        Integer num = Integer.parseInt(holder.number.getText().toString());
+        // 999を上限とする
+        if (num < 999) {
+            num++;
+            holder.number.setTextColor(Color.RED);
+        }
+        holder.number.setText(num.toString());
+        holder.inputdate.setText(manager.getNowDate());
+
+        // データベースを更新する
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("id", holder.id.toString());
+        data.put("title", holder.title.getText().toString());
+        data.put("number", holder.number.getText().toString());
+        data.put("memo", holder.memo.getText().toString());
+        data.put("inputdate", holder.inputdate.getText().toString());
+        manager.setData(true, data);
+    }
+
+    @Override
+    public void onAdapterDelBtnClicked(ListViewAdapter.ViewHolder holder) {
+        // データベースから削除する
+        manager.deleteData(holder.id.toString());
+        // adapterにデータが更新された事を通知する
+        adapter.notifyDataSetChanged();
+        // フィルタしている場合はフィルタデータの一覧も更新する
+        setSearchWordFilter();
     }
 }
