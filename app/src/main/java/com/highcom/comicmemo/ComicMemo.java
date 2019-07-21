@@ -71,7 +71,7 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
                 intent.putExtra("TITLE", holder.title.getText().toString());
                 intent.putExtra("NUMBER", holder.number.getText().toString());
                 intent.putExtra("MEMO", holder.memo.getText().toString());
-                startActivity(intent);
+                startActivityForResult(intent, 1001);
             }
         });
 
@@ -98,7 +98,7 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
                 intent.putExtra("EDIT", false);
                 intent.putExtra("ID", manager.getNewId());
-                startActivity(intent);
+                startActivityForResult(intent, 1001);
             }
         });
 
@@ -186,6 +186,18 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
     public void onAdapterDelBtnClicked(ListViewAdapter.ViewHolder holder) {
         // データベースから削除する
         manager.deleteData(holder.id.toString());
+        // adapterにデータが更新された事を通知する
+        adapter.notifyDataSetChanged();
+        // フィルタしている場合はフィルタデータの一覧も更新する
+        setSearchWordFilter();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != 1001) {
+            return;
+        }
+
         // adapterにデータが更新された事を通知する
         adapter.notifyDataSetChanged();
         // フィルタしている場合はフィルタデータの一覧も更新する
