@@ -6,6 +6,7 @@ package com.highcom.comicmemo;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
-public class ListViewAdapter extends SimpleAdapter implements Filterable {
+public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHolder> implements Filterable {
 
     // private Context context;
     private LayoutInflater inflater;
@@ -31,29 +32,91 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
     private AdapterListener adapterListener;
 
     public interface AdapterListener {
-        void onAdapterAddBtnClicked(ViewHolder holder);
-        void onAdapterDelBtnClicked(ViewHolder holder);
+        void onAdapterClicked(View view, int position);
+        void onAdapterAddBtnClicked(View view);
+        void onAdapterDelBtnClicked(View view);
     }
 
-    public class ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         Long  id;
         TextView title;
         TextView number;
         TextView memo;
         TextView inputdate;
         Button   deletebtn;
+
+        public ViewHolder(final View itemView) {
+            super(itemView);
+            //id = new Long(position); TODO:ポジションをどうするか
+            title = (TextView) itemView.findViewById(R.id.title);
+            number = (TextView) itemView.findViewById(R.id.number);
+            memo = (TextView) itemView.findViewById(R.id.memo);
+            inputdate = (TextView) itemView.findViewById(R.id.inputdate);
+
+            Button addbtn = (Button) itemView.findViewById(R.id.addbutton);
+            //addbtn.setTag(position); TODO:ポジションをどうするか
+
+            // カウント追加ボタン処理
+            addbtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    adapterListener.onAdapterAddBtnClicked(itemView);
+                }
+            });
+
+            // 削除ボタン処理
+            deletebtn = (Button) itemView.findViewById(R.id.deletebutton);
+            if (delbtnEnable) {
+                deletebtn.setVisibility(View.VISIBLE);
+                // 削除ボタンを押下された行を削除する
+                deletebtn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        adapterListener.onAdapterDelBtnClicked(itemView);
+                    }
+                });
+            } else {
+                deletebtn.setVisibility(View.GONE);
+            }
+
+        }
     }
 
     public ListViewAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to, AdapterListener listener) {
-        super(context, data, resource, from, to);
-        // this.context = context;
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = LayoutInflater.from(context);
         this.listData = data;
         this.adapterListener = listener;
     }
 
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(inflater.inflate(R.layout.row, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        String id = ((HashMap<?, ?>) listData.get(position)).get("id").toString();
+        String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
+        String number = ((HashMap<?, ?>) listData.get(position)).get("number").toString();
+        String memo = ((HashMap<?, ?>) listData.get(position)).get("memo").toString();
+        String inputdate = ((HashMap<?, ?>) listData.get(position)).get("inputdate").toString();
+        holder.id = new Long(id);
+        holder.title.setText(title);
+        holder.number.setText(number);
+        holder.number.setTextColor(Color.GRAY);
+        holder.memo.setText(memo);
+        holder.inputdate.setText(inputdate);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapterListener.onAdapterClicked(view, position);
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
         if (listData != null) {
             return listData.size();
         } else {
@@ -94,6 +157,7 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
         };
     }
 
+    /*
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
@@ -158,4 +222,5 @@ public class ListViewAdapter extends SimpleAdapter implements Filterable {
 
         return view;
     }
+    */
 }

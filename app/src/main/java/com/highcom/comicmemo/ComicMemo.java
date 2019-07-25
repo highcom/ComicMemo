@@ -7,6 +7,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +27,7 @@ import com.google.android.gms.ads.AdView;
 public class ComicMemo extends Activity implements ListViewAdapter.AdapterListener {
 
     private ListDataManager manager;
-    private ListView listView;
+    private RecyclerView recyclerView;
     private ListViewAdapter adapter;
 
     private String searchViewWord;
@@ -51,11 +54,38 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
                         android.R.id.text2 },
                 this);
 
-        listView = (ListView) findViewById(R.id.comicListView);
-        listView.setAdapter(adapter);
-        listView.setTextFilterEnabled(true);
+        recyclerView = (RecyclerView) findViewById(R.id.comicListView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        //recyclerView.setTextFilterEnabled(true); TODO:フィルタどうするか
+        // セル間に区切り線を実装する
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        recyclerView.addItemDecoration(itemDecoration);
+
+        // ドラックアンドドロップの操作を実装する
+        ItemTouchHelper itemDecor = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                        ItemTouchHelper.RIGHT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        final int fromPos = viewHolder.getAdapterPosition();
+                        final int toPos = target.getAdapterPosition();
+                        adapter.notifyItemMoved(fromPos, toPos);
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        final int fromPos = viewHolder.getAdapterPosition();
+                        manager.deleteData(new Integer(fromPos).toString());
+                        adapter.notifyItemRemoved(fromPos);
+                    }
+                });
+        itemDecor.attachToRecyclerView(recyclerView);
+
+        /*
         // アイテムクリック時ののイベントを追加
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent,
                                     View view, int pos, long id) {
                 // 編集状態でない場合は入力画面に遷移しない
@@ -74,6 +104,7 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
                 startActivityForResult(intent, 1001);
             }
         });
+        */
 
         // 編集ボタン処理
         Button editbtn = (Button) findViewById(R.id.edit);
@@ -86,7 +117,7 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
                 } else {
                     ListViewAdapter.delbtnEnable = true;
                 }
-                listView.setAdapter(adapter);
+                recyclerView.setAdapter(adapter);
             }
         });
 
@@ -120,13 +151,13 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
     }
 
     private void setSearchWordFilter() {
-        Filter filter = ((Filterable) listView.getAdapter()).getFilter();
+        Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
-            listView.clearTextFilter();
+            // recyclerView.clearTextFilter(); TODO:フィルタをどうするか
             filter.filter(null);
 
         } else {
-            //listView.setFilterText(searchWord.toString());
+            //recyclerView.setFilterText(searchWord.toString());
             filter.filter(searchViewWord.toString());
         }
     }
@@ -161,7 +192,26 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
     }
 
     @Override
-    public void onAdapterAddBtnClicked(ListViewAdapter.ViewHolder holder) {
+    public void onAdapterClicked(View view, int position) {
+        // 編集状態でない場合は入力画面に遷移しない
+        if (ListViewAdapter.delbtnEnable == false) {
+            return;
+        }
+        // 入力画面を生成
+        Intent intent = new Intent(ComicMemo.this, InputMemo.class);
+        // 選択アイテムを設定
+        ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
+        intent.putExtra("EDIT", true);
+        intent.putExtra("ID", holder.id.longValue());
+        intent.putExtra("TITLE", holder.title.getText().toString());
+        intent.putExtra("NUMBER", holder.number.getText().toString());
+        intent.putExtra("MEMO", holder.memo.getText().toString());
+        startActivityForResult(intent, 1001);
+    }
+
+    @Override
+    public void onAdapterAddBtnClicked(View view) {
+        ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         // 巻数を+1する
         Integer num = Integer.parseInt(holder.number.getText().toString());
         // 999を上限とする
@@ -183,7 +233,8 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
     }
 
     @Override
-    public void onAdapterDelBtnClicked(ListViewAdapter.ViewHolder holder) {
+    public void onAdapterDelBtnClicked(View view) {
+        ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         // データベースから削除する
         manager.deleteData(holder.id.toString());
         // adapterにデータが更新された事を通知する
