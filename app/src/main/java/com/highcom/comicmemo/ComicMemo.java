@@ -55,7 +55,6 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
         recyclerView = (RecyclerView) findViewById(R.id.comicListView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        //recyclerView.setTextFilterEnabled(true); TODO:フィルタどうするか
         // セル間に区切り線を実装する
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(itemDecoration);
@@ -125,11 +124,9 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
     private void setSearchWordFilter() {
         Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
-            // recyclerView.clearTextFilter(); TODO:フィルタをどうするか
             filter.filter(null);
 
         } else {
-            //recyclerView.setFilterText(searchWord.toString());
             filter.filter(searchViewWord.toString());
         }
     }
