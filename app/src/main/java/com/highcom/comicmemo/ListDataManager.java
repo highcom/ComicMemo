@@ -41,10 +41,7 @@ public class ListDataManager {
     }
 
     public static ListDataManager createInstance(Context context) {
-        if (manager == null) {
-            manager = new ListDataManager(context);
-        }
-
+        manager = new ListDataManager(context);
         return manager;
     }
 
