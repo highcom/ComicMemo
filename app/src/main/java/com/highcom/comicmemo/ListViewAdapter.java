@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -43,18 +42,17 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         TextView number;
         TextView memo;
         TextView inputdate;
-        Button   deletebtn;
+        Button addbtn;
+        Button deletebtn;
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            //id = new Long(position); TODO:ポジションをどうするか
             title = (TextView) itemView.findViewById(R.id.title);
             number = (TextView) itemView.findViewById(R.id.number);
             memo = (TextView) itemView.findViewById(R.id.memo);
             inputdate = (TextView) itemView.findViewById(R.id.inputdate);
 
-            Button addbtn = (Button) itemView.findViewById(R.id.addbutton);
-            //addbtn.setTag(position); TODO:ポジションをどうするか
+            addbtn = (Button) itemView.findViewById(R.id.addbutton);
 
             // カウント追加ボタン処理
             addbtn.setOnClickListener(new OnClickListener() {
@@ -107,6 +105,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         holder.memo.setText(memo);
         holder.inputdate.setText(inputdate);
 
+        holder.itemView.setTag(holder);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,71 +155,4 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             }
         };
     }
-
-    /*
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        final ViewHolder holder;
-
-        // ビューを受け取る
-        View view = convertView;
-
-        if (view == null) {
-            view = inflater.inflate(R.layout.row, parent, false);
-            // LayoutInflater inflater = (LayoutInflater)
-            // context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            // view = inflater.inflate(R.layout.raw, null);
-
-            holder = new ViewHolder();
-            holder.id = new Long(position);
-            holder.title = (TextView) view.findViewById(android.R.id.title);
-            holder.number = (TextView) view.findViewById(R.id.number);
-            holder.memo = (TextView) view.findViewById(R.id.memo);
-            holder.inputdate = (TextView) view.findViewById(R.id.inputdate);
-
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-
-        String id = ((HashMap<?, ?>) listData.get(position)).get("id").toString();
-        String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
-        String number = ((HashMap<?, ?>) listData.get(position)).get("number").toString();
-        String memo = ((HashMap<?, ?>) listData.get(position)).get("memo").toString();
-        String inputdate = ((HashMap<?, ?>) listData.get(position)).get("inputdate").toString();
-        holder.id = new Long(id);
-        holder.title.setText(title);
-        holder.number.setText(number);
-        holder.number.setTextColor(Color.GRAY);
-        holder.memo.setText(memo);
-        holder.inputdate.setText(inputdate);
-
-        Button addbtn = (Button) view.findViewById(R.id.addbutton);
-        addbtn.setTag(position);
-
-        // カウント追加ボタン処理
-        addbtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                adapterListener.onAdapterAddBtnClicked(holder);
-            }
-        });
-
-        // 削除ボタン処理
-        holder.deletebtn = (Button) view.findViewById(R.id.deletebutton);
-        if (delbtnEnable) {
-            holder.deletebtn.setVisibility(View.VISIBLE);
-            // 削除ボタンを押下された行を削除する
-            holder.deletebtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    adapterListener.onAdapterDelBtnClicked(holder);
-                }
-            });
-        } else {
-            holder.deletebtn.setVisibility(View.GONE);
-        }
-
-        return view;
-    }
-    */
 }

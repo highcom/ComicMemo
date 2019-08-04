@@ -15,8 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Button;
 import android.view.View;
@@ -65,7 +63,7 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
         // ドラックアンドドロップの操作を実装する
         ItemTouchHelper itemDecor = new ItemTouchHelper(
                 new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
-                        ItemTouchHelper.RIGHT) {
+                        ItemTouchHelper.ACTION_STATE_IDLE) {
                     @Override
                     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                         final int fromPos = viewHolder.getAdapterPosition();
@@ -76,35 +74,9 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
 
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        final int fromPos = viewHolder.getAdapterPosition();
-                        manager.deleteData(new Integer(fromPos).toString());
-                        adapter.notifyItemRemoved(fromPos);
                     }
                 });
         itemDecor.attachToRecyclerView(recyclerView);
-
-        /*
-        // アイテムクリック時ののイベントを追加
-        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent,
-                                    View view, int pos, long id) {
-                // 編集状態でない場合は入力画面に遷移しない
-                if (ListViewAdapter.delbtnEnable == false) {
-                    return;
-                }
-                // 入力画面を生成
-                Intent intent = new Intent(ComicMemo.this, InputMemo.class);
-                // 選択アイテムを設定
-                ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
-                intent.putExtra("EDIT", true);
-                intent.putExtra("ID", holder.id.longValue());
-                intent.putExtra("TITLE", holder.title.getText().toString());
-                intent.putExtra("NUMBER", holder.number.getText().toString());
-                intent.putExtra("MEMO", holder.memo.getText().toString());
-                startActivityForResult(intent, 1001);
-            }
-        });
-        */
 
         // 編集ボタン処理
         Button editbtn = (Button) findViewById(R.id.edit);
