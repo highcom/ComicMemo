@@ -24,7 +24,7 @@ public class ListDataManager {
         ListDataOpenHelper helper = new ListDataOpenHelper(context);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, null);
+        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
         dataList = new ArrayList<Map<String, String>>();
 
         boolean mov = cur.moveToFirst();
@@ -80,9 +80,38 @@ public class ListDataManager {
         return dataList;
     }
 
+    public void rearrangeData(int fromPos, int toPos) {
+        boolean mov;
+        ContentValues values;
+
+        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
+
+        mov = cur.moveToPosition(fromPos);
+        if (!mov) return;
+        long fromId = cur.getLong(0);
+
+        mov = cur.moveToPosition(toPos);
+        if (!mov) return;
+        long toId = cur.getLong(0);
+
+        values = new ContentValues();
+        values.put("id", -1);
+        wdb.update("comicdata", values, "id=?", new String[] { Long.toString(fromId) });
+
+        values = new ContentValues();
+        values.put("id", fromId);
+        wdb.update("comicdata", values, "id=?", new String[] { Long.toString(toId) });
+
+        values = new ContentValues();
+        values.put("id", toId);
+        wdb.update("comicdata", values, "id=?", new String[] { Long.toString(-1) });
+
+        remakeListData();
+    }
+
     public long getNewId() {
         long newId = 0;
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, null);
+        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
 
         boolean mov = cur.moveToFirst();
         long curId;
@@ -105,7 +134,7 @@ public class ListDataManager {
     private void remakeListData() {
         dataList.clear();
 
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, null);
+        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
 
         boolean mov = cur.moveToFirst();
         while (mov) {

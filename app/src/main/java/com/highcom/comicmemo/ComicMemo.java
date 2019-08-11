@@ -68,6 +68,7 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
                         final int fromPos = viewHolder.getAdapterPosition();
                         final int toPos = target.getAdapterPosition();
                         adapter.notifyItemMoved(fromPos, toPos);
+                        manager.rearrangeData(fromPos, toPos);
                         return true;
                     }
 
