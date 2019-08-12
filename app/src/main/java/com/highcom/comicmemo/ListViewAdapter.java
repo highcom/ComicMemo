@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -44,6 +45,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         TextView inputdate;
         Button addbtn;
         Button deletebtn;
+        ImageButton rearrangebtn;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -64,8 +66,10 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
 
             // 削除ボタン処理
             deletebtn = (Button) itemView.findViewById(R.id.deletebutton);
+            rearrangebtn = (ImageButton) itemView.findViewById(R.id.rearrangebutton);
             if (delbtnEnable) {
                 deletebtn.setVisibility(View.VISIBLE);
+                rearrangebtn.setVisibility(View.VISIBLE);
                 // 削除ボタンを押下された行を削除する
                 deletebtn.setOnClickListener(new OnClickListener() {
                     @Override
@@ -75,6 +79,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 });
             } else {
                 deletebtn.setVisibility(View.GONE);
+                rearrangebtn.setVisibility(View.GONE);
             }
 
         }
