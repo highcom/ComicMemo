@@ -65,11 +65,14 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
                         ItemTouchHelper.ACTION_STATE_IDLE) {
                     @Override
                     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                        final int fromPos = viewHolder.getAdapterPosition();
-                        final int toPos = target.getAdapterPosition();
-                        adapter.notifyItemMoved(fromPos, toPos);
-                        manager.rearrangeData(fromPos, toPos);
-                        return true;
+                        if (adapter.getDelbtnEnable() && TextUtils.isEmpty(searchViewWord)) {
+                            final int fromPos = viewHolder.getAdapterPosition();
+                            final int toPos = target.getAdapterPosition();
+                            adapter.notifyItemMoved(fromPos, toPos);
+                            manager.rearrangeData(fromPos, toPos);
+                            return true;
+                        }
+                        return false;
                     }
 
                     @Override
@@ -84,10 +87,10 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
             @Override
             public void onClick(View arg0) {
                 // 編集状態の変更
-                if (ListViewAdapter.delbtnEnable) {
-                    ListViewAdapter.delbtnEnable = false;
+                if (adapter.getDelbtnEnable()) {
+                    adapter.setDelbtnEnable(false);
                 } else {
-                    ListViewAdapter.delbtnEnable = true;
+                    adapter.setDelbtnEnable(true);
                 }
                 recyclerView.setAdapter(adapter);
             }
@@ -126,7 +129,6 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
         Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
             filter.filter(null);
-
         } else {
             filter.filter(searchViewWord.toString());
         }
@@ -164,7 +166,7 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
     @Override
     public void onAdapterClicked(View view, int position) {
         // 編集状態でない場合は入力画面に遷移しない
-        if (ListViewAdapter.delbtnEnable == false) {
+        if (!adapter.getDelbtnEnable()) {
             return;
         }
         // 入力画面を生成

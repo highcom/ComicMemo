@@ -27,7 +27,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     private LayoutInflater inflater;
     private List<? extends Map<String, ?>> listData;
     private List<? extends Map<String, ?>> orig;
-    public static boolean delbtnEnable = false;
+    private boolean delbtnEnable = false;
     private AdapterListener adapterListener;
 
     public interface AdapterListener {
@@ -84,6 +84,14 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         inflater = LayoutInflater.from(context);
         this.listData = data;
         this.adapterListener = listener;
+    }
+
+    public void setDelbtnEnable(boolean enable) {
+        delbtnEnable = enable;
+    }
+
+    public boolean getDelbtnEnable() {
+        return delbtnEnable;
     }
 
     @Override
