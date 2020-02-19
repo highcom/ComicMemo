@@ -101,9 +101,9 @@ public class ComicMemo extends Activity implements ListViewAdapter.AdapterListen
         addbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                Intent intent = new Intent(ComicMemo.this, InputMemo.class);
-                intent.putExtra("EDIT", false);
-                intent.putExtra("ID", manager.getNewId());
+                Intent intent = new Intent(ComicMemo.this, ComicMemoTabActivity.class);
+                //intent.putExtra("EDIT", false);
+                //intent.putExtra("ID", manager.getNewId());
                 startActivityForResult(intent, 1001);
             }
         });
