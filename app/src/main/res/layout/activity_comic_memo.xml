@@ -2,47 +2,58 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:weightSum="1">
+        android:layout_height="match_parent">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="編集"
-            android:textColor="@color/blue"
-            android:background="@layout/no_frame_button"
-            android:id="@+id/edit" />
+            android:layout_gravity="center_horizontal"
+            android:weightSum="1">
 
-        <SearchView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchView"
-            android:layout_weight="1.0" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="編集"
+                android:textColor="@color/blue"
+                android:background="@layout/no_frame_button"
+                android:id="@+id/edit" />
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            <SearchView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchView"
+                android:layout_weight="1.0" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="追加"
+                android:textColor="@color/blue"
+                android:background="@layout/no_frame_button"
+                android:id="@+id/add" />
+        </LinearLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/itemtabs"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="追加"
-            android:textColor="@color/blue"
-            android:background="@layout/no_frame_button"
-            android:id="@+id/add" />
+            android:background="?attr/colorPrimary" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/comicListView"
-        android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"/>
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"

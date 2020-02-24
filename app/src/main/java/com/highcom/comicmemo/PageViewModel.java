@@ -1,4 +1,4 @@
-package com.highcom.comicmemo.ui.main;
+package com.highcom.comicmemo;
 
 import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
