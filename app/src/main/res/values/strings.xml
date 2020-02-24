@@ -2,4 +2,7 @@
     <string name="app_name">ComicMemo</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_comic_memo_tab">ComicMemoTabActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 </resources>
