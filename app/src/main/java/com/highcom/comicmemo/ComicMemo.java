@@ -17,7 +17,7 @@ import com.google.android.gms.ads.AdView;
 
 public class ComicMemo extends FragmentActivity {
 
-    private String searchViewWord;
+    private SectionsPagerAdapter sectionsPagerAdapter;
 
     private AdView mAdView;
 
@@ -30,7 +30,7 @@ public class ComicMemo extends FragmentActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
 
         mAdView.loadAd(adRequest);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.itemtabs);
@@ -42,13 +42,7 @@ public class ComicMemo extends FragmentActivity {
             @Override
             public void onClick(View arg0) {
                 // 編集状態の変更
-                // TODO:対応必要
-//                if (adapter.getDelbtnEnable()) {
-//                    adapter.setDelbtnEnable(false);
-//                } else {
-//                    adapter.setDelbtnEnable(true);
-//                }
-//                recyclerView.setAdapter(adapter);
+                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).changeDelbtnEnable();
             }
         });
 
@@ -74,9 +68,7 @@ public class ComicMemo extends FragmentActivity {
 
             @Override
             public boolean onQueryTextChange(String searchWord) {
-                searchViewWord = searchWord;
-                // TODO:対応必要
-//                setSearchWordFilter();
+                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setSearchWordFilter(searchWord);
                 return false;
             }
         });

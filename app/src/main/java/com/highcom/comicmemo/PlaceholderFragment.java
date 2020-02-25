@@ -3,6 +3,7 @@ package com.highcom.comicmemo;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -31,9 +32,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     private ListDataManager manager;
     private RecyclerView recyclerView;
     private ListViewAdapter adapter;
-
-    private String searchViewWord; // TODO:どうやって文字列を伝えるか
-
+    private String searchViewWord;
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -59,7 +58,11 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_comic_memo, container, false);
+        return root;
+    }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         manager = ListDataManager.createInstance(getContext());
 
         adapter = new ListViewAdapter(
@@ -71,7 +74,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                         android.R.id.text2 },
                 this);
 
-        recyclerView = (RecyclerView) root.findViewById(R.id.comicListView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.comicListView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         // セル間に区切り線を実装する
@@ -100,16 +103,25 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                 });
         itemDecor.attachToRecyclerView(recyclerView);
 
-        return root;
     }
 
-    private void setSearchWordFilter() {
+    public void setSearchWordFilter(String word) {
+        searchViewWord = word;
         Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
             filter.filter(null);
         } else {
             filter.filter(searchViewWord);
         }
+    }
+
+    public void changeDelbtnEnable() {
+        if (adapter.getDelbtnEnable()) {
+            adapter.setDelbtnEnable(false);
+        } else {
+            adapter.setDelbtnEnable(true);
+        }
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -161,7 +173,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         // adapterにデータが更新された事を通知する
         adapter.notifyDataSetChanged();
         // フィルタしている場合はフィルタデータの一覧も更新する
-        setSearchWordFilter();
+        setSearchWordFilter(searchViewWord);
     }
 
     @Override
@@ -173,6 +185,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         // adapterにデータが更新された事を通知する
         adapter.notifyDataSetChanged();
         // フィルタしている場合はフィルタデータの一覧も更新する
-        setSearchWordFilter();
+        setSearchWordFilter(searchViewWord);
     }
 }
