@@ -15,6 +15,8 @@ import android.widget.SearchView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.List;
+
 public class ComicMemo extends FragmentActivity {
 
     private SectionsPagerAdapter sectionsPagerAdapter;
@@ -28,8 +30,9 @@ public class ComicMemo extends FragmentActivity {
 
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-
         mAdView.loadAd(adRequest);
+
+        ListDataManager.createInstance(this);
         sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -52,8 +55,8 @@ public class ComicMemo extends FragmentActivity {
             @Override
             public void onClick(View arg0) {
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
-                //intent.putExtra("EDIT", false);
-                //intent.putExtra("ID", manager.getNewId());
+                intent.putExtra("EDIT", false);
+                intent.putExtra("ID", ListDataManager.getInstance().getNewId());
                 startActivityForResult(intent, 1001);
             }
         });

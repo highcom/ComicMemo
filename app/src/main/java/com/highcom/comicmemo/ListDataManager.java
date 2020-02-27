@@ -40,9 +40,8 @@ public class ListDataManager {
         }
     }
 
-    public static ListDataManager createInstance(Context context) {
+    public static void createInstance(Context context) {
         manager = new ListDataManager(context);
-        return manager;
     }
 
     public static ListDataManager getInstance() {

@@ -63,7 +63,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        manager = ListDataManager.createInstance(getContext());
+        manager = ListDataManager.getInstance();
 
         adapter = new ListViewAdapter(
                 getContext(),
