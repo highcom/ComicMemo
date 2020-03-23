@@ -71,7 +71,9 @@ public class ComicMemo extends FragmentActivity {
 
             @Override
             public boolean onQueryTextChange(String searchWord) {
-                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setSearchWordFilter(searchWord);
+                if (sectionsPagerAdapter.getCurrentFragment() != null) {
+                    ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).setSearchWordFilter(searchWord);
+                }
                 return false;
             }
         });

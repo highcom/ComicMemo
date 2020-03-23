@@ -24,20 +24,8 @@ public class ListDataManager {
         ListDataOpenHelper helper = new ListDataOpenHelper(context);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
         dataList = new ArrayList<Map<String, String>>();
-
-        boolean mov = cur.moveToFirst();
-        while (mov) {
-            data = new HashMap<String, String>();
-            data.put("id", cur.getString(0));
-            data.put("title", cur.getString(1));
-            data.put("number", cur.getString(2));
-            data.put("memo", cur.getString(3));
-            data.put("inputdate", cur.getString(4));
-            dataList.add(data);
-            mov = cur.moveToNext();
-        }
+        remakeListData();
     }
 
     public static void createInstance(Context context) {
@@ -53,9 +41,11 @@ public class ListDataManager {
         ContentValues values = new ContentValues();
         values.put("id", Long.valueOf(data.get("id")).longValue());
         values.put("title", data.get("title"));
+        values.put("author", data.get("author"));
         values.put("number", data.get("number"));
         values.put("memo", data.get("memo"));
         values.put("inputdate", data.get("inputdate"));
+        values.put("status", data.get("status"));
         if (isEdit) {
             // 編集の場合
             wdb.update("comicdata", values, "id=?", new String[] { data.get("id") });
@@ -83,7 +73,7 @@ public class ListDataManager {
         boolean mov;
         ContentValues values;
 
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
+        Cursor cur = getCursor();
 
         mov = cur.moveToPosition(fromPos);
         if (!mov) return;
@@ -110,7 +100,7 @@ public class ListDataManager {
 
     public long getNewId() {
         long newId = 0;
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
+        Cursor cur = getCursor();
 
         boolean mov = cur.moveToFirst();
         long curId;
@@ -133,19 +123,25 @@ public class ListDataManager {
     private void remakeListData() {
         dataList.clear();
 
-        Cursor cur = rdb.query("comicdata", new String[] { "id", "title", "number", "memo", "inputdate" }, null, null, null, null, "id ASC");
+        Cursor cur = getCursor();
 
         boolean mov = cur.moveToFirst();
         while (mov) {
             data = new HashMap<String, String>();
             data.put("id", cur.getString(0));
             data.put("title", cur.getString(1));
-            data.put("number", cur.getString(2));
-            data.put("memo", cur.getString(3));
-            data.put("inputdate", cur.getString(4));
+            data.put("author", cur.getString(2));
+            data.put("number", cur.getString(3));
+            data.put("memo", cur.getString(4));
+            data.put("inputdate", cur.getString(5));
+            data.put("status", cur.getString(6));
             dataList.add(data);
             mov = cur.moveToNext();
         }
+    }
+
+    private Cursor getCursor() {
+        return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, null, null, null, null, "id ASC");
     }
 
     public String getNowDate(){
