@@ -18,12 +18,16 @@ import java.util.Map;
  */
 public class InputMemo extends Activity {
 
+    ListDataManager manager;
     private boolean isEdit;
     private long id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.input_memo);
+
+        // TODO:新しいインスタンスにしているが、このままでいいか考える
+        manager = new ListDataManager(this, -1);
 
         // 渡されたデータを取得する
         Intent intent = getIntent();
@@ -59,11 +63,13 @@ public class InputMemo extends Activity {
                 Map<String, String> data = new HashMap<String, String>();
                 data.put("id", Long.valueOf(id).toString());
                 data.put("title", editTitle.getText().toString());
+                data.put("author", ""); // TODO:著作者の入力欄を設ける
                 data.put("number", chgNumber.toString());
                 data.put("memo", editMemo.getText().toString());
-                data.put("inputdate", ListDataManager.getInstance().getNowDate());
+                data.put("inputdate", manager.getNowDate());
+                data.put("status", "1"); // TODO:編集の場合はタブ情報を引継ぎ、新規の場合は続刊とし、選択欄を設ける
                 // データベースに追加or編集する
-                ListDataManager.getInstance().setData(isEdit, data);
+                manager.setData(isEdit, data);
                 // 詳細画面を終了
                 finish();
             }

@@ -19,21 +19,15 @@ public class ListDataManager {
     private SQLiteDatabase wdb;
     private Map<String, String> data;
     private List<Map<String, String>> dataList;
+    private int dataIndex;
 
-    private ListDataManager(Context context) {
+    public ListDataManager(Context context, int index) {
         ListDataOpenHelper helper = new ListDataOpenHelper(context);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
         dataList = new ArrayList<Map<String, String>>();
+        dataIndex = index;
         remakeListData();
-    }
-
-    public static void createInstance(Context context) {
-        manager = new ListDataManager(context);
-    }
-
-    public static ListDataManager getInstance() {
-        return manager;
     }
 
     public void setData(boolean isEdit, Map<String, String> data) {
@@ -141,7 +135,7 @@ public class ListDataManager {
     }
 
     private Cursor getCursor() {
-        return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, null, null, null, null, "id ASC");
+        return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, "status=?", new String[]{Integer.toString(dataIndex)}, null, null, "id ASC");
     }
 
     public String getNowDate(){

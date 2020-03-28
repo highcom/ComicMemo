@@ -32,7 +32,6 @@ public class ComicMemo extends FragmentActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        ListDataManager.createInstance(this);
         sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -56,7 +55,7 @@ public class ComicMemo extends FragmentActivity {
             public void onClick(View arg0) {
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
                 intent.putExtra("EDIT", false);
-                intent.putExtra("ID", ListDataManager.getInstance().getNewId());
+//                intent.putExtra("ID", ListDataManager.getInstance().getNewId());
                 startActivityForResult(intent, 1001);
             }
         });
@@ -103,7 +102,6 @@ public class ComicMemo extends FragmentActivity {
 
     @Override
     public void onDestroy() {
-        ListDataManager.getInstance().closeData();
         mAdView.destroy();
         super.onDestroy();
     }

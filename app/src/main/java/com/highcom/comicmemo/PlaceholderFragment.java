@@ -1,5 +1,6 @@
 package com.highcom.comicmemo;
 
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -46,11 +47,12 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
-        int index = 1;
+        int index = 0;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
+        manager = new ListDataManager(getContext(), index);
     }
 
     @Override
@@ -58,13 +60,19 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_comic_memo, container, false);
+        pageViewModel.getText().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                adapter.notifyDataSetChanged();
+                // TODO:ここに検索文字列とかを反映できるようにするといいかも
+            }
+        });
+
         return root;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        manager = ListDataManager.getInstance();
-
         adapter = new ListViewAdapter(
                 getContext(),
                 manager.getDataList(),
@@ -186,5 +194,11 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         adapter.notifyDataSetChanged();
         // フィルタしている場合はフィルタデータの一覧も更新する
         setSearchWordFilter(searchViewWord);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        manager.closeData();
     }
 }
