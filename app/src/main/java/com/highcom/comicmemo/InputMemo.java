@@ -21,21 +21,23 @@ public class InputMemo extends Activity {
     ListDataManager manager;
     private boolean isEdit;
     private long id;
+    private long status;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.input_memo);
 
-        // TODO:新しいインスタンスにしているが、このままでいいか考える
-        manager = new ListDataManager(this, -1);
-
         // 渡されたデータを取得する
         Intent intent = getIntent();
         isEdit = intent.getBooleanExtra("EDIT", false);
         id = intent.getLongExtra("ID", -1);
+        status = intent.getLongExtra("STATUS", 0);
         ((EditText)findViewById(R.id.editTitle)).setText(intent.getStringExtra("TITLE"));
+        ((EditText)findViewById(R.id.editAuthor)).setText(intent.getStringExtra("AUTHOR"));
         ((EditText)findViewById(R.id.editNumber)).setText(intent.getStringExtra("NUMBER"));
         ((EditText)findViewById(R.id.editMemo)).setText(intent.getStringExtra("MEMO"));
+
+        manager = new ListDataManager(this, status);
 
         // キャンセルボタン処理
         Button cancelBtn = (Button) findViewById(R.id.cancel);
@@ -53,6 +55,7 @@ public class InputMemo extends Activity {
             public void onClick(View arg0) {
                 // 入力データを登録する
                 EditText editTitle = (EditText) findViewById(R.id.editTitle);
+                EditText editAuthor = (EditText) findViewById(R.id.editAuthor);
                 EditText editNumber = (EditText) findViewById(R.id.editNumber);
                 Integer chgNumber = 0;
                 if (!editNumber.getText().toString().equals("")) {
@@ -63,11 +66,11 @@ public class InputMemo extends Activity {
                 Map<String, String> data = new HashMap<String, String>();
                 data.put("id", Long.valueOf(id).toString());
                 data.put("title", editTitle.getText().toString());
-                data.put("author", ""); // TODO:著作者の入力欄を設ける
+                data.put("author", editAuthor.getText().toString());
                 data.put("number", chgNumber.toString());
                 data.put("memo", editMemo.getText().toString());
                 data.put("inputdate", manager.getNowDate());
-                data.put("status", "1"); // TODO:編集の場合はタブ情報を引継ぎ、新規の場合は続刊とし、選択欄を設ける
+                data.put("status", Long.valueOf(status).toString());
                 // データベースに追加or編集する
                 manager.setData(isEdit, data);
                 // 詳細画面を終了

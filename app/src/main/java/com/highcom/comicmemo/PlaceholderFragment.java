@@ -34,6 +34,11 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     private RecyclerView recyclerView;
     private ListViewAdapter adapter;
     private String searchViewWord;
+    private int index = 0;
+
+    public int getIndex() {
+        return index;
+    }
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -47,7 +52,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
-        int index = 0;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
@@ -114,6 +118,9 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     }
 
     public void setSearchWordFilter(String word) {
+        // adapterにデータが更新された事を通知する
+        adapter.notifyDataSetChanged();
+
         searchViewWord = word;
         Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
@@ -145,8 +152,10 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         intent.putExtra("EDIT", true);
         intent.putExtra("ID", holder.id.longValue());
         intent.putExtra("TITLE", holder.title.getText().toString());
+        intent.putExtra("AUTHOR", holder.author.getText().toString());
         intent.putExtra("NUMBER", holder.number.getText().toString());
         intent.putExtra("MEMO", holder.memo.getText().toString());
+        intent.putExtra("STATUS", holder.status.longValue());
         startActivityForResult(intent, 1001);
     }
 
@@ -167,9 +176,11 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         Map<String, String> data = new HashMap<String, String>();
         data.put("id", holder.id.toString());
         data.put("title", holder.title.getText().toString());
+        data.put("author", holder.author.getText().toString());
         data.put("number", holder.number.getText().toString());
         data.put("memo", holder.memo.getText().toString());
         data.put("inputdate", holder.inputdate.getText().toString());
+        data.put("status", holder.status.toString());
         manager.setData(true, data);
     }
 
@@ -178,20 +189,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         // データベースから削除する
         manager.deleteData(holder.id.toString());
-        // adapterにデータが更新された事を通知する
-        adapter.notifyDataSetChanged();
-        // フィルタしている場合はフィルタデータの一覧も更新する
-        setSearchWordFilter(searchViewWord);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != 1001) {
-            return;
-        }
-
-        // adapterにデータが更新された事を通知する
-        adapter.notifyDataSetChanged();
         // フィルタしている場合はフィルタデータの一覧も更新する
         setSearchWordFilter(searchViewWord);
     }

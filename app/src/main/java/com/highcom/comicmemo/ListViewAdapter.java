@@ -40,9 +40,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         Long  id;
         TextView title;
+        TextView author;
         TextView number;
         TextView memo;
         TextView inputdate;
+        Long status;
         Button addbtn;
         Button deletebtn;
         ImageButton rearrangebtn;
@@ -50,6 +52,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         public ViewHolder(final View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
+            author = (TextView) itemView.findViewById(R.id.author);
             number = (TextView) itemView.findViewById(R.id.number);
             memo = (TextView) itemView.findViewById(R.id.memo);
             inputdate = (TextView) itemView.findViewById(R.id.inputdate);
@@ -108,15 +111,19 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, final int position) {
         String id = ((HashMap<?, ?>) listData.get(position)).get("id").toString();
         String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
+        String author = ((HashMap<?, ?>) listData.get(position)).get("author").toString();
         String number = ((HashMap<?, ?>) listData.get(position)).get("number").toString();
         String memo = ((HashMap<?, ?>) listData.get(position)).get("memo").toString();
         String inputdate = ((HashMap<?, ?>) listData.get(position)).get("inputdate").toString();
+        String status = ((HashMap<?, ?>) listData.get(position)).get("status").toString();
         holder.id = new Long(id);
         holder.title.setText(title);
+        holder.author.setText(author);
         holder.number.setText(number);
         holder.number.setTextColor(Color.GRAY);
         holder.memo.setText(memo);
         holder.inputdate.setText(inputdate);
+        holder.status = new Long(status);
 
         holder.itemView.setTag(holder);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

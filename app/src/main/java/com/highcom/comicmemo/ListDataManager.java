@@ -19,9 +19,9 @@ public class ListDataManager {
     private SQLiteDatabase wdb;
     private Map<String, String> data;
     private List<Map<String, String>> dataList;
-    private int dataIndex;
+    private long dataIndex;
 
-    public ListDataManager(Context context, int index) {
+    public ListDataManager(Context context, long index) {
         ListDataOpenHelper helper = new ListDataOpenHelper(context);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
@@ -135,7 +135,7 @@ public class ListDataManager {
     }
 
     private Cursor getCursor() {
-        return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, "status=?", new String[]{Integer.toString(dataIndex)}, null, null, "id ASC");
+        return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, "status=?", new String[]{Long.toString(dataIndex)}, null, null, "id ASC");
     }
 
     public String getNowDate(){

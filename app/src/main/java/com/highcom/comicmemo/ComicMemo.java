@@ -15,11 +15,10 @@ import android.widget.SearchView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.util.List;
-
 public class ComicMemo extends FragmentActivity {
 
     private SectionsPagerAdapter sectionsPagerAdapter;
+    private String mSearchWord;
 
     private AdView mAdView;
 
@@ -54,8 +53,13 @@ public class ComicMemo extends FragmentActivity {
             @Override
             public void onClick(View arg0) {
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
+                if (sectionsPagerAdapter.getCurrentFragment() != null) {
+                    long index = ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).getIndex();
+                    ListDataManager manager = new ListDataManager(getApplicationContext(), index);
+                    intent.putExtra("ID", manager.getNewId());
+                    intent.putExtra("STATUS", index);
+                }
                 intent.putExtra("EDIT", false);
-//                intent.putExtra("ID", ListDataManager.getInstance().getNewId());
                 startActivityForResult(intent, 1001);
             }
         });
@@ -70,12 +74,24 @@ public class ComicMemo extends FragmentActivity {
 
             @Override
             public boolean onQueryTextChange(String searchWord) {
+                mSearchWord = searchWord;
                 if (sectionsPagerAdapter.getCurrentFragment() != null) {
-                    ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).setSearchWordFilter(searchWord);
+                    ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).setSearchWordFilter(mSearchWord);
                 }
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != 1001) {
+            return;
+        }
+
+        if (sectionsPagerAdapter.getCurrentFragment() != null) {
+            ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).setSearchWordFilter(mSearchWord);
+        }
     }
 
     @Override
