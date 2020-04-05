@@ -3,4 +3,7 @@
     <color name="clear">#00FFFFFF</color>
     <color name="cream">#E7E18F</color>
     <color name="blue">#007AFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#707070</color>
+    <color name="pink">#FC9DB8</color>
 </resources>

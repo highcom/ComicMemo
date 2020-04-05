@@ -46,7 +46,8 @@
             android:id="@+id/itemtabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary" />
+            android:background="@color/blue"
+            style="@style/ComicTabStyle" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
