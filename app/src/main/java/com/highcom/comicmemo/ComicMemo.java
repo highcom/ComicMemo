@@ -3,6 +3,7 @@ package com.highcom.comicmemo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -14,6 +15,8 @@ import android.widget.SearchView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import java.util.List;
 
 public class ComicMemo extends FragmentActivity {
 
@@ -90,10 +93,10 @@ public class ComicMemo extends FragmentActivity {
 //            return;
 //        }
 
-        if (sectionsPagerAdapter.getCurrentFragment() != null) {
-            PlaceholderFragment fragment = (PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment();
-            fragment.updateData();
-            fragment.setSearchWordFilter(mSearchWord);
+        List<Fragment> fragments = sectionsPagerAdapter.getAllFragment();
+        for (Fragment fragment : fragments) {
+            ((PlaceholderFragment)fragment).updateData();
+            ((PlaceholderFragment)fragment).setSearchWordFilter(mSearchWord);
         }
     }
 

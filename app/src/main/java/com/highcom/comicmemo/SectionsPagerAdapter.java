@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
@@ -17,18 +20,22 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
     private final Context mContext;
+    private List<Fragment> fragmentList;
     private Fragment mCurrentFragment;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
+        fragmentList = new ArrayList<Fragment>();
     }
 
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position);
+        Fragment fragment = PlaceholderFragment.newInstance(position);
+        fragmentList.add(fragment);
+        return fragment;
     }
 
     @Nullable
@@ -53,5 +60,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     public Fragment getCurrentFragment() {
         return mCurrentFragment;
+    }
+
+    public List<Fragment> getAllFragment() {
+        return fragmentList;
     }
 }

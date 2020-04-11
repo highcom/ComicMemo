@@ -8,7 +8,9 @@ import android.content.ContentValues;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ToggleButton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +18,15 @@ import java.util.Map;
 /**
  * Created by koichi on 2016/08/07.
  */
-public class InputMemo extends Activity {
+public class InputMemo extends Activity implements CompoundButton.OnCheckedChangeListener {
 
     ListDataManager manager;
     private boolean isEdit;
     private long id;
     private long status;
+    ToggleButton tbContinue;
+    ToggleButton tbComplete;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,5 +82,40 @@ public class InputMemo extends Activity {
                 finish();
             }
         });
+
+        tbContinue = (ToggleButton) findViewById(R.id.toggleContinue);
+        tbComplete = (ToggleButton) findViewById(R.id.toggleComplete);
+        tbContinue.setOnCheckedChangeListener(this);
+        tbComplete.setOnCheckedChangeListener(this);
+        if (status == 0) {
+            setEnableToggleContinue();
+        } else {
+            setEnableToggleComplete();
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (buttonView.getId() == R.id.toggleContinue) {
+            setEnableToggleContinue();
+        } else if (buttonView.getId() == R.id.toggleComplete) {
+            setEnableToggleComplete();
+        }
+    }
+
+    private void setEnableToggleContinue() {
+        tbContinue.setTextColor(getResources().getColor(R.color.white));
+        tbContinue.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_select_button));
+        tbComplete.setTextColor(getResources().getColor(R.color.blue));
+        tbComplete.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_unselect_button));
+        status = 0;
+    }
+
+    private void setEnableToggleComplete() {
+        tbContinue.setTextColor(getResources().getColor(R.color.blue));
+        tbContinue.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_unselect_button));
+        tbComplete.setTextColor(getResources().getColor(R.color.white));
+        tbComplete.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_select_button));
+        status = 1;
     }
 }
