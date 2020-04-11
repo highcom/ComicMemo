@@ -117,6 +117,10 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
     }
 
+    public void updateData() {
+        manager.remakeListData();
+    }
+
     public void setSearchWordFilter(String word) {
         // adapterにデータが更新された事を通知する
         adapter.notifyDataSetChanged();

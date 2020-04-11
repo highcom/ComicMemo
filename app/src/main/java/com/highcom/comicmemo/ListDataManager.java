@@ -114,7 +114,7 @@ public class ListDataManager {
         wdb.close();
     }
 
-    private void remakeListData() {
+    public void remakeListData() {
         dataList.clear();
 
         Cursor cur = getCursor();

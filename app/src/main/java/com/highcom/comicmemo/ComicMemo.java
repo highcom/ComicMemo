@@ -85,12 +85,15 @@ public class ComicMemo extends FragmentActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != 1001) {
-            return;
-        }
+        // FragmentからのonAdapterClickedからではrequestCodeが引き継がれない
+//        if (requestCode != 1001) {
+//            return;
+//        }
 
         if (sectionsPagerAdapter.getCurrentFragment() != null) {
-            ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).setSearchWordFilter(mSearchWord);
+            PlaceholderFragment fragment = (PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment();
+            fragment.updateData();
+            fragment.setSearchWordFilter(mSearchWord);
         }
     }
 
