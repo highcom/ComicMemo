@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ListDataManager {
-    private static ListDataManager manager;
-
     private SQLiteDatabase rdb;
     private SQLiteDatabase wdb;
     private Map<String, String> data;
@@ -67,7 +65,7 @@ public class ListDataManager {
         boolean mov;
         ContentValues values;
 
-        Cursor cur = getCursor();
+        Cursor cur = getCurrentCursor();
 
         mov = cur.moveToPosition(fromPos);
         if (!mov) return;
@@ -94,7 +92,7 @@ public class ListDataManager {
 
     public long getNewId() {
         long newId = 0;
-        Cursor cur = getCursor();
+        Cursor cur = getAllCursor();
 
         boolean mov = cur.moveToFirst();
         long curId;
@@ -117,7 +115,7 @@ public class ListDataManager {
     public void remakeListData() {
         dataList.clear();
 
-        Cursor cur = getCursor();
+        Cursor cur = getCurrentCursor();
 
         boolean mov = cur.moveToFirst();
         while (mov) {
@@ -134,8 +132,12 @@ public class ListDataManager {
         }
     }
 
-    private Cursor getCursor() {
+    private Cursor getCurrentCursor() {
         return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, "status=?", new String[]{Long.toString(dataIndex)}, null, null, "id ASC");
+    }
+
+    private Cursor getAllCursor() {
+        return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, null, null, null, null, "id ASC");
     }
 
     public String getNowDate(){
