@@ -64,14 +64,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_comic_memo, container, false);
-        pageViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                adapter.notifyDataSetChanged();
-                // TODO:ここに検索文字列とかを反映できるようにするといいかも
-            }
-        });
-
         return root;
     }
 

@@ -39,6 +39,18 @@ public class ComicMemo extends FragmentActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.itemtabs);
         tabs.setupWithViewPager(viewPager);
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                updateAllFragment();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
 
         // 編集ボタン処理
         Button editbtn = (Button) findViewById(R.id.edit);
@@ -93,11 +105,7 @@ public class ComicMemo extends FragmentActivity {
 //            return;
 //        }
 
-        List<Fragment> fragments = sectionsPagerAdapter.getAllFragment();
-        for (Fragment fragment : fragments) {
-            ((PlaceholderFragment)fragment).updateData();
-            ((PlaceholderFragment)fragment).setSearchWordFilter(mSearchWord);
-        }
+        updateAllFragment();
     }
 
     @Override
@@ -128,4 +136,11 @@ public class ComicMemo extends FragmentActivity {
         super.onDestroy();
     }
 
+    private void updateAllFragment() {
+        List<Fragment> fragments = sectionsPagerAdapter.getAllFragment();
+        for (Fragment fragment : fragments) {
+            ((PlaceholderFragment)fragment).updateData();
+            ((PlaceholderFragment)fragment).setSearchWordFilter(mSearchWord);
+        }
+    }
 }
