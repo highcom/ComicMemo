@@ -33,7 +33,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     private ListDataManager manager;
     private RecyclerView recyclerView;
     private ListViewAdapter adapter;
-    private String searchViewWord;
+    private String searchViewWord = "";
     private int index = 0;
 
     public int getIndex() {
@@ -114,6 +114,8 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     }
 
     public void setSearchWordFilter(String word) {
+        if (word.equals(searchViewWord)) return;
+
         // adapterにデータが更新された事を通知する
         adapter.notifyDataSetChanged();
 

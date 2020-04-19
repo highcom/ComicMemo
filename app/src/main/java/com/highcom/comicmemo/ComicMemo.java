@@ -21,7 +21,7 @@ import java.util.List;
 public class ComicMemo extends FragmentActivity {
 
     private SectionsPagerAdapter sectionsPagerAdapter;
-    private String mSearchWord;
+    private String mSearchWord = "";
 
     private AdView mAdView;
 
