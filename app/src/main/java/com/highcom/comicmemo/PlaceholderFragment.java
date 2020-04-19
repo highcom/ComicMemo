@@ -114,11 +114,10 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     }
 
     public void setSearchWordFilter(String word) {
-        if (word.equals(searchViewWord)) return;
-
         // adapterにデータが更新された事を通知する
         adapter.notifyDataSetChanged();
 
+        if (word.equals(searchViewWord)) return;
         searchViewWord = word;
         Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
