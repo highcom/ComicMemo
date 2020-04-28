@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.highcom.comicmemo"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 5
         versionName "2.0"
     }
