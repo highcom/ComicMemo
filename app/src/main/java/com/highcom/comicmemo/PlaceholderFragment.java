@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
@@ -154,6 +155,25 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         intent.putExtra("MEMO", holder.memo.getText().toString());
         intent.putExtra("STATUS", holder.status.longValue());
         startActivityForResult(intent, 1001);
+    }
+
+    @Override
+    public void onAdapterStatusSelected(View view, long status) {
+        ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
+        if (holder.status.longValue() == status) return;
+        holder.status = status;
+        holder.inputdate.setText(manager.getNowDate());
+
+        // データベースを更新する
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("id", holder.id.toString());
+        data.put("title", holder.title.getText().toString());
+        data.put("author", holder.author.getText().toString());
+        data.put("number", holder.number.getText().toString());
+        data.put("memo", holder.memo.getText().toString());
+        data.put("inputdate", holder.inputdate.getText().toString());
+        data.put("status", holder.status.toString());
+        manager.setData(true, data);
     }
 
     @Override
