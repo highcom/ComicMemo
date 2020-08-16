@@ -9,6 +9,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class InputMemo extends Activity implements CompoundButton.OnCheckedChang
         ((EditText)findViewById(R.id.editNumber)).setText(intent.getStringExtra("NUMBER"));
         ((EditText)findViewById(R.id.editMemo)).setText(intent.getStringExtra("MEMO"));
 
-        manager = new ListDataManager(this, status);
+        manager = ListDataManager.getInstance();
 
         // キャンセルボタン処理
         Button cancelBtn = (Button) findViewById(R.id.cancel);
@@ -71,7 +73,7 @@ public class InputMemo extends Activity implements CompoundButton.OnCheckedChang
                 data.put("author", editAuthor.getText().toString());
                 data.put("number", chgNumber.toString());
                 data.put("memo", editMemo.getText().toString());
-                data.put("inputdate", manager.getNowDate());
+                data.put("inputdate", getNowDate());
                 data.put("status", Long.valueOf(status).toString());
                 // データベースに追加or編集する
                 manager.setData(isEdit, data);
@@ -114,5 +116,11 @@ public class InputMemo extends Activity implements CompoundButton.OnCheckedChang
         tbComplete.setTextColor(getResources().getColor(R.color.white));
         tbComplete.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_select_button));
         status = 1;
+    }
+
+    private String getNowDate(){
+        Date date = new Date();
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        return sdf.format(date);
     }
 }

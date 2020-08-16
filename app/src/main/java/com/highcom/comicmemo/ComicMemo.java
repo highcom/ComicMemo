@@ -20,6 +20,7 @@ import java.util.List;
 
 public class ComicMemo extends FragmentActivity {
 
+    private ListDataManager listDataManager;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private String mSearchWord = "";
 
@@ -33,6 +34,8 @@ public class ComicMemo extends FragmentActivity {
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        listDataManager = ListDataManager.createInstance(getApplicationContext());
 
         sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -70,8 +73,7 @@ public class ComicMemo extends FragmentActivity {
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
                 if (sectionsPagerAdapter.getCurrentFragment() != null) {
                     long index = ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).getIndex();
-                    ListDataManager manager = new ListDataManager(getApplicationContext(), index);
-                    intent.putExtra("ID", manager.getNewId());
+                    intent.putExtra("ID", listDataManager.getNewId());
                     intent.putExtra("STATUS", index);
                 }
                 intent.putExtra("EDIT", false);

@@ -18,6 +18,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +60,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
-        manager = new ListDataManager(getContext(), index);
-        mListData = manager.getDataList();
+        mListData = pageViewModel.getListData(index).getValue();
     }
 
     @Override
@@ -98,7 +99,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                             final int fromPos = viewHolder.getAdapterPosition();
                             final int toPos = target.getAdapterPosition();
                             adapter.notifyItemMoved(fromPos, toPos);
-                            manager.rearrangeData(fromPos, toPos);
+                            pageViewModel.rearrangeData(index, fromPos, toPos);
                             return true;
                         }
                         return false;
@@ -110,7 +111,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                 });
         itemDecor.attachToRecyclerView(recyclerView);
 
-        pageViewModel.getListData(getContext(), index).observe(this, new Observer<List<Map<String, String>>>() {
+        pageViewModel.getListData(index).observe(this, new Observer<List<Map<String, String>>>() {
             @Override
             public void onChanged(@Nullable List<Map<String, String>> map) {
                 mListData = map;
@@ -119,8 +120,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     }
 
     public void updateData() {
-//        manager.remakeListData();
-        pageViewModel.updateData();
+        pageViewModel.updateData(index);
     }
 
     public void setSearchWordFilter(String word) {
@@ -177,7 +177,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
             holder.number.setTextColor(Color.RED);
         }
         holder.number.setText(num.toString());
-        holder.inputdate.setText(manager.getNowDate());
+        holder.inputdate.setText(getNowDate());
 
         // データベースを更新する
         Map<String, String> data = new HashMap<String, String>();
@@ -188,8 +188,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         data.put("memo", holder.memo.getText().toString());
         data.put("inputdate", holder.inputdate.getText().toString());
         data.put("status", holder.status.toString());
-//        manager.setData(true, data);
-        pageViewModel.setData(true, data);
+        pageViewModel.setData(index, true, data);
     }
 
     @Override
@@ -205,5 +204,11 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void onDestroy() {
         super.onDestroy();
         manager.closeData();
+    }
+
+    private String getNowDate(){
+        Date date = new Date();
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        return sdf.format(date);
     }
 }
