@@ -4,18 +4,26 @@ package com.highcom.comicmemo;
  * Created by koichi on 2015/06/28.
  */
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ToggleButton;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +38,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     private List<? extends Map<String, ?>> orig;
     private boolean delbtnEnable = false;
     private AdapterListener adapterListener;
+    private PopupWindow popupWindow;
+    private View popupView;
 
     public interface AdapterListener {
         void onAdapterClicked(View view, int position);
+        void onAdapterStatusSelected(View view, long status);
         void onAdapterAddBtnClicked(View view);
         void onAdapterDelBtnClicked(View view);
     }
@@ -48,6 +59,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         Button addbtn;
         Button deletebtn;
         ImageButton rearrangebtn;
+        ToggleButton popupContinue;
+        ToggleButton popupComplete;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -85,6 +98,56 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 rearrangebtn.setVisibility(View.GONE);
             }
 
+            popupWindow = new PopupWindow(itemView.getContext());
+
+            // PopupWindowに表示するViewを生成
+            View contentView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.popupmenu, null);
+            popupWindow.setContentView(contentView);
+            popupContinue = (ToggleButton)contentView.findViewById(R.id.popupContinue);
+            popupComplete = (ToggleButton)contentView.findViewById(R.id.popupComplete);
+            popupContinue.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    setEnableLayoutContinue(buttonView.getResources());
+                    adapterListener.onAdapterStatusSelected(popupView, 0);
+                    popupWindow.dismiss();
+                }
+            });
+            popupComplete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    setEnableLayoutComplete(buttonView.getResources());
+                    adapterListener.onAdapterStatusSelected(popupView, 1);
+                    popupWindow.dismiss();
+                }
+            });
+
+            // PopupWindowに表示するViewのサイズを設定
+            float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, itemView.getContext().getResources().getDisplayMetrics());
+            popupWindow.setWindowLayoutMode((int) width, WindowManager.LayoutParams.WRAP_CONTENT);
+            popupWindow.setWidth((int) width);
+            // PopupWindowの外をタッチしたらPopupWindowが閉じるように設定
+            popupWindow.setOutsideTouchable(true);
+            // PopupWindow外のUIのタッチイベントが走らないようにフォーカスを持っておく
+            popupWindow.setFocusable(true);
+            // PopupWindow内のクリックを可能にしておく
+            popupWindow.setTouchable(true);
+            // レイアウトファイルで設定した背景のさらに背景(黒とか)が生成される為、ここで好みの背景を設定しておく
+            popupWindow.setBackgroundDrawable(new ColorDrawable(itemView.getContext().getResources().getColor(android.R.color.white)));
+        }
+
+        public void setEnableLayoutContinue(Resources resources) {
+            popupContinue.setTextColor(resources.getColor(R.color.white));
+            popupContinue.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_select_button));
+            popupComplete.setTextColor(resources.getColor(R.color.blue));
+            popupComplete.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_unselect_button));
+        }
+
+        public void setEnableLayoutComplete(Resources resources) {
+            popupContinue.setTextColor(resources.getColor(R.color.blue));
+            popupContinue.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_unselect_button));
+            popupComplete.setTextColor(resources.getColor(R.color.white));
+            popupComplete.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_select_button));
         }
     }
 
@@ -108,7 +171,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         String id = ((HashMap<?, ?>) listData.get(position)).get("id").toString();
         String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
         String author = ((HashMap<?, ?>) listData.get(position)).get("author").toString();
@@ -132,6 +195,22 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 adapterListener.onAdapterClicked(view, position);
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                // PopupWindowの実装をする　続刊と完結を選択できるようにする
+                popupWindow.showAsDropDown(view, view.getWidth(), -view.getHeight());
+                // PopupWindowで選択したViewに対して更新できるようにViewを保持する
+                popupView = view;
+                return true;
+            }
+        });
+
+        if (holder.status.longValue() == 0) {
+            holder.setEnableLayoutContinue(holder.itemView.getResources());
+        } else {
+            holder.setEnableLayoutComplete(holder.itemView.getResources());
+        }
     }
 
     @Override
