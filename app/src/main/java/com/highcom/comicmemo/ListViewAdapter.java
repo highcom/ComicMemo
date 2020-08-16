@@ -4,6 +4,7 @@ package com.highcom.comicmemo;
  * Created by koichi on 2015/06/28.
  */
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -38,6 +39,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     private boolean delbtnEnable = false;
     private AdapterListener adapterListener;
     private PopupWindow popupWindow;
+    private View popupView;
 
     public interface AdapterListener {
         void onAdapterClicked(View view, int position);
@@ -107,14 +109,16 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     setEnableLayoutContinue(buttonView.getResources());
-                    adapterListener.onAdapterStatusSelected(itemView, 0); // TODO:最後のアイテムが更新されてしまう
+                    adapterListener.onAdapterStatusSelected(popupView, 0);
+                    popupWindow.dismiss();
                 }
             });
             popupComplete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     setEnableLayoutComplete(buttonView.getResources());
-                    adapterListener.onAdapterStatusSelected(itemView, 1); // TODO:最後のアイテムが更新されてしまう
+                    adapterListener.onAdapterStatusSelected(popupView, 1);
+                    popupWindow.dismiss();
                 }
             });
 
@@ -167,7 +171,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         String id = ((HashMap<?, ?>) listData.get(position)).get("id").toString();
         String title = ((HashMap<?, ?>) listData.get(position)).get("title").toString();
         String author = ((HashMap<?, ?>) listData.get(position)).get("author").toString();
@@ -196,6 +200,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             public boolean onLongClick(View view) {
                 // PopupWindowの実装をする　続刊と完結を選択できるようにする
                 popupWindow.showAsDropDown(view, view.getWidth(), -view.getHeight());
+                // PopupWindowで選択したViewに対して更新できるようにViewを保持する
+                popupView = view;
                 return true;
             }
         });
