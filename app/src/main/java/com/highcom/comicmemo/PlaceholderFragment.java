@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +36,8 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     private ListViewAdapter adapter;
     private String searchViewWord = "";
     private int index = 0;
+
+    private List<Map<String, String>> mListData;
 
     public int getIndex() {
         return index;
@@ -55,8 +58,8 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
-        pageViewModel.setIndex(index);
         manager = new ListDataManager(getContext(), index);
+        mListData = manager.getDataList();
     }
 
     @Override
@@ -71,7 +74,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         adapter = new ListViewAdapter(
                 getContext(),
-                manager.getDataList(),
+                mListData,
                 R.layout.row,
                 new String[] { "title", "comment" },
                 new int[] { android.R.id.text1,
@@ -107,10 +110,17 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                 });
         itemDecor.attachToRecyclerView(recyclerView);
 
+        pageViewModel.getListData(getContext(), index).observe(this, new Observer<List<Map<String, String>>>() {
+            @Override
+            public void onChanged(@Nullable List<Map<String, String>> map) {
+                mListData = map;
+            }
+        });
     }
 
     public void updateData() {
-        manager.remakeListData();
+//        manager.remakeListData();
+        pageViewModel.updateData();
     }
 
     public void setSearchWordFilter(String word) {
@@ -178,7 +188,8 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         data.put("memo", holder.memo.getText().toString());
         data.put("inputdate", holder.inputdate.getText().toString());
         data.put("status", holder.status.toString());
-        manager.setData(true, data);
+//        manager.setData(true, data);
+        pageViewModel.setData(true, data);
     }
 
     @Override

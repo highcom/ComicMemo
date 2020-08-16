@@ -2,9 +2,6 @@ package com.highcom.comicmemo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
