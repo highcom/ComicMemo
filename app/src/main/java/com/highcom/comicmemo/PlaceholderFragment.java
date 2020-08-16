@@ -174,6 +174,8 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         data.put("inputdate", holder.inputdate.getText().toString());
         data.put("status", holder.status.toString());
         manager.setData(true, data);
+        // フィルタしている場合はフィルタデータの一覧も更新する
+        setSearchWordFilter(searchViewWord);
     }
 
     @Override
