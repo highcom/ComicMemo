@@ -33,7 +33,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
     private PageViewModel pageViewModel;
 
-    private ListDataManager manager;
     private RecyclerView recyclerView;
     private ListViewAdapter adapter;
     private String searchViewWord = "";
@@ -195,7 +194,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void onAdapterDelBtnClicked(View view) {
         ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         // データベースから削除する
-        manager.deleteData(holder.id.toString());
+        pageViewModel.deleteData(index, holder.id.toString());
         // フィルタしている場合はフィルタデータの一覧も更新する
         setSearchWordFilter(searchViewWord);
     }
@@ -203,7 +202,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     @Override
     public void onDestroy() {
         super.onDestroy();
-        manager.closeData();
+        pageViewModel.closeData();
     }
 
     private String getNowDate(){

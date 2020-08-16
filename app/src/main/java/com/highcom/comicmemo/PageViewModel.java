@@ -28,6 +28,15 @@ public class PageViewModel extends ViewModel {
         mListData.setValue(listDataManager.getDataList(index));
     }
 
+    public void deleteData(long index, String id) {
+        listDataManager.deleteData(id);
+        mListData.setValue(listDataManager.getDataList(index));
+    }
+
+    public void closeData() {
+        listDataManager.closeData();
+    }
+
     public void rearrangeData(long dataIndex, int fromPos, int toPos) {
         listDataManager.rearrangeData(dataIndex, fromPos, toPos);
     }
