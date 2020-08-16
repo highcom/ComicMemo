@@ -1,6 +1,5 @@
 package com.highcom.comicmemo;
 
-import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.arch.lifecycle.ViewModelProviders;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +26,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    private PageViewModel pageViewModel;
 
     private ListDataManager manager;
     private RecyclerView recyclerView;
@@ -51,11 +48,9 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
-        pageViewModel.setIndex(index);
         manager = new ListDataManager(getContext(), index);
     }
 
