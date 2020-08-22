@@ -31,6 +31,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    PageViewModel pageViewModel;
 
     private RecyclerView recyclerView;
     private ListViewAdapter adapter;
@@ -54,19 +55,11 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-<<<<<<< HEAD
-        if (getArguments() != null) {
-            index = getArguments().getInt(ARG_SECTION_NUMBER);
-        }
-        manager = new ListDataManager(getContext(), index);
-=======
-//        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         pageViewModel = new ViewModelProvider(requireActivity()).get(PageViewModel.class);
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         mListData = pageViewModel.getListData(index).getValue();
->>>>>>> viewmodel
     }
 
     @Override
@@ -121,6 +114,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
             @Override
             public void onChanged(@Nullable List<Map<String, String>> map) {
                 mListData = map;
+                setSearchWordFilter(searchViewWord);
             }
         });
     }
@@ -177,7 +171,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         if (holder.status.longValue() == status) return;
         holder.status = status;
-        holder.inputdate.setText(manager.getNowDate());
+        holder.inputdate.setText(getNowDate());
 
         // データベースを更新する
         Map<String, String> data = new HashMap<String, String>();
@@ -188,7 +182,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         data.put("memo", holder.memo.getText().toString());
         data.put("inputdate", holder.inputdate.getText().toString());
         data.put("status", holder.status.toString());
-        manager.setData(true, data);
+        pageViewModel.setData(index, true, data);
         // フィルタしている場合はフィルタデータの一覧も更新する
         setSearchWordFilter(searchViewWord);
     }
