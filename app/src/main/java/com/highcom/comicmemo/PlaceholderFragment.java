@@ -1,23 +1,27 @@
 package com.highcom.comicmemo;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,11 +32,12 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     private static final String ARG_SECTION_NUMBER = "section_number";
 
 
-    private ListDataManager manager;
     private RecyclerView recyclerView;
     private ListViewAdapter adapter;
     private String searchViewWord = "";
     private int index = 0;
+
+    private List<Map<String, String>> mListData;
 
     public int getIndex() {
         return index;
@@ -49,10 +54,19 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+<<<<<<< HEAD
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         manager = new ListDataManager(getContext(), index);
+=======
+//        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        pageViewModel = new ViewModelProvider(requireActivity()).get(PageViewModel.class);
+        if (getArguments() != null) {
+            index = getArguments().getInt(ARG_SECTION_NUMBER);
+        }
+        mListData = pageViewModel.getListData(index).getValue();
+>>>>>>> viewmodel
     }
 
     @Override
@@ -67,7 +81,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         adapter = new ListViewAdapter(
                 getContext(),
-                manager.getDataList(),
+                mListData,
                 R.layout.row,
                 new String[] { "title", "comment" },
                 new int[] { android.R.id.text1,
@@ -91,7 +105,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                             final int fromPos = viewHolder.getAdapterPosition();
                             final int toPos = target.getAdapterPosition();
                             adapter.notifyItemMoved(fromPos, toPos);
-                            manager.rearrangeData(fromPos, toPos);
+                            pageViewModel.rearrangeData(index, fromPos, toPos);
                             return true;
                         }
                         return false;
@@ -103,10 +117,16 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                 });
         itemDecor.attachToRecyclerView(recyclerView);
 
+        pageViewModel.getListData(index).observe(getViewLifecycleOwner(), new Observer<List<Map<String, String>>>() {
+            @Override
+            public void onChanged(@Nullable List<Map<String, String>> map) {
+                mListData = map;
+            }
+        });
     }
 
     public void updateData() {
-        manager.remakeListData();
+        pageViewModel.updateData(index);
     }
 
     public void setSearchWordFilter(String word) {
@@ -184,7 +204,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
             holder.number.setTextColor(Color.RED);
         }
         holder.number.setText(num.toString());
-        holder.inputdate.setText(manager.getNowDate());
+        holder.inputdate.setText(getNowDate());
 
         // データベースを更新する
         Map<String, String> data = new HashMap<String, String>();
@@ -195,14 +215,14 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         data.put("memo", holder.memo.getText().toString());
         data.put("inputdate", holder.inputdate.getText().toString());
         data.put("status", holder.status.toString());
-        manager.setData(true, data);
+        pageViewModel.setData(index, true, data);
     }
 
     @Override
     public void onAdapterDelBtnClicked(View view) {
         ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         // データベースから削除する
-        manager.deleteData(holder.id.toString());
+        pageViewModel.deleteData(index, holder.id.toString());
         // フィルタしている場合はフィルタデータの一覧も更新する
         setSearchWordFilter(searchViewWord);
     }
@@ -210,6 +230,12 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     @Override
     public void onDestroy() {
         super.onDestroy();
-        manager.closeData();
+        pageViewModel.closeData();
+    }
+
+    private String getNowDate(){
+        Date date = new Date();
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        return sdf.format(date);
     }
 }

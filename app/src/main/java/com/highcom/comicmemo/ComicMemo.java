@@ -2,10 +2,10 @@ package com.highcom.comicmemo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +20,7 @@ import java.util.List;
 
 public class ComicMemo extends FragmentActivity {
 
+    private ListDataManager listDataManager;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private String mSearchWord = "";
 
@@ -33,6 +34,8 @@ public class ComicMemo extends FragmentActivity {
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        listDataManager = ListDataManager.createInstance(getApplicationContext());
 
         sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -58,8 +61,7 @@ public class ComicMemo extends FragmentActivity {
                 Intent intent = new Intent(ComicMemo.this, InputMemo.class);
                 if (sectionsPagerAdapter.getCurrentFragment() != null) {
                     long index = ((PlaceholderFragment) sectionsPagerAdapter.getCurrentFragment()).getIndex();
-                    ListDataManager manager = new ListDataManager(getApplicationContext(), index);
-                    intent.putExtra("ID", manager.getNewId());
+                    intent.putExtra("ID", listDataManager.getNewId());
                     intent.putExtra("STATUS", index);
                 }
                 intent.putExtra("EDIT", false);
@@ -89,6 +91,7 @@ public class ComicMemo extends FragmentActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         // FragmentからのonAdapterClickedからではrequestCodeが引き継がれない
 //        if (requestCode != 1001) {
 //            return;

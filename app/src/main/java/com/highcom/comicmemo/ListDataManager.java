@@ -13,19 +13,29 @@ import java.util.List;
 import java.util.Map;
 
 public class ListDataManager {
+    private static ListDataManager listDataManager;
     private SQLiteDatabase rdb;
     private SQLiteDatabase wdb;
     private Map<String, String> data;
-    private List<Map<String, String>> dataList;
-    private long dataIndex;
+    private List<Map<String, String>> dataList1;
+    private List<Map<String, String>> dataList2;
 
-    public ListDataManager(Context context, long index) {
+    public static ListDataManager createInstance(Context context) {
+        listDataManager = new ListDataManager(context);
+        return listDataManager;
+    }
+
+    public static ListDataManager getInstance() {
+        return listDataManager;
+    }
+
+    private ListDataManager(Context context) {
         ListDataOpenHelper helper = new ListDataOpenHelper(context);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
-        dataList = new ArrayList<Map<String, String>>();
-        dataIndex = index;
-        remakeListData();
+        dataList1 = new ArrayList<Map<String, String>>();
+        dataList2 = new ArrayList<Map<String, String>>();
+        remakeAllListData();
     }
 
     public void setData(boolean isEdit, Map<String, String> data) {
@@ -41,31 +51,35 @@ public class ListDataManager {
         if (isEdit) {
             // 編集の場合
             wdb.update("comicdata", values, "id=?", new String[] { data.get("id") });
-            remakeListData();
         } else {
             // 新規作成の場合
             wdb.insert("comicdata", data.get("id"), values);
-            dataList.add(data);
         }
-
+        remakeAllListData();
     }
 
     public void deleteData(String id) {
         // データベースから削除する
         wdb.delete("comicdata", "id=?", new String[] { id });
 
-        remakeListData();
+        remakeAllListData();
     }
 
-    public List<Map<String, String>> getDataList() {
+    public List<Map<String, String>> getDataList(long dataIndex) {
+        List<Map<String, String>> dataList;
+        if (dataIndex == 0) {
+            dataList = dataList1;
+        } else {
+            dataList = dataList2;
+        }
         return dataList;
     }
 
-    public void rearrangeData(int fromPos, int toPos) {
+    public void rearrangeData(long dataIndex, int fromPos, int toPos) {
         boolean mov;
         ContentValues values;
 
-        Cursor cur = getCurrentCursor();
+        Cursor cur = getCurrentCursor(dataIndex);
 
         mov = cur.moveToPosition(fromPos);
         if (!mov) return;
@@ -87,7 +101,7 @@ public class ListDataManager {
         values.put("id", toId);
         wdb.update("comicdata", values, "id=?", new String[] { Long.toString(-1) });
 
-        remakeListData();
+        remakeAllListData();
     }
 
     public long getNewId() {
@@ -112,10 +126,21 @@ public class ListDataManager {
         wdb.close();
     }
 
-    public void remakeListData() {
+    public void remakeAllListData() {
+        remakeListData(0);
+        remakeListData(1);
+    }
+
+    public void remakeListData(long dataIndex) {
+        List<Map<String, String>> dataList;
+        if (dataIndex == 0) {
+            dataList = dataList1;
+        } else {
+            dataList = dataList2;
+        }
         dataList.clear();
 
-        Cursor cur = getCurrentCursor();
+        Cursor cur = getCurrentCursor(dataIndex);
 
         boolean mov = cur.moveToFirst();
         while (mov) {
@@ -132,17 +157,11 @@ public class ListDataManager {
         }
     }
 
-    private Cursor getCurrentCursor() {
+    private Cursor getCurrentCursor(long dataIndex) {
         return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, "status=?", new String[]{Long.toString(dataIndex)}, null, null, "id ASC");
     }
 
     private Cursor getAllCursor() {
         return rdb.query("comicdata", new String[] { "id", "title", "author", "number", "memo", "inputdate", "status" }, null, null, null, null, "id ASC");
-    }
-
-    public String getNowDate(){
-        Date date = new Date();
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        return sdf.format(date);
     }
 }
