@@ -1,22 +1,23 @@
 package com.highcom.comicmemo;
 
-import android.arch.lifecycle.Observer;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.arch.lifecycle.ViewModelProviders;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,7 +56,8 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+//        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        pageViewModel = new ViewModelProvider(requireActivity()).get(PageViewModel.class);
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
@@ -110,7 +112,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                 });
         itemDecor.attachToRecyclerView(recyclerView);
 
-        pageViewModel.getListData(index).observe(this, new Observer<List<Map<String, String>>>() {
+        pageViewModel.getListData(index).observe(getViewLifecycleOwner(), new Observer<List<Map<String, String>>>() {
             @Override
             public void onChanged(@Nullable List<Map<String, String>> map) {
                 mListData = map;
