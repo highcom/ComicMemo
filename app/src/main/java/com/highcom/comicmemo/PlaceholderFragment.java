@@ -127,7 +127,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         // adapterにデータが更新された事を通知する
         adapter.notifyDataSetChanged();
 
-        if (word.equals(searchViewWord)) return;
         searchViewWord = word;
         Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
@@ -210,6 +209,8 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         data.put("inputdate", holder.inputdate.getText().toString());
         data.put("status", holder.status.toString());
         pageViewModel.setData(index, true, data);
+        // フィルタしている場合はフィルタデータの一覧も更新する
+        setSearchWordFilter(searchViewWord);
     }
 
     @Override

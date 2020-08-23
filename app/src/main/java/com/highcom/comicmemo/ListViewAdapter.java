@@ -198,6 +198,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                if (delbtnEnable) return true;
                 // PopupWindowの実装をする　続刊と完結を選択できるようにする
                 popupWindow.showAsDropDown(view, view.getWidth(), -view.getHeight());
                 // PopupWindowで選択したViewに対して更新できるようにViewを保持する
