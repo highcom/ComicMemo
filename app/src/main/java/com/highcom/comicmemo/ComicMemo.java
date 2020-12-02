@@ -17,6 +17,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.util.List;
+import java.util.Date;
+
+import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater;
 
 public class ComicMemo extends FragmentActivity {
 
@@ -34,6 +37,42 @@ public class ComicMemo extends FragmentActivity {
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        RmpAppirater.appLaunched(this,
+                new RmpAppirater.ShowRateDialogCondition() {
+                    @Override
+                    public boolean isShowRateDialog(
+                            long appLaunchCount, long appThisVersionCodeLaunchCount,
+                            long firstLaunchDate, int appVersionCode,
+                            int previousAppVersionCode, Date rateClickDate,
+                            Date reminderClickDate, boolean doNotShowAgain) {
+                        // 現在のアプリのバージョンで3回以上起動したか
+                        if (appThisVersionCodeLaunchCount < 3) {
+                            return false;
+                        }
+                        // ダイアログで「いいえ」を選択していないか
+                        if (doNotShowAgain) {
+                            return false;
+                        }
+                        // ユーザーがまだ評価していないか
+                        if (rateClickDate != null) {
+                            return false;
+                        }
+                        // ユーザーがまだ「あとで」を選択していないか
+                        if (reminderClickDate != null) {
+                            // 「あとで」を選択してから3日以上経過しているか
+                            long prevtime = reminderClickDate.getTime();
+                            long nowtime = new Date().getTime();
+                            long diffDays = (nowtime - prevtime) / (1000 * 60 * 60 * 24);
+                            if (diffDays < 3) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+        );
 
         listDataManager = ListDataManager.createInstance(getApplicationContext());
 
