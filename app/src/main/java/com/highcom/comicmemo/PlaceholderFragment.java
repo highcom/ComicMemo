@@ -63,6 +63,12 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -107,6 +113,14 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                     }
+
+                    @Override
+                    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                        super.clearView(recyclerView, viewHolder);
+                        ListDataManager.getInstance().setLastUpdateId(0);
+                        // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
+                        recyclerView.setAdapter(adapter);
+                    }
                 });
         itemDecor.attachToRecyclerView(recyclerView);
 
@@ -124,9 +138,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     }
 
     public void setSearchWordFilter(String word) {
-        // adapterにデータが更新された事を通知する
-        adapter.notifyDataSetChanged();
-
         searchViewWord = word;
         Filter filter = ((Filterable) recyclerView.getAdapter()).getFilter();
         if (TextUtils.isEmpty(searchViewWord)) {
@@ -151,6 +162,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         if (!adapter.getDelbtnEnable()) {
             return;
         }
+        ListDataManager.getInstance().setLastUpdateId(0);
         // 入力画面を生成
         Intent intent = new Intent(getContext(), InputMemo.class);
         // 選択アイテムを設定
@@ -169,6 +181,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void onAdapterStatusSelected(View view, long status) {
         ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         if (holder.status.longValue() == status) return;
+        ListDataManager.getInstance().setLastUpdateId(0);
         holder.status = status;
         holder.inputdate.setText(getNowDate());
 
@@ -194,7 +207,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         // 999を上限とする
         if (num < 999) {
             num++;
-            holder.number.setTextColor(Color.RED);
+            ListDataManager.getInstance().setLastUpdateId(holder.id.intValue());
         }
         holder.number.setText(num.toString());
         holder.inputdate.setText(getNowDate());
@@ -215,11 +228,18 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
     @Override
     public void onAdapterDelBtnClicked(View view) {
+        ListDataManager.getInstance().setLastUpdateId(0);
         ListViewAdapter.ViewHolder holder = (ListViewAdapter.ViewHolder) view.getTag();
         // データベースから削除する
         pageViewModel.deleteData(index, holder.id.toString());
         // フィルタしている場合はフィルタデータの一覧も更新する
         setSearchWordFilter(searchViewWord);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ListDataManager.getInstance().setLastUpdateId(0);
     }
 
     @Override

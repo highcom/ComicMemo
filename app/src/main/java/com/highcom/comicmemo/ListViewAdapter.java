@@ -101,7 +101,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             popupWindow = new PopupWindow(itemView.getContext());
 
             // PopupWindowに表示するViewを生成
-            View contentView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.popupmenu, null);
+            final View contentView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.popupmenu, null);
             popupWindow.setContentView(contentView);
             popupContinue = (ToggleButton)contentView.findViewById(R.id.popupContinue);
             popupComplete = (ToggleButton)contentView.findViewById(R.id.popupComplete);
@@ -183,7 +183,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         holder.title.setText(title);
         holder.author.setText(author);
         holder.number.setText(number);
-        holder.number.setTextColor(Color.GRAY);
+        if (holder.id.intValue() == ListDataManager.getInstance().getLastUpdateId()) {
+            holder.number.setTextColor(Color.RED);
+        } else {
+            holder.number.setTextColor(Color.GRAY);
+        }
         holder.memo.setText(memo);
         holder.inputdate.setText(inputdate);
         holder.status = new Long(status);

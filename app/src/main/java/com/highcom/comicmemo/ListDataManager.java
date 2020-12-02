@@ -19,6 +19,7 @@ public class ListDataManager {
     private Map<String, String> data;
     private List<Map<String, String>> dataList1;
     private List<Map<String, String>> dataList2;
+    private int lastUpdateId;
 
     public static ListDataManager createInstance(Context context) {
         listDataManager = new ListDataManager(context);
@@ -30,12 +31,21 @@ public class ListDataManager {
     }
 
     private ListDataManager(Context context) {
+        lastUpdateId = 0;
         ListDataOpenHelper helper = new ListDataOpenHelper(context);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
         dataList1 = new ArrayList<Map<String, String>>();
         dataList2 = new ArrayList<Map<String, String>>();
         remakeAllListData();
+    }
+
+    public void setLastUpdateId(int id) {
+        lastUpdateId = id;
+    }
+
+    public int getLastUpdateId() {
+        return lastUpdateId;
     }
 
     public void setData(boolean isEdit, Map<String, String> data) {
