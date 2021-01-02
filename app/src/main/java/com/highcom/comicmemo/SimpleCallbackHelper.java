@@ -32,6 +32,7 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
     private Map<Integer, List<UnderlayButton>> buttonsBuffer;
     private Queue<Integer> recoverQueue;
     private SimpleCallbackListener simpleCallbackListener;
+    private boolean isMoved;
 
     public interface SimpleCallbackListener {
         boolean onSimpleCallbackMove(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target);
@@ -81,6 +82,7 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
         this.buttons = new ArrayList<>();
         this.gestureDetector = new GestureDetector(context, gestureListener);
         this.recyclerView.setOnTouchListener(onTouchListener);
+        this.isMoved = false;
         buttonsBuffer = new HashMap<>();
         recoverQueue = new LinkedList<Integer>(){
             @Override
@@ -99,6 +101,12 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         return simpleCallbackListener.onSimpleCallbackMove(viewHolder, target);
+    }
+
+    @Override
+    public void onMoved(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, int fromPos, @NonNull RecyclerView.ViewHolder target, int toPos, int x, int y) {
+        super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
+        isMoved = true;
     }
 
     @Override
@@ -123,7 +131,10 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
-        simpleCallbackListener.clearSimpleCallbackView(recyclerView, viewHolder);
+        if (isMoved) {
+            simpleCallbackListener.clearSimpleCallbackView(recyclerView, viewHolder);
+        }
+        isMoved = false;
     }
 
     @Override
