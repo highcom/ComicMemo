@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment implements ListViewAdapter.AdapterListener {
+public class PlaceholderFragment extends Fragment implements ListViewAdapter.AdapterListener, SimpleCallbackHelper.SimpleCallbackListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -95,34 +95,50 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         recyclerView.addItemDecoration(itemDecoration);
 
         // ドラックアンドドロップの操作を実装する
-        ItemTouchHelper itemDecor = new ItemTouchHelper(
-                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
-                        ItemTouchHelper.ACTION_STATE_IDLE) {
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                        if (adapter.getDelbtnEnable() && TextUtils.isEmpty(searchViewWord)) {
-                            final int fromPos = viewHolder.getAdapterPosition();
-                            final int toPos = target.getAdapterPosition();
-                            adapter.notifyItemMoved(fromPos, toPos);
-                            pageViewModel.rearrangeData(index, fromPos, toPos);
-                            return true;
+        SimpleCallbackHelper simpleCallbackHelper = new SimpleCallbackHelper(getContext(), recyclerView, this) {
+            @Override
+            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+                underlayButtons.add(new SimpleCallbackHelper.UnderlayButton(
+                        "削除",
+                        0,
+                        Color.parseColor("#FF3C30"),
+                        (ListViewAdapter.ViewHolder) viewHolder,
+                        new SimpleCallbackHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(ListViewAdapter.ViewHolder holder, int pos) {
+                                ListDataManager.getInstance().setLastUpdateId(0);
+                                // データベースから削除する
+                                pageViewModel.deleteData(index, holder.id.toString());
+                                // フィルタしている場合はフィルタデータの一覧も更新する
+                                setSearchWordFilter(searchViewWord);
+                            }
                         }
-                        return false;
-                    }
-
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    }
-
-                    @Override
-                    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                        super.clearView(recyclerView, viewHolder);
-                        ListDataManager.getInstance().setLastUpdateId(0);
-                        // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
-                        recyclerView.setAdapter(adapter);
-                    }
-                });
-        itemDecor.attachToRecyclerView(recyclerView);
+                ));
+                underlayButtons.add(new SimpleCallbackHelper.UnderlayButton(
+                        "編集",
+                        0,
+                        Color.parseColor("#C7C7CB"),
+                        (ListViewAdapter.ViewHolder) viewHolder,
+                        new SimpleCallbackHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(ListViewAdapter.ViewHolder holder, int pos) {
+                                ListDataManager.getInstance().setLastUpdateId(0);
+                                // 入力画面を生成
+                                Intent intent = new Intent(getContext(), InputMemo.class);
+                                // 選択アイテムを設定
+                                intent.putExtra("EDIT", true);
+                                intent.putExtra("ID", holder.id.longValue());
+                                intent.putExtra("TITLE", holder.title.getText().toString());
+                                intent.putExtra("AUTHOR", holder.author.getText().toString());
+                                intent.putExtra("NUMBER", holder.number.getText().toString());
+                                intent.putExtra("MEMO", holder.memo.getText().toString());
+                                intent.putExtra("STATUS", holder.status.longValue());
+                                startActivityForResult(intent, 1001);
+                            }
+                        }
+                ));
+            }
+        };
 
         pageViewModel.getListData(index).observe(getViewLifecycleOwner(), new Observer<List<Map<String, String>>>() {
             @Override
@@ -153,6 +169,25 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         } else {
             adapter.setDelbtnEnable(true);
         }
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onSimpleCallbackMove(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+        if (adapter.getDelbtnEnable() && TextUtils.isEmpty(searchViewWord)) {
+            final int fromPos = viewHolder.getAdapterPosition();
+            final int toPos = target.getAdapterPosition();
+            adapter.notifyItemMoved(fromPos, toPos);
+            pageViewModel.rearrangeData(index, fromPos, toPos);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void clearSimpleCallbackView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        ListDataManager.getInstance().setLastUpdateId(0);
+        // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
         recyclerView.setAdapter(adapter);
     }
 
