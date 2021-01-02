@@ -139,8 +139,6 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
                 ));
             }
         };
-        ItemTouchHelper itemDecor = new ItemTouchHelper(simpleCallbackHelper);
-        itemDecor.attachToRecyclerView(recyclerView);
 
         pageViewModel.getListData(index).observe(getViewLifecycleOwner(), new Observer<List<Map<String, String>>>() {
             @Override
