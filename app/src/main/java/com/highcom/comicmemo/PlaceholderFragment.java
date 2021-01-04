@@ -94,8 +94,9 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(itemDecoration);
 
+        final float scale = getResources().getDisplayMetrics().density;
         // ドラックアンドドロップの操作を実装する
-        SimpleCallbackHelper simpleCallbackHelper = new SimpleCallbackHelper(getContext(), recyclerView, this) {
+        SimpleCallbackHelper simpleCallbackHelper = new SimpleCallbackHelper(getContext(), recyclerView, scale, this) {
             @Override
             public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
                 underlayButtons.add(new SimpleCallbackHelper.UnderlayButton(

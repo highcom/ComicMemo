@@ -23,7 +23,10 @@ import java.util.Queue;
 
 public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallback {
 
-    public static final int BUTTON_WIDTH = 200;
+    private static final int BUTTON_WIDTH = 75;
+    private static final int FONT_SIZE = 14;
+    private static int BUTTON_WIDTH_DP;
+    private static int FONT_SIZE_DP;
     private RecyclerView recyclerView;
     private List<UnderlayButton> buttons;
     private GestureDetector gestureDetector;
@@ -75,8 +78,10 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
         }
     };
 
-    public SimpleCallbackHelper(Context context, RecyclerView recyclerView, SimpleCallbackListener listener) {
+    public SimpleCallbackHelper(Context context, RecyclerView recyclerView, final float scale, SimpleCallbackListener listener) {
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT);
+        BUTTON_WIDTH_DP = (int) (BUTTON_WIDTH * scale);
+        FONT_SIZE_DP = (int) (FONT_SIZE * scale);
         this.recyclerView = recyclerView;
         this.simpleCallbackListener = listener;
         this.buttons = new ArrayList<>();
@@ -124,7 +129,7 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
             buttons.clear();
 
         buttonsBuffer.clear();
-        swipeThreshold = 0.5f * buttons.size() * BUTTON_WIDTH;
+        swipeThreshold = 0.5f * buttons.size() * BUTTON_WIDTH_DP;
         recoverSwipedItem();
     }
 
@@ -175,7 +180,7 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
                     buffer = buttonsBuffer.get(pos);
                 }
 
-                translationX = dX * buffer.size() * BUTTON_WIDTH / itemView.getWidth();
+                translationX = dX * buffer.size() * BUTTON_WIDTH_DP / itemView.getWidth();
                 drawButtons(c, itemView, buffer, pos, translationX);
             }
         }
@@ -255,7 +260,7 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
 
             // Draw Text
             p.setColor(Color.WHITE);
-            p.setTextSize(36);
+            p.setTextSize(FONT_SIZE_DP);
 
             Rect r = new Rect();
             float cHeight = rect.height();
