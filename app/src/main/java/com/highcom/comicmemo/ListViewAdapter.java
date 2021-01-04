@@ -36,7 +36,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     private LayoutInflater inflater;
     private List<? extends Map<String, ?>> listData;
     private List<? extends Map<String, ?>> orig;
-    private boolean delbtnEnable = false;
+    private boolean editEnable = false;
     private AdapterListener adapterListener;
     private PopupWindow popupWindow;
     private View popupView;
@@ -83,7 +83,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             // 削除ボタン処理
             deletebtn = (Button) itemView.findViewById(R.id.deletebutton);
             rearrangebtn = (ImageButton) itemView.findViewById(R.id.rearrangebutton);
-            if (delbtnEnable) {
+            if (editEnable) {
                 deletebtn.setVisibility(View.VISIBLE);
                 rearrangebtn.setVisibility(View.VISIBLE);
                 // 削除ボタンを押下された行を削除する
@@ -157,12 +157,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         this.adapterListener = listener;
     }
 
-    public void setDelbtnEnable(boolean enable) {
-        delbtnEnable = enable;
+    public void setEditEnable(boolean enable) {
+        editEnable = enable;
     }
 
-    public boolean getDelbtnEnable() {
-        return delbtnEnable;
+    public boolean getEditEnable() {
+        return editEnable;
     }
 
     @Override
@@ -202,7 +202,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (delbtnEnable) return true;
+                if (editEnable) return true;
                 // PopupWindowの実装をする　続刊と完結を選択できるようにする
                 popupWindow.showAsDropDown(view, view.getWidth(), -view.getHeight());
                 // PopupWindowで選択したViewに対して更新できるようにViewを保持する

@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -164,18 +164,18 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         }
     }
 
-    public void changeDelbtnEnable() {
-        if (adapter.getDelbtnEnable()) {
-            adapter.setDelbtnEnable(false);
+    public void changeEditEnable() {
+        if (adapter.getEditEnable()) {
+            adapter.setEditEnable(false);
         } else {
-            adapter.setDelbtnEnable(true);
+            adapter.setEditEnable(true);
         }
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public boolean onSimpleCallbackMove(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        if (adapter.getDelbtnEnable() && TextUtils.isEmpty(searchViewWord)) {
+        if (adapter.getEditEnable() && TextUtils.isEmpty(searchViewWord)) {
             final int fromPos = viewHolder.getAdapterPosition();
             final int toPos = target.getAdapterPosition();
             adapter.notifyItemMoved(fromPos, toPos);
@@ -195,7 +195,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     @Override
     public void onAdapterClicked(View view, int position) {
         // 編集状態でない場合は入力画面に遷移しない
-        if (!adapter.getDelbtnEnable()) {
+        if (!adapter.getEditEnable()) {
             return;
         }
         ListDataManager.getInstance().setLastUpdateId(0);

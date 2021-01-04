@@ -88,7 +88,7 @@ public class ComicMemo extends FragmentActivity {
             @Override
             public void onClick(View arg0) {
                 // 編集状態の変更
-                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).changeDelbtnEnable();
+                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).changeEditEnable();
             }
         });
 
