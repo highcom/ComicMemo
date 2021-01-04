@@ -35,6 +35,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
     private RecyclerView recyclerView;
     private ListViewAdapter adapter;
+    private SimpleCallbackHelper simpleCallbackHelper;
     private String searchViewWord = "";
     private int index = 0;
 
@@ -96,7 +97,7 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
 
         final float scale = getResources().getDisplayMetrics().density;
         // ドラックアンドドロップの操作を実装する
-        SimpleCallbackHelper simpleCallbackHelper = new SimpleCallbackHelper(getContext(), recyclerView, scale, this) {
+        simpleCallbackHelper = new SimpleCallbackHelper(getContext(), recyclerView, scale, this) {
             @Override
             public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
                 underlayButtons.add(new SimpleCallbackHelper.UnderlayButton(
@@ -167,8 +168,10 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
     public void changeEditEnable() {
         if (adapter.getEditEnable()) {
             adapter.setEditEnable(false);
+            simpleCallbackHelper.setSwipeEnable(true);
         } else {
             adapter.setEditEnable(true);
+            simpleCallbackHelper.setSwipeEnable(false);
         }
         recyclerView.setAdapter(adapter);
     }

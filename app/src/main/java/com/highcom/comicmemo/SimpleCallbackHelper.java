@@ -102,6 +102,13 @@ public abstract class SimpleCallbackHelper extends ItemTouchHelper.SimpleCallbac
         attachSwipe();
     }
 
+    public void setSwipeEnable(boolean enable) {
+        if (enable) {
+            setDefaultSwipeDirs(ItemTouchHelper.LEFT);
+        } else {
+            setDefaultSwipeDirs(ItemTouchHelper.ACTION_STATE_IDLE);
+        }
+    }
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
