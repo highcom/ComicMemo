@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +19,8 @@ public class ListDataManager {
     private Map<String, String> data;
     private List<Map<String, String>> dataList1;
     private List<Map<String, String>> dataList2;
+    private String sortKey1;
+    private String sortKey2;
     private int lastUpdateId;
 
     public static ListDataManager createInstance(Context context) {
@@ -32,6 +34,8 @@ public class ListDataManager {
 
     private ListDataManager(Context context) {
         lastUpdateId = 0;
+        sortKey1 = "id";
+        sortKey2 = "id";
         ListDataOpenHelper helper = new ListDataOpenHelper(context);
         rdb = helper.getReadableDatabase();
         wdb = helper.getWritableDatabase();
@@ -138,7 +142,9 @@ public class ListDataManager {
 
     public void remakeAllListData() {
         remakeListData(0);
+        sortListData(0, sortKey1);
         remakeListData(1);
+        sortListData(1, sortKey2);
     }
 
     public void remakeListData(long dataIndex) {
@@ -165,6 +171,23 @@ public class ListDataManager {
             dataList.add(data);
             mov = cur.moveToNext();
         }
+    }
+
+    public void sortListData(long dataIndex, final String key) {
+        List<Map<String, String>> dataList;
+        if (dataIndex == 0) {
+            dataList = dataList1;
+            sortKey1 = key;
+        } else {
+            dataList = dataList2;
+            sortKey2 = key;
+        }
+        Collections.sort(dataList, new Comparator<Map<String, String>>() {
+            @Override
+            public int compare(Map<String, String> stringStringMap, Map<String, String> t1) {
+                return stringStringMap.get(key).compareTo(t1.get(key));
+            }
+        });
     }
 
     private Cursor getCurrentCursor(long dataIndex) {

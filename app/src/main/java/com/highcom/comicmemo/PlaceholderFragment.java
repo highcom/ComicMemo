@@ -176,6 +176,22 @@ public class PlaceholderFragment extends Fragment implements ListViewAdapter.Ada
         recyclerView.setAdapter(adapter);
     }
 
+    public void setEditEnable(boolean enable) {
+        if (!enable && adapter.getEditEnable()) {
+            adapter.setEditEnable(false);
+            simpleCallbackHelper.setSwipeEnable(true);
+            recyclerView.setAdapter(adapter);
+        } else if (enable && !adapter.getEditEnable()) {
+            adapter.setEditEnable(true);
+            simpleCallbackHelper.setSwipeEnable(false);
+            recyclerView.setAdapter(adapter);
+        }
+    }
+
+    public void sortData(String key) {
+        pageViewModel.sortData(index, key);
+    }
+
     @Override
     public boolean onSimpleCallbackMove(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         if (adapter.getEditEnable() && TextUtils.isEmpty(searchViewWord)) {

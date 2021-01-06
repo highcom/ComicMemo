@@ -6,11 +6,11 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -87,8 +87,37 @@ public class ComicMemo extends FragmentActivity {
         editbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                // 編集状態の変更
-                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).changeEditEnable();
+                PopupMenu popup = new PopupMenu(getApplicationContext(), arg0);
+                popup.getMenuInflater().inflate(R.menu.menu_comic_memo, popup.getMenu());
+                popup.show();
+
+                // ポップアップメニューのメニュー項目のクリック処理
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.edit_mode:
+                                // 編集状態の変更
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("id");
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).changeEditEnable();
+                                break;
+                            case R.id.sort_default:
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("id");
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setEditEnable(false);
+                                break;
+                            case R.id.sort_title:
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("title");
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setEditEnable(false);
+                                break;
+                            case R.id.sort_author:
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("author");
+                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setEditEnable(false);
+                                break;
+                            default:
+                                break;
+                        }
+                        return true;
+                    }
+                });
             }
         });
 
@@ -141,28 +170,6 @@ public class ComicMemo extends FragmentActivity {
             ((PlaceholderFragment)fragment).updateData();
             ((PlaceholderFragment)fragment).setSearchWordFilter(mSearchWord);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_comic_memo, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

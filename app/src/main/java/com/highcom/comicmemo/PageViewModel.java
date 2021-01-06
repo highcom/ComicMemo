@@ -33,6 +33,11 @@ public class PageViewModel extends ViewModel {
         mListData.setValue(listDataManager.getDataList(index));
     }
 
+    public void sortData(long index, String key) {
+        listDataManager.sortListData(index, key);
+        mListData.setValue(listDataManager.getDataList(index));
+    }
+
     public void closeData() {
         listDataManager.closeData();
     }
@@ -40,4 +45,5 @@ public class PageViewModel extends ViewModel {
     public void rearrangeData(long dataIndex, int fromPos, int toPos) {
         listDataManager.rearrangeData(dataIndex, fromPos, toPos);
     }
+
 }
