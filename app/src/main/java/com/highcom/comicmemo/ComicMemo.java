@@ -94,23 +94,24 @@ public class ComicMemo extends FragmentActivity {
                 // ポップアップメニューのメニュー項目のクリック処理
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
+                        PlaceholderFragment fragment = (PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment();
                         switch (item.getItemId()) {
                             case R.id.edit_mode:
                                 // 編集状態の変更
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("id");
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).changeEditEnable();
+                                fragment.sortData("id");
+                                fragment.changeEditEnable();
                                 break;
                             case R.id.sort_default:
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("id");
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setEditEnable(false);
+                                fragment.sortData("id");
+                                fragment.setEditEnable(false);
                                 break;
                             case R.id.sort_title:
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("title");
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setEditEnable(false);
+                                fragment.sortData("title");
+                                fragment.setEditEnable(false);
                                 break;
                             case R.id.sort_author:
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).sortData("author");
-                                ((PlaceholderFragment)sectionsPagerAdapter.getCurrentFragment()).setEditEnable(false);
+                                fragment.sortData("author");
+                                fragment.setEditEnable(false);
                                 break;
                             default:
                                 break;

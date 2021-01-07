@@ -185,7 +185,11 @@ public class ListDataManager {
         Collections.sort(dataList, new Comparator<Map<String, String>>() {
             @Override
             public int compare(Map<String, String> stringStringMap, Map<String, String> t1) {
-                return stringStringMap.get(key).compareTo(t1.get(key));
+                int result = stringStringMap.get(key).compareTo(t1.get(key));
+                if (result == 0) {
+                    result = stringStringMap.get("id").compareTo(t1.get("id"));
+                }
+                return result;
             }
         });
     }
