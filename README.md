@@ -4,13 +4,15 @@
 マンガなどを何巻まで買ったのか管理するためのアプリです。詳細な機能については、Google Playストアの方で確認してください。
 ## クラス構成について
 以下に示すクラス図と主要なクラスについて簡単に説明します。
-![クラス図_ComicMemo](https://user-images.githubusercontent.com/12059529/103291131-706bdc00-4a2e-11eb-89b9-e6b4cc9d1f34.png)
+![クラス図_ComicMemo](https://user-images.githubusercontent.com/12059529/104094381-ee07d580-52d3-11eb-9ae6-e78858e9ee9e.png)
 ### ComicMemo
 アプリを立ち上げた時に最初に表示されるアクティビティ。巻数メモの一覧と追加や編集、検索の機能の操作を管理する。
 ### SectionPagerAdapter
 このクラスが持っている続刊と完結のFragmentを管理する。
 ### PlaceHolderFragment
 続刊と完結タブの中身を構成するクラス。ListDataManagerクラスから取得したデータをListViewAdapterクラスを使ってリストで表示する。
+### SimpleCallbackHelper
+Adapterに対するMoveやSwipe操作の実装クラス。Swipeして表示されるボタンの定義をしている。
 ### ViewHolder
 １つのリストを表示するためのデータクラス。ListDataManagerクラスから取得したデータが格納される。
 ### PageViewModel
