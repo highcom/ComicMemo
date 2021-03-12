@@ -3,14 +3,22 @@ package com.highcom.comicmemo;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
+
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 
@@ -30,6 +38,7 @@ public class ComicMemo extends FragmentActivity {
     private String mSearchWord = "";
 
     private FirebaseAnalytics mFirebaseAnalytics;
+    private FrameLayout adContainerView;
     private AdView mAdView;
 
     @Override
@@ -37,10 +46,15 @@ public class ComicMemo extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_memo);
 
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) { }
+        });
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        adContainerView = findViewById(R.id.adViewFrame);
+        mAdView = new AdView(this);
+        mAdView.setAdUnitId("ca-app-pub-3217012767112748/8829713111");
+        loadBanner();
 
         RmpAppirater.appLaunched(this,
                 new RmpAppirater.ShowRateDialogCondition() {
@@ -160,6 +174,31 @@ public class ComicMemo extends FragmentActivity {
                 return false;
             }
         });
+    }
+
+    private void loadBanner() {
+        AdRequest adRequest =
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .build();
+
+        AdSize adSize = getAdSize();
+        mAdView.setAdSize(adSize);
+        mAdView.loadAd(adRequest);
+    }
+
+    private AdSize getAdSize() {
+        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+
+        int adWidth = (int) (widthPixels / density);
+
+        // Step 3 - Get adaptive ad size and return for setting on the ad view.
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
     }
 
     @Override
