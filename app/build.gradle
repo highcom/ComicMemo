@@ -8,8 +8,8 @@ android {
         applicationId "com.highcom.comicmemo"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 8
-        versionName "2.3"
+        versionCode 9
+        versionName "2.4"
     }
     buildTypes {
         release {
@@ -42,6 +42,6 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'jp.co.recruit_mp:android-RMP-Appirater:1.1.1'
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:18.0.2'
     implementation 'com.google.firebase:firebase-ads:19.7.0'
 }
