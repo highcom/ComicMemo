@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.highcom.comicmemo"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 8
         versionName "2.3"
@@ -37,8 +38,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    implementation 'com.google.android.gms:play-services-ads:9.2.0'
+    implementation 'com.google.android.gms:play-services-ads:19.7.0'
     //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'jp.co.recruit_mp:android-RMP-Appirater:1.1.1'
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-ads:19.7.0'
 }

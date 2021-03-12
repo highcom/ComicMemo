@@ -9,6 +9,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
+import androidx.core.content.ContextCompat;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -103,18 +105,18 @@ public class InputMemo extends Activity implements CompoundButton.OnCheckedChang
     }
 
     private void setEnableToggleContinue() {
-        tbContinue.setTextColor(getResources().getColor(R.color.white));
-        tbContinue.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_select_button));
-        tbComplete.setTextColor(getResources().getColor(R.color.blue));
-        tbComplete.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_unselect_button));
+        tbContinue.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+        tbContinue.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.toggle_select_button));
+        tbComplete.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.blue));
+        tbComplete.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.toggle_unselect_button));
         status = 0;
     }
 
     private void setEnableToggleComplete() {
-        tbContinue.setTextColor(getResources().getColor(R.color.blue));
-        tbContinue.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_unselect_button));
-        tbComplete.setTextColor(getResources().getColor(R.color.white));
-        tbComplete.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_select_button));
+        tbContinue.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.blue));
+        tbContinue.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.toggle_unselect_button));
+        tbComplete.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+        tbComplete.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.toggle_select_button));
         status = 1;
     }
 

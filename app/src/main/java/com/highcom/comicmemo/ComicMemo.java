@@ -2,6 +2,7 @@ package com.highcom.comicmemo;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -15,6 +16,7 @@ import android.widget.SearchView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
 import java.util.Date;
@@ -27,6 +29,7 @@ public class ComicMemo extends FragmentActivity {
     private SectionsPagerAdapter sectionsPagerAdapter;
     private String mSearchWord = "";
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
 
     @Override
@@ -34,6 +37,7 @@ public class ComicMemo extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_memo);
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);

@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -108,7 +110,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             popupContinue.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    setEnableLayoutContinue(buttonView.getResources());
+                    setEnableLayoutContinue(buttonView.getContext());
                     adapterListener.onAdapterStatusSelected(popupView, 0);
                     popupWindow.dismiss();
                 }
@@ -116,7 +118,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             popupComplete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    setEnableLayoutComplete(buttonView.getResources());
+                    setEnableLayoutComplete(buttonView.getContext());
                     adapterListener.onAdapterStatusSelected(popupView, 1);
                     popupWindow.dismiss();
                 }
@@ -124,7 +126,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
 
             // PopupWindowに表示するViewのサイズを設定
             float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, itemView.getContext().getResources().getDisplayMetrics());
-            popupWindow.setWindowLayoutMode((int) width, WindowManager.LayoutParams.WRAP_CONTENT);
+            popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
             popupWindow.setWidth((int) width);
             // PopupWindowの外をタッチしたらPopupWindowが閉じるように設定
             popupWindow.setOutsideTouchable(true);
@@ -133,21 +135,21 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             // PopupWindow内のクリックを可能にしておく
             popupWindow.setTouchable(true);
             // レイアウトファイルで設定した背景のさらに背景(黒とか)が生成される為、ここで好みの背景を設定しておく
-            popupWindow.setBackgroundDrawable(new ColorDrawable(itemView.getContext().getResources().getColor(android.R.color.white)));
+            popupWindow.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(itemView.getContext(), android.R.color.white)));
         }
 
-        public void setEnableLayoutContinue(Resources resources) {
-            popupContinue.setTextColor(resources.getColor(R.color.white));
-            popupContinue.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_select_button));
-            popupComplete.setTextColor(resources.getColor(R.color.blue));
-            popupComplete.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_unselect_button));
+        public void setEnableLayoutContinue(Context context) {
+            popupContinue.setTextColor(ContextCompat.getColor(context, R.color.white));
+            popupContinue.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.toggle_select_button));
+            popupComplete.setTextColor(ContextCompat.getColor(context, R.color.blue));
+            popupComplete.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.toggle_unselect_button));
         }
 
-        public void setEnableLayoutComplete(Resources resources) {
-            popupContinue.setTextColor(resources.getColor(R.color.blue));
-            popupContinue.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_unselect_button));
-            popupComplete.setTextColor(resources.getColor(R.color.white));
-            popupComplete.setBackgroundDrawable(resources.getDrawable(R.drawable.toggle_select_button));
+        public void setEnableLayoutComplete(Context context) {
+            popupContinue.setTextColor(ContextCompat.getColor(context, R.color.blue));
+            popupContinue.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.toggle_unselect_button));
+            popupComplete.setTextColor(ContextCompat.getColor(context, R.color.white));
+            popupComplete.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.toggle_select_button));
         }
     }
 
@@ -212,9 +214,9 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         });
 
         if (holder.status.longValue() == 0) {
-            holder.setEnableLayoutContinue(holder.itemView.getResources());
+            holder.setEnableLayoutContinue(holder.itemView.getContext());
         } else {
-            holder.setEnableLayoutComplete(holder.itemView.getResources());
+            holder.setEnableLayoutComplete(holder.itemView.getContext());
         }
     }
 
