@@ -178,7 +178,7 @@ public class ComicMemo extends FragmentActivity {
 
     private void loadBanner() {
         AdRequest adRequest =
-                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                new AdRequest.Builder().addTestDevice("874848BA4D9A6B9B0A256F7862A47A31")
                         .build();
 
         AdSize adSize = getAdSize();
