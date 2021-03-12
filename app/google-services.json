@@ -1,0 +1,162 @@
+{
+  "project_info": {
+    "project_number": "691284291602",
+    "firebase_url": "https://admob-app-id-6599948716.firebaseio.com",
+    "project_id": "admob-app-id-6599948716",
+    "storage_bucket": "admob-app-id-6599948716.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691284291602:android:3cb68ec859b125385728cb",
+        "android_client_info": {
+          "package_name": "com.highcom.comicmemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8WEux1s3NInPUTp3SOoKk1nl0XDRRXBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "691284291602-03q2e62c8iud1gclfs2kojrdu1fif3dm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.highcom.BlockTowerBreak",
+                "app_store_id": "1035159553"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691284291602:android:cd3af28e771a6456",
+        "android_client_info": {
+          "package_name": "com.highcom.passwordmemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8WEux1s3NInPUTp3SOoKk1nl0XDRRXBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "691284291602-03q2e62c8iud1gclfs2kojrdu1fif3dm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.highcom.BlockTowerBreak",
+                "app_store_id": "1035159553"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-3217012767112748~6109793181"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691284291602:android:88c033c45eb86cf3",
+        "android_client_info": {
+          "package_name": "com.highcom.usefulcalc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8WEux1s3NInPUTp3SOoKk1nl0XDRRXBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "691284291602-03q2e62c8iud1gclfs2kojrdu1fif3dm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.highcom.BlockTowerBreak",
+                "app_store_id": "1035159553"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-3217012767112748~3141480311"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691284291602:android:fd121998feea9e80",
+        "android_client_info": {
+          "package_name": "com.unity.BlockTowerBreak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8WEux1s3NInPUTp3SOoKk1nl0XDRRXBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691284291602-4r9qkglqd0s868p917c33cjghfuvo1c9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "691284291602-03q2e62c8iud1gclfs2kojrdu1fif3dm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.highcom.BlockTowerBreak",
+                "app_store_id": "1035159553"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-3217012767112748~7096556712"
+    }
+  ],
+  "configuration_version": "1"
+}
