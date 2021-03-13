@@ -8,8 +8,8 @@ android {
         applicationId "com.highcom.comicmemo"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 9
-        versionName "2.4"
+        versionCode 10
+        versionName "2.5"
     }
     buildTypes {
         release {
