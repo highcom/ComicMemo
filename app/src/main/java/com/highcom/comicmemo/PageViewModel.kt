@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class PageViewModel : ViewModel() {
-    private val listDataManager: ListDataManager? = ListDataManager.Companion.getInstance()
-    private var mListData: MutableLiveData<List<Map<String?, String?>?>?>? = null
-    fun getListData(index: Long): LiveData<List<Map<String?, String?>?>?> {
+    private val listDataManager: ListDataManager? = ListDataManager.instance
+    private var mListData: MutableLiveData<List<Map<String, String>>>? = null
+    fun getListData(index: Long): LiveData<List<Map<String, String>>>? {
         if (mListData == null) {
             mListData = MutableLiveData()
         }

@@ -1,5 +1,6 @@
 package com.highcom.comicmemo
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.view.GestureDetector
@@ -21,12 +22,12 @@ abstract class SimpleCallbackHelper(
     ItemTouchHelper.LEFT
 ) {
     private val recyclerView: RecyclerView?
-    private var buttons: MutableList<UnderlayButton>
-    private val gestureDetector: GestureDetector
+    private lateinit var buttons: MutableList<UnderlayButton>
+    private lateinit var gestureDetector: GestureDetector
     private var swipedPos = -1
     private var swipeThreshold = 0.5f
     private val buttonsBuffer: MutableMap<Int, MutableList<UnderlayButton>>
-    private val recoverQueue: Queue<Int>
+    private lateinit var recoverQueue: Queue<Int>
     private val simpleCallbackListener: SimpleCallbackListener
     private var isMoved: Boolean
 
@@ -47,6 +48,7 @@ abstract class SimpleCallbackHelper(
             return true
         }
     }
+    @SuppressLint("ClickableViewAccessibility")
     private val onTouchListener = OnTouchListener { view, e ->
         if (swipedPos < 0) return@OnTouchListener false
         val point = Point(
@@ -216,13 +218,13 @@ abstract class SimpleCallbackHelper(
         private val imageResId: Int,
         private val color: Int,
         private val viewHolder: ListViewAdapter.ViewHolder,
-        private val clickListener: UnderlayButtonClickListener
+        private val clickListener: (Any, Any) -> Unit
     ) {
         private var pos = 0
         private var clickRegion: RectF? = null
         fun onClick(x: Float, y: Float): Boolean {
             if (clickRegion != null && clickRegion!!.contains(x, y)) {
-                clickListener.onClick(viewHolder, pos)
+                clickListener.invoke(viewHolder, pos)
                 return true
             }
             return false
@@ -251,15 +253,11 @@ abstract class SimpleCallbackHelper(
         }
     }
 
-    interface UnderlayButtonClickListener {
-        fun onClick(holder: ListViewAdapter.ViewHolder, pos: Int)
-    }
-
     companion object {
         private const val BUTTON_WIDTH = 75
         private const val FONT_SIZE = 14
-        private var BUTTON_WIDTH_DP: Int
-        private var FONT_SIZE_DP: Int
+        private var BUTTON_WIDTH_DP: Int = 0
+        private var FONT_SIZE_DP: Int = 0
     }
 
     init {

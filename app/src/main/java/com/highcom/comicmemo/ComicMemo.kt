@@ -31,7 +31,7 @@ class ComicMemo : FragmentActivity() {
                 .setTestDeviceIds(Arrays.asList("874848BA4D9A6B9B0A256F7862A47A31")).build()
         )
         adContainerView = findViewById(R.id.adViewFrame)
-        adContainerView.post(Runnable { loadBanner() })
+        adContainerView?.post { loadBanner() }
         RmpAppirater.appLaunched(this,
             ShowRateDialogCondition { appLaunchCount, appThisVersionCodeLaunchCount, firstLaunchDate, appVersionCode, previousAppVersionCode, rateClickDate, reminderClickDate, doNotShowAgain -> // 現在のアプリのバージョンで3回以上起動したか
                 if (appThisVersionCodeLaunchCount < 3) {
@@ -74,7 +74,7 @@ class ComicMemo : FragmentActivity() {
 
             // ポップアップメニューのメニュー項目のクリック処理
             popup.setOnMenuItemClickListener { item ->
-                val fragment = sectionsPagerAdapter.getCurrentFragment() as PlaceholderFragment
+                val fragment = sectionsPagerAdapter!!.currentFragment as PlaceholderFragment
                 when (item.itemId) {
                     R.id.edit_mode -> {
                         // 編集状態の変更
@@ -103,10 +103,10 @@ class ComicMemo : FragmentActivity() {
         val addbtn = findViewById<View>(R.id.add) as Button
         addbtn.setOnClickListener {
             val intent = Intent(this@ComicMemo, InputMemo::class.java)
-            if (sectionsPagerAdapter.getCurrentFragment() != null) {
+            if (sectionsPagerAdapter!!.currentFragment != null) {
                 val index =
-                    (sectionsPagerAdapter.getCurrentFragment() as PlaceholderFragment).index.toLong()
-                intent.putExtra("ID", listDataManager.getNewId())
+                    (sectionsPagerAdapter!!.currentFragment as PlaceholderFragment).index.toLong()
+                intent.putExtra("ID", listDataManager!!.newId)
                 intent.putExtra("STATUS", index)
             }
             intent.putExtra("EDIT", false)
@@ -121,8 +121,8 @@ class ComicMemo : FragmentActivity() {
 
             override fun onQueryTextChange(searchWord: String): Boolean {
                 mSearchWord = searchWord
-                val fragments = sectionsPagerAdapter.getAllFragment()
-                for (fragment in fragments!!) {
+                val fragments = sectionsPagerAdapter!!.allFragment
+                for (fragment in fragments) {
                     (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
                 }
                 return false
@@ -168,8 +168,8 @@ class ComicMemo : FragmentActivity() {
 //        if (requestCode != 1001) {
 //            return;
 //        }
-        val fragments = sectionsPagerAdapter.getAllFragment()
-        for (fragment in fragments!!) {
+        val fragments = sectionsPagerAdapter!!.allFragment
+        for (fragment in fragments) {
             (fragment as PlaceholderFragment).updateData()
             (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
         }

@@ -31,7 +31,7 @@ class InputMemo : Activity(), CompoundButton.OnCheckedChangeListener {
         (findViewById<View>(R.id.editAuthor) as EditText).setText(intent.getStringExtra("AUTHOR"))
         (findViewById<View>(R.id.editNumber) as EditText).setText(intent.getStringExtra("NUMBER"))
         (findViewById<View>(R.id.editMemo) as EditText).setText(intent.getStringExtra("MEMO"))
-        manager = ListDataManager.Companion.getInstance()
+        manager = ListDataManager.instance
 
         // キャンセルボタン処理
         val cancelBtn = findViewById<View>(R.id.cancel) as Button

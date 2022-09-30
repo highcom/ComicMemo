@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class ListViewAdapter(
     context: Context?,
-    data: List<Map<String?, *>?>?,
+    data: List<Map<String, *>>?,
     resource: Int,
     from: Array<String>?,
     to: IntArray?,
@@ -24,8 +24,8 @@ class ListViewAdapter(
 ) : RecyclerView.Adapter<ListViewAdapter.ViewHolder>(), Filterable {
     // private Context context;
     private val inflater: LayoutInflater
-    private var listData: List<Map<String?, *>?>?
-    private var orig: List<Map<String?, *>?>? = null
+    private var listData: List<Map<String, *>>?
+    private var orig: List<Map<String, *>>? = null
     var editEnable = false
     private val adapterListener: AdapterListener
     private var popupWindow: PopupWindow? = null
@@ -113,18 +113,18 @@ class ListViewAdapter(
             // PopupWindowに表示するViewを生成
             val contentView =
                 LayoutInflater.from(itemView.context).inflate(R.layout.popupmenu, null)
-            popupWindow.setContentView(contentView)
+            popupWindow!!.setContentView(contentView)
             popupContinue = contentView.findViewById<View>(R.id.popupContinue) as ToggleButton
             popupComplete = contentView.findViewById<View>(R.id.popupComplete) as ToggleButton
             popupContinue.setOnCheckedChangeListener { buttonView, isChecked ->
                 setEnableLayoutContinue(buttonView.context)
                 adapterListener.onAdapterStatusSelected(popupView, 0)
-                popupWindow.dismiss()
+                popupWindow!!.dismiss()
             }
             popupComplete.setOnCheckedChangeListener { buttonView, isChecked ->
                 setEnableLayoutComplete(buttonView.context)
                 adapterListener.onAdapterStatusSelected(popupView, 1)
-                popupWindow.dismiss()
+                popupWindow!!.dismiss()
             }
 
             // PopupWindowに表示するViewのサイズを設定
@@ -133,16 +133,16 @@ class ListViewAdapter(
                 200f,
                 itemView.context.resources.displayMetrics
             )
-            popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT)
-            popupWindow.setWidth(width.toInt())
-            // PopupWindowの外をタッチしたらPopupWindowが閉じるように設定
-            popupWindow.setOutsideTouchable(true)
-            // PopupWindow外のUIのタッチイベントが走らないようにフォーカスを持っておく
-            popupWindow.setFocusable(true)
-            // PopupWindow内のクリックを可能にしておく
-            popupWindow.setTouchable(true)
+            popupWindow!!.setHeight(WindowManager.LayoutParams.WRAP_CONTENT)
+            popupWindow!!.setWidth(width.toInt())
+            // PopupWindow!!の外をタッチしたらPopupWindow!!が閉じるように設定
+            popupWindow!!.setOutsideTouchable(true)
+            // PopupWindow!!外のUIのタッチイベントが走らないようにフォーカスを持っておく
+            popupWindow!!.setFocusable(true)
+            // PopupWindow!!内のクリックを可能にしておく
+            popupWindow!!.setTouchable(true)
             // レイアウトファイルで設定した背景のさらに背景(黒とか)が生成される為、ここで好みの背景を設定しておく
-            popupWindow.setBackgroundDrawable(
+            popupWindow!!.setBackgroundDrawable(
                 ColorDrawable(
                     ContextCompat.getColor(
                         itemView.context,
@@ -165,18 +165,18 @@ class ListViewAdapter(
         val memo = (listData!![position] as HashMap<*, *>?)!!["memo"].toString()
         val inputdate = (listData!![position] as HashMap<*, *>?)!!["inputdate"].toString()
         val status = (listData!![position] as HashMap<*, *>?)!!["status"].toString()
-        holder.id = id
+        holder.id = id.toLong()
         holder.title.text = title
         holder.author.text = author
         holder.number.text = number
-        if (holder.id.toInt() == ListDataManager.Companion.getInstance().getLastUpdateId()) {
+        if (holder.id!!.toInt() == ListDataManager.instance?.lastUpdateId ?: 0) {
             holder.number.setTextColor(Color.RED)
         } else {
             holder.number.setTextColor(Color.GRAY)
         }
         holder.memo.text = memo
         holder.inputdate.text = inputdate
-        holder.status = status
+        holder.status = status.toLong()
         holder.itemView.tag = holder
         holder.itemView.setOnClickListener { view ->
             adapterListener.onAdapterClicked(
@@ -192,7 +192,7 @@ class ListViewAdapter(
             popupView = view
             true
         })
-        if (holder.status.toLong() == 0L) {
+        if (holder.status!!.toLong() == 0L) {
             holder.setEnableLayoutContinue(holder.itemView.context)
         } else {
             holder.setEnableLayoutComplete(holder.itemView.context)
@@ -211,7 +211,7 @@ class ListViewAdapter(
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence): FilterResults {
                 val oReturn = FilterResults()
-                val results = ArrayList<Map<String?, *>?>()
+                val results = ArrayList<Map<String, *>>()
                 if (orig == null) orig = listData
                 if (constraint != null) {
                     if (orig != null && orig!!.size > 0) {
@@ -232,7 +232,7 @@ class ListViewAdapter(
                 constraint: CharSequence,
                 results: FilterResults
             ) {
-                listData = results.values as ArrayList<Map<String?, String?>?>
+                listData = results.values as ArrayList<Map<String, String>>
                 notifyDataSetChanged()
             }
         }

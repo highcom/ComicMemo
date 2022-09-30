@@ -42,8 +42,7 @@ class ListDataManager private constructor(context: Context) {
     }
 
     fun getDataList(dataIndex: Long): List<Map<String, String>> {
-        val dataList: List<Map<String, String>>
-        dataList = if (dataIndex == 0L) {
+        val dataList: List<Map<String, String>> = if (dataIndex == 0L) {
             dataList1
         } else {
             dataList2
@@ -53,7 +52,6 @@ class ListDataManager private constructor(context: Context) {
 
     fun rearrangeData(dataIndex: Long, fromPos: Int, toPos: Int) {
         var mov: Boolean
-        var values: ContentValues
         val cur = getCurrentCursor(dataIndex)
         mov = cur.moveToPosition(fromPos)
         if (!mov) return
@@ -61,7 +59,7 @@ class ListDataManager private constructor(context: Context) {
         mov = cur.moveToPosition(toPos)
         if (!mov) return
         val toId = cur.getLong(0)
-        values = ContentValues()
+        var values: ContentValues = ContentValues()
         values.put("id", -1)
         wdb.update("comicdata", values, "id=?", arrayOf(java.lang.Long.toString(fromId)))
         values = ContentValues()
@@ -94,16 +92,15 @@ class ListDataManager private constructor(context: Context) {
         wdb.close()
     }
 
-    fun remakeAllListData() {
+    private fun remakeAllListData() {
         remakeListData(0)
         sortListData(0, sortKey1)
         remakeListData(1)
         sortListData(1, sortKey2)
     }
 
-    fun remakeListData(dataIndex: Long) {
-        val dataList: MutableList<Map<String, String>>
-        dataList = if (dataIndex == 0L) {
+    private fun remakeListData(dataIndex: Long) {
+        val dataList: MutableList<Map<String, String>> = if (dataIndex == 0L) {
             dataList1
         } else {
             dataList2
@@ -113,14 +110,14 @@ class ListDataManager private constructor(context: Context) {
         var mov = cur.moveToFirst()
         while (mov) {
             data = HashMap()
-            data["id"] = cur.getString(0)
-            data["title"] = cur.getString(1)
-            data["author"] = cur.getString(2)
-            data["number"] = cur.getString(3)
-            data["memo"] = cur.getString(4)
-            data["inputdate"] = cur.getString(5)
-            data["status"] = cur.getString(6)
-            dataList.add(data)
+            (data as HashMap<String, String>)["id"] = cur.getString(0)
+            (data as HashMap<String, String>)["title"] = cur.getString(1)
+            (data as HashMap<String, String>)["author"] = cur.getString(2)
+            (data as HashMap<String, String>)["number"] = cur.getString(3)
+            (data as HashMap<String, String>)["memo"] = cur.getString(4)
+            (data as HashMap<String, String>)["inputdate"] = cur.getString(5)
+            (data as HashMap<String, String>)["status"] = cur.getString(6)
+            dataList.add(data as HashMap<String, String>)
             mov = cur.moveToNext()
         }
     }
@@ -134,28 +131,21 @@ class ListDataManager private constructor(context: Context) {
             dataList = dataList2
             sortKey2 = key
         }
-        Collections.sort(dataList, Comparator<Map<String?, String>> { stringStringMap, t1 ->
-            var result: Int
-            result = if (key === "id") {
-                Integer.valueOf(stringStringMap["id"]).compareTo(
-                    Integer.valueOf(
-                        t1["id"]
-                    )
-                )
+
+        val comparator = Comparator<Map<String, String>> { t1, t2 ->
+            var result = if (key === "id") {
+                t1["id"]!!.compareTo(t2["id"]!!)
             } else {
-                stringStringMap[key]!!.compareTo(t1[key]!!)
+                t1[key]!!.compareTo(t2[key]!!)
             }
 
             // ソート順が決まらない場合には、idで比較する
             if (result == 0) {
-                result = Integer.valueOf(stringStringMap["id"]).compareTo(
-                    Integer.valueOf(
-                        t1["id"]
-                    )
-                )
+                result = t1["id"]!!.compareTo(t2["id"]!!)
             }
-            result
-        })
+            return@Comparator result
+        }
+        dataList.sortedWith(comparator)
     }
 
     private fun getCurrentCursor(dataIndex: Long): Cursor {

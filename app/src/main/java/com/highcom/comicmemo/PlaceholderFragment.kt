@@ -27,14 +27,14 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
     private var searchViewWord = ""
     var index = 0
         private set
-    private var mListData: List<Map<String?, String?>?>? = null
+    private var mListData: List<Map<String, String>>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pageViewModel = ViewModelProvider(requireActivity()).get(PageViewModel::class.java)
         if (arguments != null) {
             index = arguments!!.getInt(ARG_SECTION_NUMBER)
         }
-        mListData = pageViewModel!!.getListData(index.toLong()).value
+        mListData = pageViewModel!!.getListData(index.toLong())?.value
     }
 
     override fun onResume() {
@@ -68,7 +68,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
         recyclerView!!.addItemDecoration(itemDecoration)
         val scale = resources.displayMetrics.density
         // ドラックアンドドロップの操作を実装する
-        simpleCallbackHelper = object : SimpleCallbackHelper(context, recyclerView, scale, this) {
+        simpleCallbackHelper = object : SimpleCallbackHelper(context, recyclerView, scale, this as SimpleCallbackListener) {
             override fun instantiateUnderlayButton(
                 viewHolder: RecyclerView.ViewHolder,
                 underlayButtons: MutableList<UnderlayButton>
@@ -79,9 +79,9 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
                     Color.parseColor("#FF3C30"),
                     viewHolder as ListViewAdapter.ViewHolder
                 ) { holder, pos ->
-                    ListDataManager.Companion.getInstance().setLastUpdateId(0)
+                    ListDataManager.instance!!.lastUpdateId = 0
                     // データベースから削除する
-                    pageViewModel!!.deleteData(index.toLong(), holder.id.toString())
+                    pageViewModel!!.deleteData(index.toLong(), (holder as ListViewAdapter.ViewHolder).id.toString())
                     // フィルタしている場合はフィルタデータの一覧も更新する
                     setSearchWordFilter(searchViewWord)
                 })
@@ -91,12 +91,12 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
                     Color.parseColor("#C7C7CB"),
                     viewHolder
                 ) { holder, pos ->
-                    ListDataManager.Companion.getInstance().setLastUpdateId(0)
+                    ListDataManager.instance!!.lastUpdateId = 0
                     // 入力画面を生成
                     val intent = Intent(context, InputMemo::class.java)
                     // 選択アイテムを設定
                     intent.putExtra("EDIT", true)
-                    intent.putExtra("ID", holder.id!!.toLong())
+                    intent.putExtra("ID", (holder as ListViewAdapter.ViewHolder).id!!.toLong())
                     intent.putExtra("TITLE", holder.title.text.toString())
                     intent.putExtra("AUTHOR", holder.author.text.toString())
                     intent.putExtra("NUMBER", holder.number.text.toString())
@@ -106,7 +106,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
                 })
             }
         }
-        pageViewModel!!.getListData(index.toLong()).observe(viewLifecycleOwner) { map ->
+        pageViewModel!!.getListData(index.toLong())?.observe(viewLifecycleOwner) { map ->
             mListData = map
             setSearchWordFilter(searchViewWord)
         }
@@ -127,23 +127,23 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
     }
 
     fun changeEditEnable() {
-        if (adapter.getEditEnable()) {
-            adapter.setEditEnable(false)
+        if (adapter!!.editEnable) {
+            adapter!!.editEnable = false
             simpleCallbackHelper!!.setSwipeEnable(true)
         } else {
-            adapter.setEditEnable(true)
+            adapter!!.editEnable = true
             simpleCallbackHelper!!.setSwipeEnable(false)
         }
         recyclerView!!.adapter = adapter
     }
 
     fun setEditEnable(enable: Boolean) {
-        if (!enable && adapter.getEditEnable()) {
-            adapter.setEditEnable(false)
+        if (!enable && adapter!!.editEnable) {
+            adapter!!.editEnable = false
             simpleCallbackHelper!!.setSwipeEnable(true)
             recyclerView!!.adapter = adapter
-        } else if (enable && !adapter.getEditEnable()) {
-            adapter.setEditEnable(true)
+        } else if (enable && !adapter!!.editEnable) {
+            adapter!!.editEnable = true
             simpleCallbackHelper!!.setSwipeEnable(false)
             recyclerView!!.adapter = adapter
         }
@@ -157,7 +157,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        if (adapter.getEditEnable() && TextUtils.isEmpty(searchViewWord)) {
+        if (adapter!!.editEnable && TextUtils.isEmpty(searchViewWord)) {
             val fromPos = viewHolder.adapterPosition
             val toPos = target.adapterPosition
             adapter!!.notifyItemMoved(fromPos, toPos)
@@ -171,17 +171,17 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ) {
-        ListDataManager.Companion.getInstance().setLastUpdateId(0)
+        ListDataManager.instance!!.lastUpdateId = 0
         // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
         recyclerView.adapter = adapter
     }
 
     override fun onAdapterClicked(view: View, position: Int) {
         // 編集状態でない場合は入力画面に遷移しない
-        if (!adapter.getEditEnable()) {
+        if (!adapter!!.editEnable) {
             return
         }
-        ListDataManager.Companion.getInstance().setLastUpdateId(0)
+        ListDataManager.instance!!.lastUpdateId = 0
         // 入力画面を生成
         val intent = Intent(context, InputMemo::class.java)
         // 選択アイテムを設定
@@ -199,7 +199,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
     override fun onAdapterStatusSelected(view: View?, status: Long) {
         val holder = view!!.tag as ListViewAdapter.ViewHolder
         if (holder.status!!.toLong() == status) return
-        ListDataManager.Companion.getInstance().setLastUpdateId(0)
+        ListDataManager.instance!!.lastUpdateId = 0
         holder.status = status
         holder.inputdate.text = nowDate
 
@@ -224,7 +224,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
         // 999を上限とする
         if (num < 999) {
             num++
-            ListDataManager.Companion.getInstance().setLastUpdateId(holder.id!!.toInt())
+            ListDataManager.instance!!.lastUpdateId = holder.id!!.toInt()
         }
         holder.number.text = num.toString()
         holder.inputdate.text = nowDate
@@ -244,7 +244,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
     }
 
     override fun onAdapterDelBtnClicked(view: View) {
-        ListDataManager.Companion.getInstance().setLastUpdateId(0)
+        ListDataManager.instance!!.lastUpdateId = 0
         val holder = view.tag as ListViewAdapter.ViewHolder
         // データベースから削除する
         pageViewModel!!.deleteData(index.toLong(), holder.id.toString())
@@ -254,7 +254,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
 
     override fun onPause() {
         super.onPause()
-        ListDataManager.Companion.getInstance().setLastUpdateId(0)
+        ListDataManager.instance!!.lastUpdateId = 0
     }
 
     override fun onDestroy() {
