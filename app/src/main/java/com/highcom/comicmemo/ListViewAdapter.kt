@@ -209,7 +209,7 @@ class ListViewAdapter(
 
     override fun getFilter(): Filter {
         return object : Filter() {
-            override fun performFiltering(constraint: CharSequence): FilterResults {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val oReturn = FilterResults()
                 val results = ArrayList<Map<String, *>>()
                 if (orig == null) orig = listData
@@ -229,7 +229,7 @@ class ListViewAdapter(
             }
 
             override fun publishResults(
-                constraint: CharSequence,
+                constraint: CharSequence?,
                 results: FilterResults
             ) {
                 listData = results.values as ArrayList<Map<String, String>>

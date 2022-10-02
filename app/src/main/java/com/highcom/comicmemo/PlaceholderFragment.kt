@@ -19,7 +19,7 @@ import java.util.*
 /**
  * A placeholder fragment containing a simple view.
  */
-class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener {
+class PlaceholderFragment : Fragment(), AdapterListener {
     var pageViewModel: PageViewModel? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: ListViewAdapter? = null
@@ -28,6 +28,33 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
     var index = 0
         private set
     private var mListData: List<Map<String, String>>? = null
+
+    inner class MySimpleCallbackListener : SimpleCallbackListener {
+        override fun onSimpleCallbackMove(
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            if (adapter!!.editEnable && TextUtils.isEmpty(searchViewWord)) {
+                val fromPos = viewHolder.adapterPosition
+                val toPos = target.adapterPosition
+                adapter!!.notifyItemMoved(fromPos, toPos)
+                pageViewModel!!.rearrangeData(index.toLong(), fromPos, toPos)
+                return true
+            }
+            return false
+        }
+
+        override fun clearSimpleCallbackView(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
+        ) {
+            ListDataManager.instance!!.lastUpdateId = 0
+            // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
+            recyclerView.adapter = adapter
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pageViewModel = ViewModelProvider(requireActivity()).get(PageViewModel::class.java)
@@ -68,7 +95,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
         recyclerView!!.addItemDecoration(itemDecoration)
         val scale = resources.displayMetrics.density
         // ドラックアンドドロップの操作を実装する
-        simpleCallbackHelper = object : SimpleCallbackHelper(context, recyclerView, scale, this as SimpleCallbackListener) {
+        simpleCallbackHelper = object : SimpleCallbackHelper(context, recyclerView, scale, MySimpleCallbackListener()) {
             override fun instantiateUnderlayButton(
                 viewHolder: RecyclerView.ViewHolder,
                 underlayButtons: MutableList<UnderlayButton>
@@ -151,29 +178,6 @@ class PlaceholderFragment : Fragment(), AdapterListener, SimpleCallbackListener 
 
     fun sortData(key: String) {
         pageViewModel!!.sortData(index.toLong(), key)
-    }
-
-    override fun onSimpleCallbackMove(
-        viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
-    ): Boolean {
-        if (adapter!!.editEnable && TextUtils.isEmpty(searchViewWord)) {
-            val fromPos = viewHolder.adapterPosition
-            val toPos = target.adapterPosition
-            adapter!!.notifyItemMoved(fromPos, toPos)
-            pageViewModel!!.rearrangeData(index.toLong(), fromPos, toPos)
-            return true
-        }
-        return false
-    }
-
-    override fun clearSimpleCallbackView(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
-    ) {
-        ListDataManager.instance!!.lastUpdateId = 0
-        // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
-        recyclerView.adapter = adapter
     }
 
     override fun onAdapterClicked(view: View, position: Int) {

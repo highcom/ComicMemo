@@ -25,7 +25,7 @@ class ComicMemo : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comic_memo)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        MobileAds.initialize(this) { }
+        MobileAds.initialize(this)
         MobileAds.setRequestConfiguration(
             RequestConfiguration.Builder()
                 .setTestDeviceIds(Arrays.asList("874848BA4D9A6B9B0A256F7862A47A31")).build()
