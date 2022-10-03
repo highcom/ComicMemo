@@ -89,10 +89,6 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         recyclerView = view.findViewById<View>(R.id.comicListView) as RecyclerView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = adapter
-        // セル間に区切り線を実装する
-        val itemDecoration: ItemDecoration =
-            DividerItemDecoration(context, DividerItemDecoration.Companion.VERTICAL_LIST)
-        recyclerView!!.addItemDecoration(itemDecoration)
         val scale = resources.displayMetrics.density
         // ドラックアンドドロップの操作を実装する
         simpleCallbackHelper = object : SimpleCallbackHelper(context, recyclerView, scale, MySimpleCallbackListener()) {

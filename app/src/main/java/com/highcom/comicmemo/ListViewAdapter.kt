@@ -59,7 +59,7 @@ class ListViewAdapter(
                     R.drawable.toggle_select_button
                 )
             )
-            popupComplete.setTextColor(ContextCompat.getColor(context, R.color.blue))
+            popupComplete.setTextColor(ContextCompat.getColor(context, R.color.appcolor))
             popupComplete.setBackgroundDrawable(
                 ContextCompat.getDrawable(
                     context,
@@ -69,7 +69,7 @@ class ListViewAdapter(
         }
 
         fun setEnableLayoutComplete(context: Context?) {
-            popupContinue.setTextColor(ContextCompat.getColor(context!!, R.color.blue))
+            popupContinue.setTextColor(ContextCompat.getColor(context!!, R.color.appcolor))
             popupContinue.setBackgroundDrawable(
                 ContextCompat.getDrawable(
                     context,

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/sirosumire"
     android:weightSum="1">
 
     <LinearLayout
@@ -14,8 +15,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="戻る"
-            android:textColor="@color/blue"
-            android:background="@layout/no_frame_button"
+            android:textColor="@color/appcolor"
+            android:background="@drawable/no_frame_button"
             android:id="@+id/cancel" />
 
         <TextView
@@ -31,8 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="完了"
-            android:textColor="@color/blue"
-            android:background="@layout/no_frame_button"
+            android:textColor="@color/appcolor"
+            android:background="@drawable/no_frame_button"
             android:id="@+id/done" />
 
     </LinearLayout>
@@ -41,6 +42,10 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/shape_rouded_corners"
         android:layout_gravity="center_horizontal">
 
         <TextView
@@ -61,6 +66,10 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/shape_rouded_corners"
         android:layout_gravity="center_horizontal" >
 
         <TextView
@@ -82,6 +91,10 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/shape_rouded_corners"
         android:layout_gravity="center_horizontal" >
 
         <TextView
@@ -127,7 +140,7 @@
             android:layout_height="wrap_content"
             android:textOn="完結"
             android:textOff="完結"
-            android:textColor="@color/blue"
+            android:textColor="@color/appcolor"
             android:background="@drawable/toggle_unselect_button"
             android:focusableInTouchMode="false"
             android:layout_marginLeft="2dp"
@@ -138,13 +151,23 @@
             android:checked="false"/>
     </LinearLayout>
 
-    <EditText
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editMemo"
-        android:layout_gravity="top|left"
-        android:layout_weight="0.80"
-        android:hint="メモを入力"
-        android:gravity="top|left" />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/shape_rouded_corners"
+        android:layout_gravity="center_horizontal" >
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editMemo"
+            android:layout_gravity="top|left"
+            android:layout_weight="0.80"
+            android:hint="メモを入力"
+            android:gravity="top|left" />
+    </LinearLayout>
 </LinearLayout>

@@ -88,7 +88,7 @@ class InputMemo : Activity(), CompoundButton.OnCheckedChangeListener {
                 R.drawable.toggle_select_button
             )
         )
-        tbComplete!!.setTextColor(ContextCompat.getColor(applicationContext, R.color.blue))
+        tbComplete!!.setTextColor(ContextCompat.getColor(applicationContext, R.color.appcolor))
         tbComplete!!.setBackgroundDrawable(
             ContextCompat.getDrawable(
                 applicationContext,
@@ -99,7 +99,7 @@ class InputMemo : Activity(), CompoundButton.OnCheckedChangeListener {
     }
 
     private fun setEnableToggleComplete() {
-        tbContinue!!.setTextColor(ContextCompat.getColor(applicationContext, R.color.blue))
+        tbContinue!!.setTextColor(ContextCompat.getColor(applicationContext, R.color.appcolor))
         tbContinue!!.setBackgroundDrawable(
             ContextCompat.getDrawable(
                 applicationContext,

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/sirosumire"
     android:orientation="vertical">
 
     <LinearLayout
@@ -25,8 +26,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="編集"
-                android:textColor="@color/blue"
-                android:background="@layout/no_frame_button"
+                android:textColor="@color/appcolor"
+                android:background="@drawable/no_frame_button"
                 android:id="@+id/edit" />
 
             <SearchView
@@ -40,8 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="追加"
-                android:textColor="@color/blue"
-                android:background="@layout/no_frame_button"
+                android:textColor="@color/appcolor"
+                android:background="@drawable/no_frame_button"
                 android:id="@+id/add" />
         </LinearLayout>
 
@@ -49,7 +50,7 @@
             android:id="@+id/itemtabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blue"
+            android:background="@color/appcolor"
             style="@style/ComicTabStyle" />
 
         <androidx.viewpager.widget.ViewPager
