@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/sirosumire"
+    android:background="@color/sirahanairo"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,38 +13,6 @@
         android:layout_above="@+id/adViewFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:weightSum="1">
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="編集"
-                android:textColor="@color/appcolor"
-                android:background="@drawable/no_frame_button"
-                android:id="@+id/edit" />
-
-            <SearchView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/searchView"
-                android:layout_weight="1.0" />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="追加"
-                android:textColor="@color/appcolor"
-                android:background="@drawable/no_frame_button"
-                android:id="@+id/add" />
-        </LinearLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/itemtabs"
@@ -60,6 +28,16 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_new_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/adViewFrame"
+        android:tint="@color/white"
+        app:srcCompat="@drawable/ic_new_edit" />
 
     <FrameLayout
         android:id="@+id/adViewFrame"

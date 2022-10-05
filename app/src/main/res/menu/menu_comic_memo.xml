@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".ComicMemo">
+    <item
+        android:id="@+id/menu_search_view"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always"
+        android:visible="true"
+        android:title="Search Bar" />
     <item android:id="@+id/edit_mode" android:title="編集モード切替(デフォルト)"></item>
     <item android:id="@+id/sort_default" android:title="並べ替え(デフォルト)"></item>
     <item android:id="@+id/sort_title" android:title="並べ替え(タイトル)"></item>
