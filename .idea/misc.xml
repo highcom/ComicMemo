@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_baseline_done_24.xml" value="0.1555" />
         <entry key="app/src/main/res/drawable/original_button.xml" value="0.1895" />
         <entry key="app/src/main/res/drawable/shape_rouded_corners.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/shape_rouded_corners_top_5dp.xml" value="0.1895" />
@@ -17,6 +18,7 @@
         <entry key="app/src/main/res/layout/popupmenu.xml" value="0.1" />
         <entry key="app/src/main/res/layout/row.xml" value="0.19927536231884058" />
         <entry key="app/src/main/res/menu/menu_comic_memo.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/menu_done.xml" value="0.14583333333333334" />
       </map>
     </option>
   </component>

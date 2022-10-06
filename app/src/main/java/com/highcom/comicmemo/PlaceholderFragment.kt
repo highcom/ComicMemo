@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.highcom.comicmemo.ListViewAdapter.AdapterListener
 import com.highcom.comicmemo.SimpleCallbackHelper.SimpleCallbackListener
 import java.text.SimpleDateFormat
@@ -116,7 +115,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                 ) { holder, pos ->
                     ListDataManager.instance!!.lastUpdateId = 0
                     // 入力画面を生成
-                    val intent = Intent(context, InputMemo::class.java)
+                    val intent = Intent(context, InputMemoActivity::class.java)
                     // 選択アイテムを設定
                     intent.putExtra("EDIT", true)
                     intent.putExtra("ID", (holder as ListViewAdapter.ViewHolder).id!!.toLong())
@@ -183,7 +182,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         }
         ListDataManager.instance!!.lastUpdateId = 0
         // 入力画面を生成
-        val intent = Intent(context, InputMemo::class.java)
+        val intent = Intent(context, InputMemoActivity::class.java)
         // 選択アイテムを設定
         val holder = view.tag as ListViewAdapter.ViewHolder
         intent.putExtra("EDIT", true)
