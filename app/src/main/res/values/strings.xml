@@ -5,4 +5,7 @@
     <string name="title_activity_comic_memo_tab">ComicMemoTabActivity</string>
     <string name="tab_text_1">続刊</string>
     <string name="tab_text_2">完結</string>
+    <string name="query_hint">検索文字を入力</string>
+    <string name="input_edit">編集</string>
+    <string name="input_new">新規作成</string>
 </resources>

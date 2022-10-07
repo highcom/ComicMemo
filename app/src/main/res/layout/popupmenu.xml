@@ -1,44 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/shape_rouded_corners"
+    android:elevation="8dp">
+    <ToggleButton android:text="続刊"
+        android:id="@+id/popupContinue"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="8dp">
+        android:textOn="続刊"
+        android:textOff="続刊"
+        android:textColor="@color/white"
+        android:background="@drawable/toggle_select_button"
+        android:focusableInTouchMode="false"
+        android:layout_margin="4dp"
+        android:focusable="false"
+        android:checked="true"/>
 
-        <ToggleButton android:text="続刊"
-            android:id="@+id/popupContinue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="続刊"
-            android:textOff="続刊"
-            android:textColor="@color/white"
-            android:background="@drawable/toggle_select_button"
-            android:focusableInTouchMode="false"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:focusable="false"
-            android:checked="true"/>
-
-        <ToggleButton android:text="完結"
-            android:id="@+id/popupComplete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="完結"
-            android:textOff="完結"
-            android:textColor="@color/blue"
-            android:background="@drawable/toggle_unselect_button"
-            android:focusableInTouchMode="false"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:focusable="false"
-            android:checked="false"/>
-    </LinearLayout>
+    <ToggleButton android:text="完結"
+        android:id="@+id/popupComplete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="完結"
+        android:textOff="完結"
+        android:textColor="@color/appcolor"
+        android:background="@drawable/toggle_unselect_button"
+        android:focusableInTouchMode="false"
+        android:layout_margin="4dp"
+        android:focusable="false"
+        android:checked="false"/>
 </LinearLayout>

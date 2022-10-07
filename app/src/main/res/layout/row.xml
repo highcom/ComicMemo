@@ -1,112 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="4dp"
+    android:background="@drawable/shape_rouded_corners"
     android:weightSum="1">
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="削除"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_rounded_left_corners"
+        android:focusableInTouchMode="false"
+        android:focusable="false"
+        android:id="@+id/deletebutton" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="3dp" >
+        android:orientation="vertical">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="削除"
-            android:visibility="gone"
-            android:textColor="@color/white"
-            android:background="@color/red"
-            android:focusableInTouchMode="false"
-            android:focusable="false"
-            android:id="@+id/deletebutton" />
+            android:layout_marginRight="3dp" >
 
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:focusableInTouchMode="false"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="true"
-            android:background="@null"
-            android:scaleType="centerInside"
-            android:src="@drawable/icon_rearrange"
-            android:id="@+id/rearrangebutton" />
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:focusableInTouchMode="false"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_rearrange"
+                android:id="@+id/rearrangebutton" />
 
-        <TextView
-            android:id="@+id/title"
+            <TextView
+                android:id="@+id/title"
+                android:layout_marginLeft="3dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:gravity="center_vertical"
+                android:text="TextView"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:text="0"
+                android:gravity="center_vertical|right"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/vol"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="巻"
+                android:gravity="center_vertical|right"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/addbutton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:textColor="@color/blue"
+                android:background="@drawable/original_button"
+                android:focusableInTouchMode="false"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:focusable="false"
+                android:text="╋" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:gravity="center_vertical"
-            android:text="TextView"
-            android:textSize="18dp" />
+            android:layout_marginRight="3dp" >
+            <TextView
+                android:id="@+id/author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="author" >
+            </TextView>
 
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.25"
-            android:text="0"
-            android:gravity="center_vertical|right"
-            android:textSize="18dp" />
+            <TextView
+                android:id="@+id/memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="memo" >
+            </TextView>
 
-        <TextView
-            android:id="@+id/vol"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="巻"
-            android:gravity="center_vertical|right"
-            android:textSize="18dp" />
+            <TextView
+                android:id="@+id/inputdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0000/00/00" >
+            </TextView>
 
-        <Button
-            android:id="@+id/addbutton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/blue"
-            android:background="@layout/original_button"
-            android:focusableInTouchMode="false"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:focusable="false"
-            android:text="＋" />
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp" >
-        <TextView
-            android:id="@+id/author"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="author" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/memo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="memo" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/inputdate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0000/00/00" >
-        </TextView>
-
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

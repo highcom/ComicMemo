@@ -8,8 +8,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
 /**
- * A [FragmentPagerAdapter] that returns a fragment corresponding to
- * one of the sections/tabs/pages.
+ * タブレイアウトのセクションページアダプタ
+ *
+ * @property mContext
+ *
+ * @param fm
  */
 class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager?) :
     FragmentPagerAdapter(
@@ -19,23 +22,44 @@ class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager?) 
     var currentFragment: Fragment? = null
         private set
 
+    /**
+     * カレントのFragment取得処理
+     *
+     * @param position 現在のタブ位置
+     * @return 巻数データ一覧のフラグメント
+     */
     override fun getItem(position: Int): Fragment {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
         val fragment: Fragment = PlaceholderFragment.Companion.newInstance(position)
         fragmentList.add(fragment)
         return fragment
     }
 
+    /**
+     * セクションページのタイトル取得処理
+     *
+     * @param position セクションページ位置
+     * @return タイトル名
+     */
     override fun getPageTitle(position: Int): CharSequence? {
         return mContext.resources.getString(TAB_TITLES[position])
     }
 
+    /**
+     * セクションページ数取得処理
+     *
+     * @return セクションページ数
+     */
     override fun getCount(): Int {
-        // Show 2 total pages.
         return 2
     }
 
+    /**
+     * 有効なセクションページの設定処理
+     *
+     * @param container コンテナ
+     * @param position セクションページ位置
+     * @param object セクションページフラグメント
+     */
     override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
         if (currentFragment !== `object`) {
             currentFragment = `object` as Fragment

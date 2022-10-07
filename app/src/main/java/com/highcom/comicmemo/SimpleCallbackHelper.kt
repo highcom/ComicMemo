@@ -12,6 +12,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
+/**
+ * スワイプメニュー用リスナークラス
+ *
+ * @param context コンテキスト
+ * @param recyclerView 巻数データ一覧View
+ * @param scale 画面の解像度
+ * @param listener コールバック用リスナー
+ */
 abstract class SimpleCallbackHelper(
     context: Context?,
     recyclerView: RecyclerView?,
@@ -21,16 +29,29 @@ abstract class SimpleCallbackHelper(
     ItemTouchHelper.UP or ItemTouchHelper.DOWN,
     ItemTouchHelper.LEFT
 ) {
+    /** 巻数データ一覧View */
     private val recyclerView: RecyclerView?
+    /** スワイプで表示されるボタン */
     private lateinit var buttons: MutableList<UnderlayButton>
+    /** 操作のジェスチャー検出 */
     private lateinit var gestureDetector: GestureDetector
+    /** スワイプした位置 */
     private var swipedPos = -1
+    /** スワイプ長さの閾値 */
     private var swipeThreshold = 0.5f
+    /** スワイプで表示されるボタンのバッファ */
     private val buttonsBuffer: MutableMap<Int, MutableList<UnderlayButton>>
+    /** スワイプボタンを表示している位置を覚えておくキュー */
     private lateinit var recoverQueue: Queue<Int>
+    /** スワイプ時のコールバック用リスナー */
     private val simpleCallbackListener: SimpleCallbackListener
+    /** スワイプが終わったかどうか */
     private var isMoved: Boolean
 
+    /**
+     * スワイプ時のコールバック用リスナークラス
+     *
+     */
     interface SimpleCallbackListener {
         fun onSimpleCallbackMove(
             viewHolder: RecyclerView.ViewHolder,
@@ -40,6 +61,9 @@ abstract class SimpleCallbackHelper(
         fun clearSimpleCallbackView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder)
     }
 
+    /**
+     * ジェスチャー検出用リスナー
+     */
     private val gestureListener: SimpleOnGestureListener = object : SimpleOnGestureListener() {
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             for (button in buttons) {
@@ -48,6 +72,10 @@ abstract class SimpleCallbackHelper(
             return true
         }
     }
+
+    /**
+     * タッチ操作用リスナー
+     */
     @SuppressLint("ClickableViewAccessibility")
     private val onTouchListener = OnTouchListener { view, e ->
         if (swipedPos < 0) return@OnTouchListener false
@@ -68,6 +96,11 @@ abstract class SimpleCallbackHelper(
         false
     }
 
+    /**
+     * スワイプ操作が有効かどうか
+     *
+     * @param enable スワイプ操作の有効・無効
+     */
     fun setSwipeEnable(enable: Boolean) {
         if (enable) {
             setDefaultSwipeDirs(ItemTouchHelper.LEFT)
@@ -76,6 +109,14 @@ abstract class SimpleCallbackHelper(
         }
     }
 
+    /**
+     * 移動操作中のイベント処理
+     *
+     * @param recyclerView
+     * @param viewHolder
+     * @param target
+     * @return
+     */
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -84,6 +125,17 @@ abstract class SimpleCallbackHelper(
         return simpleCallbackListener.onSimpleCallbackMove(viewHolder, target)
     }
 
+    /**
+     * 移動操作完了後の処理
+     *
+     * @param recyclerView
+     * @param viewHolder
+     * @param fromPos
+     * @param target
+     * @param toPos
+     * @param x
+     * @param y
+     */
     override fun onMoved(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -97,6 +149,12 @@ abstract class SimpleCallbackHelper(
         isMoved = true
     }
 
+    /**
+     * スワイプ操作処理
+     *
+     * @param viewHolder
+     * @param direction
+     */
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val pos = viewHolder.adapterPosition
         if (swipedPos != pos) recoverQueue.add(swipedPos)
@@ -108,6 +166,12 @@ abstract class SimpleCallbackHelper(
         recoverSwipedItem()
     }
 
+    /**
+     * 操作したViewを初期状態に戻す
+     *
+     * @param recyclerView
+     * @param viewHolder
+     */
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
         if (isMoved) {
@@ -116,18 +180,47 @@ abstract class SimpleCallbackHelper(
         isMoved = false
     }
 
+    /**
+     * スワイプ閾値の取得
+     *
+     * @param viewHolder
+     * @return
+     */
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
         return swipeThreshold
     }
 
+    /**
+     * スワイプ速度の取得
+     *
+     * @param defaultValue
+     * @return
+     */
     override fun getSwipeEscapeVelocity(defaultValue: Float): Float {
         return 0.1f * defaultValue
     }
 
+    /**
+     * スワイプ速度の閾値取得
+     *
+     * @param defaultValue
+     * @return
+     */
     override fun getSwipeVelocityThreshold(defaultValue: Float): Float {
         return 5.0f * defaultValue
     }
 
+    /**
+     * スワイプ時のボタン表示
+     *
+     * @param c
+     * @param recyclerView
+     * @param viewHolder
+     * @param dX
+     * @param dY
+     * @param actionState
+     * @param isCurrentlyActive
+     */
     override fun onChildDraw(
         c: Canvas,
         recyclerView: RecyclerView,
@@ -168,6 +261,10 @@ abstract class SimpleCallbackHelper(
         )
     }
 
+    /**
+     * スワイプアイテムを元に戻す処理
+     *
+     */
     @Synchronized
     private fun recoverSwipedItem() {
         while (!recoverQueue.isEmpty()) {
@@ -178,6 +275,15 @@ abstract class SimpleCallbackHelper(
         }
     }
 
+    /**
+     * ボタンの描画
+     *
+     * @param c
+     * @param itemView
+     * @param buffer
+     * @param pos
+     * @param dX
+     */
     private fun drawButtons(
         c: Canvas,
         itemView: View,
@@ -203,6 +309,10 @@ abstract class SimpleCallbackHelper(
         }
     }
 
+    /**
+     * 操作イベントリスナーのアタッチ処理
+     *
+     */
     fun attachSwipe() {
         val itemTouchHelper = ItemTouchHelper(this)
         itemTouchHelper.attachToRecyclerView(recyclerView)
@@ -213,6 +323,15 @@ abstract class SimpleCallbackHelper(
         underlayButtons: MutableList<UnderlayButton>
     )
 
+    /**
+     * スワイプ時に表示するボタン描画用クラス
+     *
+     * @property text
+     * @property imageResId
+     * @property color
+     * @property viewHolder
+     * @property clickListener
+     */
     class UnderlayButton(
         private val text: String,
         private val imageResId: Int,
@@ -222,6 +341,14 @@ abstract class SimpleCallbackHelper(
     ) {
         private var pos = 0
         private var clickRegion: RectF? = null
+
+        /**
+         * ボタン選択時の処理
+         *
+         * @param x
+         * @param y
+         * @return
+         */
         fun onClick(x: Float, y: Float): Boolean {
             if (clickRegion != null && clickRegion!!.contains(x, y)) {
                 clickListener.invoke(viewHolder, pos)
@@ -230,6 +357,13 @@ abstract class SimpleCallbackHelper(
             return false
         }
 
+        /**
+         * ボタンの描画処理
+         *
+         * @param c
+         * @param rect
+         * @param pos
+         */
         fun onDraw(c: Canvas, rect: RectF, pos: Int) {
             val p = Paint()
 
