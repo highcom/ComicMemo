@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper
 import java.util.*
 
 /**
- * Created by koichi on 2016/08/11.
+ * DBアクセス用ヘルパークラス
+ *
+ * @param context コンテキスト
  */
 class ListDataOpenHelper(context: Context?) : SQLiteOpenHelper(context, "ComicMemoDB", null, 2) {
     override fun onCreate(db: SQLiteDatabase) {

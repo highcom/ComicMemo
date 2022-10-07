@@ -12,7 +12,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * Created by koichi on 2015/06/28.
+ * 巻数データ一覧用リストアダプタ
+ *
+ * @param context コンテキスト
+ * @param data 巻数データリスト
+ * @param resource
+ * @param from
+ * @param to
+ * @param listener コールバック用のリスナー
  */
 class ListViewAdapter(
     context: Context?,
@@ -22,15 +29,25 @@ class ListViewAdapter(
     to: IntArray?,
     listener: AdapterListener
 ) : RecyclerView.Adapter<ListViewAdapter.ViewHolder>(), Filterable {
-    // private Context context;
-    private val inflater: LayoutInflater
+    /** レイアウト */
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
+    /** 巻数一覧データ */
     private var listData: List<Map<String, *>>?
+    /** フィルタ前の巻数一覧データ */
     private var orig: List<Map<String, *>>? = null
+    /** 編集が有効かどうか */
     var editEnable = false
+    /** アダプタの操作イベントリスナー */
     private val adapterListener: AdapterListener
+    /** ポップアップメニュー */
     private var popupWindow: PopupWindow? = null
+    /** ポップアップメニュー用のView */
     private var popupView: View? = null
 
+    /**
+     * アダプタの操作イベントリスナー
+     *
+     */
     interface AdapterListener {
         fun onAdapterClicked(view: View, position: Int)
         fun onAdapterStatusSelected(view: View?, status: Long)
@@ -38,19 +55,42 @@ class ListViewAdapter(
         fun onAdapterDelBtnClicked(view: View)
     }
 
+    /**
+     * 巻数データのホルダークラス
+     *
+     * @param itemView 巻数データのアイテム
+     */
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        /** 巻数データID */
         var id: Long? = null
+        /** タイトル名 */
         var title: TextView
+        /** 著者名 */
         var author: TextView
+        /** 巻数 */
         var number: TextView
+        /** メモ */
         var memo: TextView
+        /** 入力日付 */
         var inputdate: TextView
+        /** 続刊・完結 */
         var status: Long? = null
+        /** 巻数追加ボタン */
         var addbtn: Button
+        /** 削除ボタン */
         var deletebtn: Button
+        /** 並べ替えボタン */
         var rearrangebtn: ImageButton
+        /** ポップアップメニュー続刊 */
         var popupContinue: ToggleButton
+        /** ポップアップメニュー完結 */
         var popupComplete: ToggleButton
+
+        /**
+         * ポップアップメニューの続刊を有効にする
+         *
+         * @param context コンテキスト
+         */
         fun setEnableLayoutContinue(context: Context?) {
             popupContinue.setTextColor(ContextCompat.getColor(context!!, R.color.white))
             popupContinue.setBackgroundDrawable(
@@ -68,6 +108,11 @@ class ListViewAdapter(
             )
         }
 
+        /**
+         * ポップアップメニューの完結を有効にする
+         *
+         * @param context コンテキスト
+         */
         fun setEnableLayoutComplete(context: Context?) {
             popupContinue.setTextColor(ContextCompat.getColor(context!!, R.color.appcolor))
             popupContinue.setBackgroundDrawable(
@@ -153,10 +198,23 @@ class ListViewAdapter(
         }
     }
 
+    /**
+     * ViewHolderの生成
+     *
+     * @param parent 親のViewGroup
+     * @param viewType
+     * @return
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflater.inflate(R.layout.row, parent, false))
     }
 
+    /**
+     * ViewHolderのバインド
+     *
+     * @param holder ViewHolderのデータ
+     * @param position 一覧データの位置
+     */
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val id = (listData!![position] as HashMap<*, *>?)!!["id"].toString()
         val title = (listData!![position] as HashMap<*, *>?)!!["title"].toString()
@@ -199,6 +257,11 @@ class ListViewAdapter(
         }
     }
 
+    /**
+     * アイテム数取得処理
+     *
+     * @return アイテム数
+     */
     override fun getItemCount(): Int {
         return if (listData != null) {
             listData!!.size
@@ -207,6 +270,11 @@ class ListViewAdapter(
         }
     }
 
+    /**
+     * 検索文字列での一覧のフィルタ処理
+     *
+     * @return フィルタした結果
+     */
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -239,7 +307,6 @@ class ListViewAdapter(
     }
 
     init {
-        inflater = LayoutInflater.from(context)
         listData = data
         adapterListener = listener
     }
