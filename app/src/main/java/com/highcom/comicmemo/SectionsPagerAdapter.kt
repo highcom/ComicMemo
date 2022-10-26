@@ -14,7 +14,15 @@ import androidx.fragment.app.FragmentPagerAdapter
  *
  * @param fm
  */
-class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager?) :
+/**
+ * タブレイアウトのセクションページアダプタ
+ *
+ * @property mContext コンテキスト
+ * @property comicPagerViewModel 巻数一覧を制御するためのViewModel
+ *
+ * @param fm フラグメントマネージャ
+ */
+class SectionsPagerAdapter(private val mContext: Context, private val comicPagerViewModel: ComicPagerViewModel, fm: FragmentManager?) :
     FragmentPagerAdapter(
         fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
     ) {
@@ -29,7 +37,7 @@ class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager?) 
      * @return 巻数データ一覧のフラグメント
      */
     override fun getItem(position: Int): Fragment {
-        val fragment: Fragment = PlaceholderFragment.Companion.newInstance(position)
+        val fragment: Fragment = PlaceholderFragment.newInstance(position, comicPagerViewModel)
         fragmentList.add(fragment)
         return fragment
     }

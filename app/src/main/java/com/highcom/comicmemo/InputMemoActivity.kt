@@ -15,8 +15,6 @@ import java.util.*
 class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
     /** バインディング */
     private lateinit var binding: ActivityInputMemoBinding
-    /** 巻数の一覧データ管理 */
-    private var manager: ListDataManager? = null
     /** 編集モードかどうか */
     private var isEdit = false
     /** 巻数メモデータID */
@@ -42,7 +40,6 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
         binding.editAuthor.setText(intent.getStringExtra("AUTHOR"))
         binding.editNumber.setText(intent.getStringExtra("NUMBER"))
         binding.editMemo.setText(intent.getStringExtra("MEMO"))
-        manager = ListDataManager.instance
 
         tbContinue = binding.toggleContinue
         tbComplete = binding.toggleComplete
@@ -101,7 +98,7 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
                 data["inputdate"] = DateFormat.format("yyyy/MM/dd", Date()).toString()
                 data["status"] = java.lang.Long.valueOf(status).toString()
                 // データベースに追加or編集する
-                manager!!.setData(isEdit, data)
+                ListDataManager.instance?.setData(isEdit, data)
                 // 詳細画面を終了
                 finish()
             }

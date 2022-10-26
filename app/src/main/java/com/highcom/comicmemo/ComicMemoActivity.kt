@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
@@ -19,6 +20,11 @@ import java.util.*
 class ComicMemoActivity : AppCompatActivity() {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
+    /** 巻数一覧を制御するためのViewModel */
+    private val comicPagerViewModel: ComicPagerViewModel by viewModels {
+        ComicPagerViewModelFactory((application as ComicMemoApplication).repository)
+    }
+
     /** 巻数の一覧データ管理 */
     private var listDataManager: ListDataManager? = null
     /** タブレイアウトのセクションページアダプタ */
@@ -74,8 +80,8 @@ class ComicMemoActivity : AppCompatActivity() {
         )
 
         // 各セクションページに表示する一覧データの設定
-        listDataManager = ListDataManager.Companion.createInstance(applicationContext)
-        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
+        listDataManager = ListDataManager.createInstance(applicationContext)
+        sectionsPagerAdapter = SectionsPagerAdapter(this, comicPagerViewModel, supportFragmentManager)
         binding.viewPager.adapter = sectionsPagerAdapter
         binding.itemtabs.setupWithViewPager(binding.viewPager)
 
@@ -210,7 +216,8 @@ class ComicMemoActivity : AppCompatActivity() {
         // 入力画面で作成されたデータを一覧に反映する
         val fragments = sectionsPagerAdapter!!.allFragment
         for (fragment in fragments) {
-            (fragment as PlaceholderFragment).updateData()
+            // TODO:updateはしなくてもobserveで更新されるはず
+//            (fragment as PlaceholderFragment).updateData()
             (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
         }
     }
