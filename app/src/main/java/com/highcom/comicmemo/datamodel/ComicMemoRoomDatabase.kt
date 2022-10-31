@@ -11,7 +11,7 @@ import androidx.room.RoomDatabase
 //    autoMigrations = [
 //        AutoMigration (from = 2, to = 3)
 //    ]
-)
+    exportSchema = false)
 abstract class ComicMemoRoomDatabase : RoomDatabase() {
     abstract fun comicDao(): ComicDao
 
