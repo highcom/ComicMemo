@@ -1,5 +1,7 @@
 package com.highcom.comicmemo
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
@@ -7,6 +9,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.highcom.comicmemo.databinding.ActivityInputMemoBinding
+import com.highcom.comicmemo.datamodel.Comic
 import java.util.*
 
 /**
@@ -17,8 +20,8 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
     private lateinit var binding: ActivityInputMemoBinding
     /** 編集モードかどうか */
     private var isEdit = false
-    /** 巻数メモデータID */
-    private var id: Long = 0
+    /** 巻数データ */
+    private lateinit var comic: Comic
     /** アクティブなセクションページ 0:続刊 1:完結 */
     private var status: Long = 0
     /** トグルボタン（続刊） */
@@ -34,12 +37,12 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
         // 渡されたデータを取得する
         val intent = intent
         isEdit = intent.getBooleanExtra("EDIT", false)
-        id = intent.getLongExtra("ID", -1)
-        status = intent.getLongExtra("STATUS", 0)
-        binding.editTitle.setText(intent.getStringExtra("TITLE"))
-        binding.editAuthor.setText(intent.getStringExtra("AUTHOR"))
-        binding.editNumber.setText(intent.getStringExtra("NUMBER"))
-        binding.editMemo.setText(intent.getStringExtra("MEMO"))
+        comic = intent.getSerializableExtra("COMIC") as? Comic ?: Comic(0, "", "", "", "", "", 0)
+        status = comic.status
+        binding.editTitle.setText(comic.title)
+        binding.editAuthor.setText(comic.author)
+        binding.editNumber.setText(comic.number)
+        binding.editMemo.setText(comic.memo)
 
         tbContinue = binding.toggleContinue
         tbComplete = binding.toggleComplete
@@ -89,16 +92,15 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
                 if (binding.editNumber.text.toString() != "") {
                     chgNumber = binding.editNumber.text.toString().toInt()
                 }
-                val data: MutableMap<String, String> = HashMap()
-                data["id"] = java.lang.Long.valueOf(id).toString()
-                data["title"] = binding.editTitle.text.toString()
-                data["author"] = binding.editAuthor.text.toString()
-                data["number"] = chgNumber.toString()
-                data["memo"] = binding.editMemo.text.toString()
-                data["inputdate"] = DateFormat.format("yyyy/MM/dd", Date()).toString()
-                data["status"] = java.lang.Long.valueOf(status).toString()
-                // データベースに追加or編集する
-                ListDataManager.instance?.setData(isEdit, data)
+                comic.title = binding.editTitle.text.toString()
+                comic.author = binding.editAuthor.text.toString()
+                comic.number = chgNumber.toString()
+                comic.memo = binding.editMemo.text.toString()
+                comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()
+                comic.status = java.lang.Long.valueOf(status)
+                val intent = Intent()
+                intent.putExtra("COMIC", comic)
+                setResult(Activity.RESULT_OK, intent)
                 // 詳細画面を終了
                 finish()
             }

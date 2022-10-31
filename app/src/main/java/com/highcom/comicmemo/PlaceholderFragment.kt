@@ -15,6 +15,7 @@ import com.highcom.comicmemo.ComicListAdapter.AdapterListener
 import com.highcom.comicmemo.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -265,12 +266,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         // 選択アイテムを設定
         val holder = view.tag as ComicListAdapter.ComicViewHolder
         intent.putExtra("EDIT", true)
-        intent.putExtra("ID", holder.id!!.toLong())
-        intent.putExtra("TITLE", holder.title.text.toString())
-        intent.putExtra("AUTHOR", holder.author.text.toString())
-        intent.putExtra("NUMBER", holder.number.text.toString())
-        intent.putExtra("MEMO", holder.memo.text.toString())
-        intent.putExtra("STATUS", holder.status!!.toLong())
+        intent.putExtra("COMIC", holder.comic as Serializable)
         startActivityForResult(intent, 1001)
     }
 

@@ -10,9 +10,14 @@ import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
+import com.highcom.comicmemo.datamodel.Comic
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.concurrent.thread
 
 /**
  * 巻数メモ一覧Activity
@@ -209,15 +214,22 @@ class ComicMemoActivity : AppCompatActivity() {
      */
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        // FragmentからのonAdapterClickedからではrequestCodeが引き継がれない
-//        if (requestCode != 1001) {
-//            return;
-//        }
+
+        if (requestCode != 1001) return
+
+        val comic = data?.getSerializableExtra("COMIC") as? Comic
+        if (comic != null) {
+            GlobalScope.launch {
+                if (comic.id == 0L) {
+                    (application as ComicMemoApplication).repository.insert(comic)
+                } else {
+                    (application as ComicMemoApplication).repository.update(comic)
+                }
+            }
+        }
         // 入力画面で作成されたデータを一覧に反映する
         val fragments = sectionsPagerAdapter!!.allFragment
         for (fragment in fragments) {
-            // TODO:updateはしなくてもobserveで更新されるはず
-//            (fragment as PlaceholderFragment).updateData()
             (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
         }
     }
