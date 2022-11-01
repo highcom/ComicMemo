@@ -150,11 +150,13 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                     "削除",
                     0,
                     Color.parseColor("#FF3C30"),
-                    viewHolder as ListViewAdapter.ViewHolder
+                    viewHolder as ComicListAdapter.ComicViewHolder
                 ) { holder, pos ->
+                    // TODO:最後に更新したIdの設定をどうにかする
                     ListDataManager.instance!!.lastUpdateId = 0
                     // データベースから削除する
-                    (holder as ComicListAdapter.ComicViewHolder).id?.let { pageViewModel.delete(it) }
+                    val comic = (holder as ComicListAdapter.ComicViewHolder).comic
+                    comic?.let { pageViewModel.delete(it.id) }
                     // フィルタしている場合はフィルタデータの一覧も更新する
                     setSearchWordFilter(searchViewWord)
                 })
@@ -164,17 +166,14 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                     Color.parseColor("#C7C7CB"),
                     viewHolder
                 ) { holder, pos ->
+                    // TODO:最後に更新したIdの設定をどうにかする
                     ListDataManager.instance!!.lastUpdateId = 0
                     // 入力画面を生成
                     val intent = Intent(context, InputMemoActivity::class.java)
                     // 選択アイテムを設定
+                    val comic = (holder as ComicListAdapter.ComicViewHolder).comic
                     intent.putExtra("EDIT", true)
-                    intent.putExtra("ID", (holder as ListViewAdapter.ViewHolder).id!!.toLong())
-                    intent.putExtra("TITLE", holder.title.text.toString())
-                    intent.putExtra("AUTHOR", holder.author.text.toString())
-                    intent.putExtra("NUMBER", holder.number.text.toString())
-                    intent.putExtra("MEMO", holder.memo.text.toString())
-                    intent.putExtra("STATUS", holder.status!!.toLong())
+                    intent.putExtra("COMIC", comic as Serializable)
                     startActivityForResult(intent, 1001)
                 })
             }

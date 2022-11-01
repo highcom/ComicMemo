@@ -336,7 +336,7 @@ abstract class SimpleCallbackHelper(
         private val text: String,
         private val imageResId: Int,
         private val color: Int,
-        private val viewHolder: ListViewAdapter.ViewHolder,
+        private val viewHolder: ComicListAdapter.ComicViewHolder,
         private val clickListener: (Any, Any) -> Unit
     ) {
         private var pos = 0
