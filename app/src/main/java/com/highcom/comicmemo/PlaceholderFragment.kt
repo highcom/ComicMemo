@@ -278,17 +278,14 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
      * @param status 0:続刊 1:完結
      */
     override fun onAdapterStatusSelected(view: View?, status: Long) {
-        val holder = view?.tag as ComicListAdapter.ComicViewHolder
-        holder.let {
-            if (it.status != null && it.status != status) {
+        val comic = view?.tag as Comic
+        comic.let {
+            if (it.status != status) {
                 // TODO:最後に更新したIdの設定をどうにかする
                 ListDataManager.instance!!.lastUpdateId = 0
-                // TODO:以下2行は必要か？
                 it.status = status
-                it.inputdate.text = DateFormat.format("yyyy/MM/dd", Date())
-                it.comic?.status = status
-                it.comic?.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()
-                if (it.comic != null) pageViewModel.update(it.comic!!)
+                it.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()
+                pageViewModel.update(it)
             }
         }
 
