@@ -215,11 +215,13 @@ class ComicMemoActivity : AppCompatActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode != 1001) return
+        // Fragmentからの呼び出されるので、下位16bitで判定する
+        if (requestCode and 0xFFFF != 1001) return
 
         val comic = data?.getSerializableExtra("COMIC") as? Comic
         if (comic != null) {
             GlobalScope.launch {
+                // idが0の場合は新規作成でDBのautoGenerateで自動採番される
                 if (comic.id == 0L) {
                     (application as ComicMemoApplication).repository.insert(comic)
                 } else {

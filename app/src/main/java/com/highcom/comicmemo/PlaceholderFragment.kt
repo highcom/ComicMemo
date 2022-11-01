@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.ComicListAdapter.AdapterListener
 import com.highcom.comicmemo.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
+import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import java.io.Serializable
 import java.util.*
@@ -264,9 +265,9 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         // 入力画面を生成
         val intent = Intent(context, InputMemoActivity::class.java)
         // 選択アイテムを設定
-        val holder = view.tag as ComicListAdapter.ComicViewHolder
+        val comic = view.tag as Comic
         intent.putExtra("EDIT", true)
-        intent.putExtra("COMIC", holder.comic as Serializable)
+        intent.putExtra("COMIC", comic as Serializable)
         startActivityForResult(intent, 1001)
     }
 
@@ -301,25 +302,21 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
      * @param view 選択した巻数データView
      */
     override fun onAdapterAddBtnClicked(view: View) {
-        val holder = view.tag as ComicListAdapter.ComicViewHolder
+        val comic = view.tag as Comic
         // 巻数を+1する
-        var num = holder.comic?.number?.toInt()
+        var num = comic.number.toInt()
         // 999を上限とする
-        if (num != null) {
-            if (num < COMIC_NUM_MAX) {
-                num++
-                // TODO:どうにかする
-                ListDataManager.instance!!.lastUpdateId = holder.id!!.toInt()
-            }
-            holder.comic?.number = num.toString()
-            holder.comic?.inputdate = DateFormat.format("yyyy/MM/dd", Date()) as String
-            // TODO:以下2行は必要か？
-            holder.number.text = holder.comic?.number
-            holder.inputdate.text = holder.comic?.inputdate
-            holder.comic?.let { pageViewModel.update(it) }
-            // フィルタしている場合はフィルタデータの一覧も更新する
-            setSearchWordFilter(searchViewWord)
+        if (num >= COMIC_NUM_MAX) {
+            return
         }
+        num++
+        // TODO:どうにかする
+        ListDataManager.instance!!.lastUpdateId = comic.id.toInt()
+        comic.number = num.toString()
+        comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()) as String
+        pageViewModel.update(comic)
+        // フィルタしている場合はフィルタデータの一覧も更新する
+        setSearchWordFilter(searchViewWord)
     }
 
     /**
