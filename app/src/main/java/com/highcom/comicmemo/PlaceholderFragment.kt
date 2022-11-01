@@ -322,16 +322,18 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
      * @param view 選択した巻数データView
      */
     override fun onAdapterDelBtnClicked(view: View) {
+        // TODO:最後に更新したIdの設定をどうにかする
         ListDataManager.instance!!.lastUpdateId = 0
-        val holder = view.tag as ComicListAdapter.ComicViewHolder
+        val comic = view.tag as Comic
         // データベースから削除する
-        holder.id?.let { pageViewModel.delete(it) }
+        pageViewModel.delete(comic.id)
         // フィルタしている場合はフィルタデータの一覧も更新する
         setSearchWordFilter(searchViewWord)
     }
 
     override fun onPause() {
         super.onPause()
+        // TODO:最後に更新したIdの設定をどうにかする
         ListDataManager.instance!!.lastUpdateId = 0
     }
 
