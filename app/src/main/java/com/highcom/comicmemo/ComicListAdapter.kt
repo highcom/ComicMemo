@@ -16,6 +16,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.datamodel.Comic
 
+object ComicListPersistent {
+    /**
+     * 最後に巻数を更新したデータのID
+     *
+     * 巻数を赤文字表示するために利用する
+     */
+    var lastUpdateId = 0L
+}
+
 class ComicListAdapter (
     context: Context?,
     listener: AdapterListener
@@ -87,8 +96,7 @@ class ComicListAdapter (
             number.text = comic.number
             memo.text = comic.memo
             inputdate.text = comic.inputdate
-            // TODO:lastUpdateIdをViewModelに置き換える
-            if (id!!.toInt() == ListDataManager.instance?.lastUpdateId ?: 0) {
+            if (id!! == ComicListPersistent.lastUpdateId) {
                 number.setTextColor(Color.RED)
             } else {
                 number.setTextColor(Color.GRAY)

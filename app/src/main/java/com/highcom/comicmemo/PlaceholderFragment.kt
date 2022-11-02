@@ -83,7 +83,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
         ) {
-            ListDataManager.instance!!.lastUpdateId = 0
+            ComicListPersistent.lastUpdateId = 0L
             // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
             recyclerView.adapter = adapter
         }
@@ -152,8 +152,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                     Color.parseColor("#FF3C30"),
                     viewHolder as ComicListAdapter.ComicViewHolder
                 ) { holder, pos ->
-                    // TODO:最後に更新したIdの設定をどうにかする
-                    ListDataManager.instance!!.lastUpdateId = 0
+                    ComicListPersistent.lastUpdateId = 0L
                     // データベースから削除する
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
                     comic?.let { pageViewModel.delete(it.id) }
@@ -166,8 +165,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                     Color.parseColor("#C7C7CB"),
                     viewHolder
                 ) { holder, pos ->
-                    // TODO:最後に更新したIdの設定をどうにかする
-                    ListDataManager.instance!!.lastUpdateId = 0
+                    ComicListPersistent.lastUpdateId = 0L
                     // 入力画面を生成
                     val intent = Intent(context, InputMemoActivity::class.java)
                     // 選択アイテムを設定
@@ -260,7 +258,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         if (!adapter.editEnable) {
             return
         }
-        ListDataManager.instance!!.lastUpdateId = 0
+        ComicListPersistent.lastUpdateId = 0L
         // 入力画面を生成
         val intent = Intent(context, InputMemoActivity::class.java)
         // 選択アイテムを設定
@@ -280,8 +278,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         val comic = view?.tag as Comic
         comic.let {
             if (it.status != status) {
-                // TODO:最後に更新したIdの設定をどうにかする
-                ListDataManager.instance!!.lastUpdateId = 0
+                ComicListPersistent.lastUpdateId = 0L
                 it.status = status
                 it.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()
                 pageViewModel.update(it)
@@ -306,8 +303,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
             return
         }
         num++
-        // TODO:どうにかする
-        ListDataManager.instance!!.lastUpdateId = comic.id.toInt()
+        ComicListPersistent.lastUpdateId = comic.id
         comic.number = num.toString()
         comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()) as String
         pageViewModel.update(comic)
@@ -321,8 +317,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
      * @param view 選択した巻数データView
      */
     override fun onAdapterDelBtnClicked(view: View) {
-        // TODO:最後に更新したIdの設定をどうにかする
-        ListDataManager.instance!!.lastUpdateId = 0
+        ComicListPersistent.lastUpdateId = 0L
         val comic = view.tag as Comic
         // データベースから削除する
         pageViewModel.delete(comic.id)
@@ -332,8 +327,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
 
     override fun onPause() {
         super.onPause()
-        // TODO:最後に更新したIdの設定をどうにかする
-        ListDataManager.instance!!.lastUpdateId = 0
+        ComicListPersistent.lastUpdateId = 0L
     }
 
     companion object {
