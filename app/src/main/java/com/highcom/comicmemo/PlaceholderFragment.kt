@@ -130,14 +130,19 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         // 続刊・完結のデータ更新を監視する
         if (index.toLong() == ComicMemoRepository.STATE_CONTINUE) {
             pageViewModel.continueComics.observe(viewLifecycleOwner) { continueComics ->
-                continueComics.let { adapter.submitList(it)}
+                continueComics.let {
+                    adapter.setOrigComicList(it)
+                    setSearchWordFilter(searchViewWord)
+                }
             }
         } else if (index.toLong() == ComicMemoRepository.STATE_COMPLETE) {
             pageViewModel.completeComics.observe(viewLifecycleOwner) { completeComics ->
-                completeComics.let { adapter.submitList(it) }
+                completeComics.let {
+                    adapter.setOrigComicList(it)
+                    setSearchWordFilter(searchViewWord)
+                }
             }
         }
-        setSearchWordFilter(searchViewWord)
 
         val scale = resources.displayMetrics.density
         // ドラックアンドドロップの操作を実装する

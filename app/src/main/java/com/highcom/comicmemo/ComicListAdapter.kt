@@ -34,7 +34,7 @@ class ComicListAdapter (
     /** 巻数一覧データ */
     private var comicList: List<Comic>? = null
     /** フィルタ前の巻数一覧データ */
-    private var origList: List<Comic>? = null
+    private var origComicList: List<Comic>? = null
     /** 編集が有効かどうか */
     var editEnable = false
     /** アダプタの操作イベントリスナー */
@@ -242,6 +242,15 @@ class ComicListAdapter (
     }
 
     /**
+     * フィルタ前の関数データ一覧設定
+     *
+     * @param list フィルタ前の関数データ一覧
+     */
+    fun setOrigComicList(list: List<Comic>?) {
+        origComicList = list
+    }
+
+    /**
      * ViewHolderの生成
      *
      * @param parent 親のViewGroup
@@ -274,15 +283,6 @@ class ComicListAdapter (
     }
 
     /**
-     * アイテム数取得処理
-     *
-     * @return アイテム数
-     */
-    override fun getItemCount(): Int {
-        return this.comicList?.size ?: 0
-    }
-
-    /**
      * 検索文字列での一覧のフィルタ処理
      *
      * @return フィルタした結果
@@ -292,10 +292,9 @@ class ComicListAdapter (
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val oReturn = FilterResults()
                 val results = ArrayList<Comic>()
-                if (origList == null) origList = comicList
                 if (constraint != null) {
-                    if (origList!!.isNotEmpty()) {
-                        for (orig in origList!!) {
+                    if (origComicList!!.isNotEmpty()) {
+                        for (orig in origComicList!!) {
                             if (orig.title.toLowerCase()
                                     .contains(constraint.toString())
                             ) results.add(orig)
@@ -303,7 +302,7 @@ class ComicListAdapter (
                     }
                     oReturn.values = results
                 } else {
-                    oReturn.values = origList
+                    oReturn.values = origComicList
                 }
                 return oReturn
             }
@@ -312,7 +311,10 @@ class ComicListAdapter (
                 constraint: CharSequence?,
                 results: FilterResults
             ) {
-                comicList = results.values as List<Comic>?
+                val resultList = results.values as List<Comic>?
+                resultList?.let {
+                    submitList(resultList)
+                }
             }
         }
     }
