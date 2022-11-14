@@ -3,6 +3,11 @@ package com.highcom.comicmemo.datamodel
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * 巻数データのデータ操作用リポジトリ
+ *
+ * @property comicDao 巻数データアクセスオブジェクト
+ */
 class ComicMemoRepository(private val comicDao: ComicDao) {
     companion object {
         const val STATE_CONTINUE = 0L

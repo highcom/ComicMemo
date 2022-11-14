@@ -5,6 +5,11 @@ import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import kotlinx.coroutines.launch
 
+/**
+ * 巻数データ一覧の操作用ViewModel生成用ファクトリ
+ *
+ * @property repository 巻数データのデータ操作用リポジトリ
+ */
 class ComicPagerViewModelFactory(private val repository: ComicMemoRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ComicPagerViewModel::class.java)) {
@@ -15,6 +20,11 @@ class ComicPagerViewModelFactory(private val repository: ComicMemoRepository) : 
     }
 }
 
+/**
+ * 巻数データ一覧の操作用ViewModel
+ *
+ * @property repository 巻数データのデータ操作用リポジトリ
+ */
 class ComicPagerViewModel(private val repository: ComicMemoRepository) : ViewModel() {
     val continueComics: LiveData<List<Comic>> = repository.continueComics.asLiveData()
     val completeComics: LiveData<List<Comic>> = repository.completeComics.asLiveData()

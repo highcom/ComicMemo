@@ -18,6 +18,13 @@ import com.highcom.comicmemo.datamodel.Comic
 
 object ComicListPersistent {
     /**
+     * ソート種別
+     */
+    enum class SortType {
+        ID, TITLE, AUTHOR
+    }
+
+    /**
      * 最後に巻数を更新したデータのID
      *
      * 巻数を赤文字表示するために利用する
@@ -25,16 +32,25 @@ object ComicListPersistent {
     var lastUpdateId = 0L
 }
 
+/**
+ * 巻数データ一覧表示用リストアダプタ
+ * 続刊用・完結用とそれぞれでインスタンス化される
+ *
+ * @param context コンテキスト
+ * @param listener アダプタ操作用イベントリスナー
+ */
 class ComicListAdapter (
     context: Context?,
     listener: AdapterListener
 ) : ListAdapter<Comic, ComicListAdapter.ComicViewHolder>(COMIC_COMPARATOR), Filterable {
     /** レイアウト */
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    /** 巻数一覧データ */
+    /** 表示する巻数一覧データ */
     private var comicList: List<Comic>? = null
-    /** フィルタ前の巻数一覧データ */
+    /** 登録されている巻数一覧データ */
     private var origComicList: List<Comic>? = null
+    /** ソートしている種別 */
+    private var sortType: ComicListPersistent.SortType = ComicListPersistent.SortType.ID
     /** 編集が有効かどうか */
     var editEnable = false
     /** アダプタの操作イベントリスナー */
@@ -248,6 +264,31 @@ class ComicListAdapter (
      */
     fun setOrigComicList(list: List<Comic>?) {
         origComicList = list
+        comicList = origComicList
+    }
+
+    /**
+     * 巻数データ一覧のソート処理
+     *
+     * @param key ソート種別
+     */
+    fun sortComicList(key: ComicListPersistent.SortType) {
+        sortType = key
+        // 比較処理の実装
+        val comparator = Comparator<Comic> { t1, t2 ->
+            var result = when(sortType) {
+                ComicListPersistent.SortType.ID -> t1.id.compareTo(t2.id)
+                ComicListPersistent.SortType.TITLE -> t1.title.compareTo(t2.title)
+                ComicListPersistent.SortType.AUTHOR -> t1.author.compareTo(t2.author)
+            }
+
+            // ソート順が決まらない場合には、idで比較する
+            if (result == 0) {
+                result = t1.id.compareTo(t2.id)
+            }
+            return@Comparator result
+        }
+        comicList = comicList?.sortedWith(comparator)
     }
 
     /**
@@ -273,16 +314,6 @@ class ComicListAdapter (
     }
 
     /**
-     * 巻数データ一覧を設定
-     *
-     * @param list 巻数データ一覧
-     */
-    override fun submitList(list: List<Comic>?) {
-        super.submitList(list)
-        comicList = list
-    }
-
-    /**
      * 検索文字列での一覧のフィルタ処理
      *
      * @return フィルタした結果
@@ -293,8 +324,8 @@ class ComicListAdapter (
                 val oReturn = FilterResults()
                 val results = ArrayList<Comic>()
                 if (constraint != null) {
-                    if (origComicList!!.isNotEmpty()) {
-                        for (orig in origComicList!!) {
+                    if (comicList!!.isNotEmpty()) {
+                        for (orig in comicList!!) {
                             if (orig.title.toLowerCase()
                                     .contains(constraint.toString())
                             ) results.add(orig)
@@ -313,7 +344,9 @@ class ComicListAdapter (
             ) {
                 val resultList = results.values as List<Comic>?
                 resultList?.let {
-                    submitList(resultList)
+                    comicList = resultList
+                    sortComicList(sortType)
+                    submitList(comicList)
                 }
             }
         }

@@ -161,8 +161,6 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                     // データベースから削除する
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
                     comic?.let { pageViewModel.delete(it.id) }
-                    // フィルタしている場合はフィルタデータの一覧も更新する
-                    setSearchWordFilter(searchViewWord)
                 })
                 underlayButtons.add(UnderlayButton(
                     "編集",
@@ -245,11 +243,11 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
     /**
      * 巻数データ一覧をソートキーでソート処理
      *
-     * @param key ソートキー
+     * @param key ソート種別
      */
-    fun sortData(key: String) {
-        // TODO:ソート方法の検討
-//        pageViewModel!!.sortData(index.toLong(), key)
+    fun sortData(key: ComicListPersistent.SortType) {
+        adapter.sortComicList(key)
+        setSearchWordFilter(searchViewWord)
     }
 
     /**
@@ -289,9 +287,6 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                 pageViewModel.update(it)
             }
         }
-
-        // フィルタしている場合はフィルタデータの一覧も更新する
-        setSearchWordFilter(searchViewWord)
     }
 
     /**
@@ -312,8 +307,6 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         comic.number = num.toString()
         comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()) as String
         pageViewModel.update(comic)
-        // フィルタしている場合はフィルタデータの一覧も更新する
-        setSearchWordFilter(searchViewWord)
     }
 
     /**
@@ -326,8 +319,6 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         val comic = view.tag as Comic
         // データベースから削除する
         pageViewModel.delete(comic.id)
-        // フィルタしている場合はフィルタデータの一覧も更新する
-        setSearchWordFilter(searchViewWord)
     }
 
     override fun onPause() {

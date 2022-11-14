@@ -110,15 +110,15 @@ class ComicMemoActivity : AppCompatActivity() {
     private fun loadBanner() {
         // 広告リクエストの生成
         mAdView = AdView(this)
-        mAdView!!.adUnitId = "ca-app-pub-3217012767112748/8829713111"
+        mAdView?.adUnitId = "ca-app-pub-3217012767112748/8829713111"
         binding.adViewFrame.removeAllViews()
         binding.adViewFrame.addView(mAdView)
         val adSize = adSize
-        mAdView!!.adSize = adSize
+        mAdView?.adSize = adSize
         val adRequest = AdRequest.Builder().build()
 
         // 広告のロード
-        mAdView!!.loadAd(adRequest)
+        mAdView?.loadAd(adRequest)
     }
 
     /**
@@ -182,22 +182,22 @@ class ComicMemoActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.edit_mode -> {
                 // 編集状態
-                fragment.sortData("id")
+                fragment.sortData(ComicListPersistent.SortType.ID)
                 fragment.changeEditEnable()
             }
             R.id.sort_default -> {
                 // idでのソート
-                fragment.sortData("id")
+                fragment.sortData(ComicListPersistent.SortType.ID)
                 fragment.setEditEnable(false)
             }
             R.id.sort_title -> {
                 // タイトル名でのソート
-                fragment.sortData("title")
+                fragment.sortData(ComicListPersistent.SortType.TITLE)
                 fragment.setEditEnable(false)
             }
             R.id.sort_author -> {
                 // 著者名でのソート
-                fragment.sortData("author")
+                fragment.sortData(ComicListPersistent.SortType.AUTHOR)
                 fragment.setEditEnable(false)
             }
             else -> {}
