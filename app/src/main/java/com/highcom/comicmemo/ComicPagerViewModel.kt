@@ -57,16 +57,6 @@ class ComicPagerViewModel(private val repository: ComicMemoRepository) : ViewMod
     }
 
     /**
-     * 巻数データ一覧の並べ替え処理
-     *
-     * @param dataIndex 0:続刊 1:完結
-     * @param fromPos 移動元の位置
-     * @param toPos 移動先の位置
-     */
-    fun rearrangeData(dataIndex: Long, fromPos: Int, toPos: Int) {
-    }
-
-    /**
      * 巻数データの削除
      *
      * @param id 削除データID

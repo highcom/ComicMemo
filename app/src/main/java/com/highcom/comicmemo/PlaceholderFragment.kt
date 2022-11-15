@@ -51,6 +51,8 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
      *
      */
     inner class MySimpleCallbackListener : SimpleCallbackListener {
+        var fromPos = -1
+        var toPos = -1
         /**
          * 並べ替えイベントコールバック
          *
@@ -63,11 +65,13 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
             target: RecyclerView.ViewHolder
         ): Boolean {
             if (adapter.editEnable && TextUtils.isEmpty(searchViewWord)) {
-                val fromPos = viewHolder.adapterPosition
-                val toPos = target.adapterPosition
-                adapter.notifyItemMoved(fromPos, toPos)
-                // TODO:並べ替えの実装方法を検討
-                pageViewModel.rearrangeData(index.toLong(), fromPos, toPos)
+                // 移動元位置は最初のイベント時の値を保持する
+                if (fromPos == -1) fromPos = viewHolder.adapterPosition
+                // 通知用の移動元位置は毎回更新する
+                val notifyFromPos = viewHolder.adapterPosition
+                // 移動先位置は最後イベント時の値を保持する
+                toPos = target.adapterPosition
+                adapter.notifyItemMoved(notifyFromPos, toPos)
                 return true
             }
             return false
@@ -84,6 +88,12 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
             viewHolder: RecyclerView.ViewHolder
         ) {
             ComicListPersistent.lastUpdateId = 0L
+            // 入れ替え完了後に最後に一度DBの更新をする
+            val rearrangeComicList = adapter.rearrangeComicList(fromPos, toPos)
+            pageViewModel.update(rearrangeComicList)
+            // 移動位置情報を初期化
+            fromPos = -1
+            toPos = -1
             // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
             recyclerView.adapter = adapter
         }

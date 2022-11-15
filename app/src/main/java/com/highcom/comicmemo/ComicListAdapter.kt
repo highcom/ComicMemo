@@ -292,6 +292,35 @@ class ComicListAdapter (
     }
 
     /**
+     * 巻数データ一覧の並べ替え処理
+     *
+     * @param fromPos 移動元の位置
+     * @param toPos 移動先の位置
+     */
+    fun rearrangeComicList(fromPos: Int, toPos: Int): List<Comic> {
+        val origComicIds = ArrayList<Long>()
+        val rearrangeComicList = ArrayList<Comic>()
+        // 元のIDの並びを保持と並べ替えができるリストに入れ替える
+        origComicList?.let {
+            for (comic in origComicList!!) {
+                origComicIds.add(comic.id)
+                rearrangeComicList.add(comic)
+            }
+        }
+        // 引数で渡された位置で並べ替え
+        val fromComic = rearrangeComicList[fromPos]
+        rearrangeComicList.removeAt(fromPos)
+        rearrangeComicList.add(toPos, fromComic)
+        // 再度IDを振り直す
+        val itr = origComicIds.listIterator()
+        for (comic in rearrangeComicList) {
+            comic.id = itr.next()
+        }
+
+        return rearrangeComicList
+    }
+
+    /**
      * ViewHolderの生成
      *
      * @param parent 親のViewGroup
