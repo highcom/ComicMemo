@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-@Entity(tableName = "comicmemo")
+@Entity(tableName = "comicdata")
 data class Comic(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") var id: Long,

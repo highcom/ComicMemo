@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ComicDao {
-    @Query("SELECT * FROM comicmemo WHERE status = :status ORDER BY id ASC")
+    @Query("SELECT * FROM comicdata WHERE status = :status ORDER BY id ASC")
     fun getComicByStatus(status: Long): Flow<List<Comic>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -17,9 +17,9 @@ interface ComicDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(comics: List<Comic>)
 
-    @Query("DELETE FROM comicmemo WHERE id = :id")
+    @Query("DELETE FROM comicdata WHERE id = :id")
     suspend fun delete(id: Long)
 
-    @Query("DELETE FROM comicmemo")
+    @Query("DELETE FROM comicdata")
     suspend fun deleteAll()
 }
