@@ -37,8 +37,8 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
         // 渡されたデータを取得する
         val intent = intent
         isEdit = intent.getBooleanExtra("EDIT", false)
-        comic = intent.getSerializableExtra("COMIC") as? Comic ?: Comic(0, "", "", "", "", "", 0)
-        status = comic.status
+        status = intent.getLongExtra("STATUS", 0L)
+        comic = intent.getSerializableExtra("COMIC") as? Comic ?: Comic(0, "", "", "", "", "", status)
         binding.editTitle.setText(comic.title)
         binding.editAuthor.setText(comic.author)
         binding.editNumber.setText(comic.number)
