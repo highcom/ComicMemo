@@ -27,14 +27,12 @@ import java.util.*
 class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) : Fragment(), AdapterListener {
     private lateinit var binding: FragmentComicMemoBinding
     /** 巻数一覧を制御するためのViewModel */
-//    var pageViewModel: PageViewModel? = null
     private val pageViewModel: ComicPagerViewModel by viewModels {
         ComicPagerViewModelFactory((activity?.application as ComicMemoApplication).repository)
     }
     /** 巻数データ一覧を格納するためのView */
     private var recyclerView: RecyclerView? = null
     /** 巻数データを表示するためのadapter */
-//    private var adapter: ListViewAdapter? = null
     private lateinit var adapter: ComicListAdapter
     /** スワイプメニュー用リスナー */
     private var simpleCallbackHelper: SimpleCallbackHelper? = null
@@ -43,8 +41,6 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
     /** 0:続刊 1:完結のインデックス */
     var index = 0
         private set
-    /** 巻数データ一覧 */
-//    private var mListData: List<Map<String, String>>? = null
 
     /**
      * スワイプメニュー用リスナー
@@ -102,11 +98,9 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        pageViewModel = ViewModelProvider(requireActivity()).get(PageViewModel::class.java)
         if (arguments != null) {
             index = arguments!!.getInt(ARG_SECTION_NUMBER)
         }
-//        mListData = pageViewModel!!.getListData(index.toLong())?.value
     }
 
     override fun onResume() {
@@ -123,15 +117,6 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        adapter = ListViewAdapter(
-//            context,
-//            mListData,
-//            R.layout.row, arrayOf("title", "comment"), intArrayOf(
-//                android.R.id.text1,
-//                android.R.id.text2
-//            ),
-//            this
-//        )
         adapter = ComicListAdapter(context, this)
         recyclerView = binding.comicListView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
@@ -166,7 +151,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                     0,
                     Color.parseColor("#FF3C30"),
                     viewHolder as ComicListAdapter.ComicViewHolder
-                ) { holder, pos ->
+                ) { holder, _ ->
                     ComicListPersistent.lastUpdateId = 0L
                     // データベースから削除する
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
@@ -177,7 +162,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                     0,
                     Color.parseColor("#C7C7CB"),
                     viewHolder
-                ) { holder, pos ->
+                ) { holder, _ ->
                     ComicListPersistent.lastUpdateId = 0L
                     // 入力画面を生成
                     val intent = Intent(context, InputMemoActivity::class.java)
@@ -189,19 +174,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                 })
             }
         }
-//        pageViewModel!!.getListData(index.toLong())?.observe(viewLifecycleOwner) { map ->
-//            mListData = map
-//            setSearchWordFilter(searchViewWord)
-//        }
     }
-
-    /**
-     * 巻数データの更新処理
-     *
-     */
-//    fun updateData() {
-//        pageViewModel!!.updateData(index.toLong())
-//    }
 
     /**
      * 検索文字列での巻数データ一覧ノフィルタ処理
@@ -243,7 +216,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
             adapter.editEnable = false
             simpleCallbackHelper!!.setSwipeEnable(true)
             recyclerView!!.adapter = adapter
-        } else if (enable && !adapter!!.editEnable) {
+        } else if (enable && !adapter.editEnable) {
             adapter.editEnable = true
             simpleCallbackHelper!!.setSwipeEnable(false)
             recyclerView!!.adapter = adapter

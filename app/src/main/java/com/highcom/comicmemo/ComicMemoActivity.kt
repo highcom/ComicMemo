@@ -13,6 +13,7 @@ import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -30,8 +31,6 @@ class ComicMemoActivity : AppCompatActivity() {
         ComicPagerViewModelFactory((application as ComicMemoApplication).repository)
     }
 
-    /** 巻数の一覧データ管理 */
-    private var listDataManager: ListDataManager? = null
     /** タブレイアウトのセクションページアダプタ */
     private var sectionsPagerAdapter: SectionsPagerAdapter? = null
     /** 絞り込み検索文字列 */
@@ -58,7 +57,7 @@ class ComicMemoActivity : AppCompatActivity() {
         binding.adViewFrame.post { loadBanner() }
         // 起動時にアプリの評価をお願いする
         RmpAppirater.appLaunched(this,
-            ShowRateDialogCondition { appLaunchCount, appThisVersionCodeLaunchCount, firstLaunchDate, appVersionCode, previousAppVersionCode, rateClickDate, reminderClickDate, doNotShowAgain -> // 現在のアプリのバージョンで3回以上起動したか
+            ShowRateDialogCondition { _, appThisVersionCodeLaunchCount, _, _, _, rateClickDate, reminderClickDate, doNotShowAgain -> // 現在のアプリのバージョンで3回以上起動したか
                 if (appThisVersionCodeLaunchCount < 3) {
                     return@ShowRateDialogCondition false
                 }
@@ -85,7 +84,6 @@ class ComicMemoActivity : AppCompatActivity() {
         )
 
         // 各セクションページに表示する一覧データの設定
-        listDataManager = ListDataManager.createInstance(applicationContext)
         sectionsPagerAdapter = SectionsPagerAdapter(this, comicPagerViewModel, supportFragmentManager)
         binding.viewPager.adapter = sectionsPagerAdapter
         binding.itemtabs.setupWithViewPager(binding.viewPager)
@@ -96,7 +94,6 @@ class ComicMemoActivity : AppCompatActivity() {
             if (sectionsPagerAdapter!!.currentFragment != null) {
                 val index =
                     (sectionsPagerAdapter!!.currentFragment as PlaceholderFragment).index.toLong()
-                intent.putExtra("ID", listDataManager!!.newId)
                 intent.putExtra("STATUS", index)
             }
             intent.putExtra("EDIT", false)

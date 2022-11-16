@@ -5,6 +5,17 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
+/**
+ * 巻数データエンティティ
+ *
+ * @property id 巻数データID
+ * @property title タイトル
+ * @property author 著者名
+ * @property number 巻数
+ * @property memo メモ
+ * @property inputdate 入力日付
+ * @property status 続刊・完結の状態
+ */
 @Entity(tableName = "comicdata")
 data class Comic(
     @PrimaryKey(autoGenerate = true)

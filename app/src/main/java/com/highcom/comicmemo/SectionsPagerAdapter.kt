@@ -10,13 +10,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 /**
  * タブレイアウトのセクションページアダプタ
  *
- * @property mContext
- *
- * @param fm
- */
-/**
- * タブレイアウトのセクションページアダプタ
- *
  * @property mContext コンテキスト
  * @property comicPagerViewModel 巻数一覧を制御するためのViewModel
  *

@@ -3,6 +3,9 @@ package com.highcom.comicmemo.datamodel
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * 巻数データアクセスオブジェクト
+ */
 @Dao
 interface ComicDao {
     @Query("SELECT * FROM comicdata WHERE status = :status ORDER BY id ASC")

@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+/**
+ * SQLiteからRoomへのマイグレーション操作
+ */
 val MIGRATION_2_3 = object : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.beginTransaction()
@@ -42,6 +45,9 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
+/**
+ * 巻数データのRoomデータベース
+ */
 @Database(entities = [Comic::class],
     version = 3,
     exportSchema = false)

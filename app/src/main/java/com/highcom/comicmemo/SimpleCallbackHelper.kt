@@ -20,6 +20,7 @@ import java.util.*
  * @param scale 画面の解像度
  * @param listener コールバック用リスナー
  */
+@SuppressLint("ClickableViewAccessibility")
 abstract class SimpleCallbackHelper(
     context: Context?,
     recyclerView: RecyclerView?,
@@ -77,7 +78,7 @@ abstract class SimpleCallbackHelper(
      * タッチ操作用リスナー
      */
     @SuppressLint("ClickableViewAccessibility")
-    private val onTouchListener = OnTouchListener { view, e ->
+    private val onTouchListener = OnTouchListener { _, e ->
         if (swipedPos < 0) return@OnTouchListener false
         val point = Point(
             e.rawX.toInt(), e.rawY.toInt()
@@ -265,6 +266,7 @@ abstract class SimpleCallbackHelper(
      * スワイプアイテムを元に戻す処理
      *
      */
+    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @Synchronized
     private fun recoverSwipedItem() {
         while (!recoverQueue.isEmpty()) {

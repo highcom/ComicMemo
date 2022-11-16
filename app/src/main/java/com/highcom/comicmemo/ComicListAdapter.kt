@@ -208,12 +208,12 @@ class ComicListAdapter (
             popupWindow!!.setContentView(contentView)
             popupContinue = contentView.findViewById<View>(R.id.popupContinue) as ToggleButton
             popupComplete = contentView.findViewById<View>(R.id.popupComplete) as ToggleButton
-            popupContinue.setOnCheckedChangeListener { buttonView, isChecked ->
+            popupContinue.setOnCheckedChangeListener { buttonView, _ ->
                 setEnableLayoutContinue(buttonView.context)
                 adapterListener.onAdapterStatusSelected(popupView, 0)
                 popupWindow!!.dismiss()
             }
-            popupComplete.setOnCheckedChangeListener { buttonView, isChecked ->
+            popupComplete.setOnCheckedChangeListener { buttonView, _ ->
                 setEnableLayoutComplete(buttonView.context)
                 adapterListener.onAdapterStatusSelected(popupView, 1)
                 popupWindow!!.dismiss()
@@ -355,7 +355,7 @@ class ComicListAdapter (
                 if (constraint != null) {
                     if (comicList!!.isNotEmpty()) {
                         for (orig in comicList!!) {
-                            if (orig.title.toLowerCase()
+                            if (orig.title.lowercase()
                                     .contains(constraint.toString())
                             ) results.add(orig)
                         }
