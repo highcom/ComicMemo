@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/shape_rouded_corners.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/shape_rouded_corners_top_5dp.xml" value="0.1895" />
         <entry key="app/src/main/res/drawable/shape_rounded_top_left_corners.xml" value="0.1895" />
+        <entry key="app/src/main/res/drawable/splash.xml" value="0.125" />
         <entry key="app/src/main/res/drawable/toggle_select_button.xml" value="0.1105" />
         <entry key="app/src/main/res/drawable/toggle_unselect_button.xml" value="0.1105" />
         <entry key="app/src/main/res/layout/activity_comic_memo.xml" value="0.165" />

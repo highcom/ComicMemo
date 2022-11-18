@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 背景を緑に設定します。 -->
+    <item android:drawable="@color/appcolor" />
+    <item>
+        <!-- アイコンを中央に表示します。 -->
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_splash"/>
+    </item>
+</layer-list>

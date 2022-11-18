@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ComicMemo</string>
+    <string name="app_name">巻数メモ</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_comic_memo_tab">ComicMemoTabActivity</string>
