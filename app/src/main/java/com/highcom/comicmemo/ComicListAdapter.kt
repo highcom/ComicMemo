@@ -398,11 +398,9 @@ class ComicListAdapter (
                 val oReturn = FilterResults()
                 val results = ArrayList<Comic>()
                 if (constraint != null) {
-                    if (comicList!!.isNotEmpty()) {
-                        for (orig in comicList!!) {
-                            if (orig.title.lowercase()
-                                    .contains(constraint.toString())
-                            ) results.add(orig)
+                    if (origComicList!!.isNotEmpty()) {
+                        for (orig in origComicList!!) {
+                            if (orig.title.lowercase().contains(constraint.toString())) results.add(orig)
                         }
                     }
                     oReturn.values = results
