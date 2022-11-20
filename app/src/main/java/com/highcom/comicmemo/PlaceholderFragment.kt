@@ -118,6 +118,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = ComicListAdapter(context, this)
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT
         recyclerView = binding.comicListView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = adapter
