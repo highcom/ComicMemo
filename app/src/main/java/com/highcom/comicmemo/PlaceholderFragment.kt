@@ -147,6 +147,8 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
                 viewHolder: RecyclerView.ViewHolder,
                 underlayButtons: MutableList<UnderlayButton>
             ) {
+                if (viewHolder.itemView.getId() == R.id.row_footer) return
+
                 underlayButtons.add(UnderlayButton(
                     "削除",
                     0,

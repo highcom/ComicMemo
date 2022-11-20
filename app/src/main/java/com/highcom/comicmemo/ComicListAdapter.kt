@@ -82,40 +82,41 @@ class ComicListAdapter (
         /** 巻数データID */
         var id: Long? = null
         /** タイトル名 */
-        var title: TextView = itemView.findViewById<View>(R.id.title) as TextView
+        var title: TextView? = itemView.findViewById<View>(R.id.title) as? TextView
         /** 著者名 */
-        var author: TextView = itemView.findViewById<View>(R.id.author) as TextView
+        var author: TextView? = itemView.findViewById<View>(R.id.author) as? TextView
         /** 巻数 */
-        var number: TextView = itemView.findViewById<View>(R.id.number) as TextView
+        var number: TextView? = itemView.findViewById<View>(R.id.number) as? TextView
         /** メモ */
-        var memo: TextView = itemView.findViewById<View>(R.id.memo) as TextView
+        var memo: TextView? = itemView.findViewById<View>(R.id.memo) as? TextView
         /** 入力日付 */
-        var inputdate: TextView = itemView.findViewById<View>(R.id.inputdate) as TextView
+        var inputdate: TextView? = itemView.findViewById<View>(R.id.inputdate) as? TextView
         /** 続刊・完結 */
         var status: Long? = null
         /** 巻数追加ボタン */
-        var addbtn: Button = itemView.findViewById<View>(R.id.addbutton) as Button
+        var addbtn: Button? = itemView.findViewById<View>(R.id.addbutton) as? Button
         /** 削除ボタン */
-        var deletebtn: Button
+        var deletebtn: Button?
         /** 並べ替えボタン */
-        var rearrangebtn: ImageButton
+        var rearrangebtn: ImageButton?
         /** ポップアップメニュー続刊 */
-        var popupContinue: ToggleButton
+        var popupContinue: ToggleButton?
         /** ポップアップメニュー完結 */
-        var popupComplete: ToggleButton
+        var popupComplete: ToggleButton?
 
         fun bind(comic: Comic) {
             this.comic = comic
             id = comic.id
-            title.text = comic.title
-            author.text = comic.author
-            number.text = comic.number
-            memo.text = comic.memo
-            inputdate.text = comic.inputdate
+            title?.let { it.text = comic.title }
+            author?.let { it.text = comic.author }
+            number?.let { it.text = comic.number }
+            memo?.let { it.text = comic.memo }
+            inputdate?.let { it.text = comic.inputdate }
+
             if (id!! == ComicListPersistent.lastUpdateId) {
-                number.setTextColor(Color.RED)
+                number?.setTextColor(Color.RED)
             } else {
-                number.setTextColor(Color.GRAY)
+                number?.setTextColor(Color.GRAY)
             }
             status = comic.status
             itemView.tag = comic
@@ -145,19 +146,23 @@ class ComicListAdapter (
          * @param context コンテキスト
          */
         fun setEnableLayoutContinue(context: Context?) {
-            popupContinue.setTextColor(ContextCompat.getColor(context!!, R.color.white))
-            popupContinue.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    context,
-                    R.drawable.toggle_select_button
-                )
+            popupContinue?.setTextColor(ContextCompat.getColor(context!!, R.color.white))
+            popupContinue?.setBackgroundDrawable(
+                context?.let {
+                    ContextCompat.getDrawable(
+                        it,
+                        R.drawable.toggle_select_button
+                    )
+                }
             )
-            popupComplete.setTextColor(ContextCompat.getColor(context, R.color.appcolor))
-            popupComplete.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    context,
-                    R.drawable.toggle_unselect_button
-                )
+            popupComplete?.setTextColor(ContextCompat.getColor(context!!, R.color.appcolor))
+            popupComplete?.setBackgroundDrawable(
+                context?.let {
+                    ContextCompat.getDrawable(
+                        it,
+                        R.drawable.toggle_unselect_button
+                    )
+                }
             )
         }
 
@@ -167,38 +172,42 @@ class ComicListAdapter (
          * @param context コンテキスト
          */
         fun setEnableLayoutComplete(context: Context?) {
-            popupContinue.setTextColor(ContextCompat.getColor(context!!, R.color.appcolor))
-            popupContinue.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    context,
-                    R.drawable.toggle_unselect_button
-                )
+            popupContinue?.setTextColor(ContextCompat.getColor(context!!, R.color.appcolor))
+            popupContinue?.setBackgroundDrawable(
+                context?.let {
+                    ContextCompat.getDrawable(
+                        it,
+                        R.drawable.toggle_unselect_button
+                    )
+                }
             )
-            popupComplete.setTextColor(ContextCompat.getColor(context, R.color.white))
-            popupComplete.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    context,
-                    R.drawable.toggle_select_button
-                )
+            popupComplete?.setTextColor(ContextCompat.getColor(context!!, R.color.white))
+            popupComplete?.setBackgroundDrawable(
+                context?.let {
+                    ContextCompat.getDrawable(
+                        it,
+                        R.drawable.toggle_select_button
+                    )
+                }
             )
         }
 
         init {
 
             // カウント追加ボタン処理
-            addbtn.setOnClickListener { adapterListener.onAdapterAddBtnClicked(itemView) }
+            addbtn?.setOnClickListener { adapterListener.onAdapterAddBtnClicked(itemView) }
 
             // 削除ボタン処理
-            deletebtn = itemView.findViewById<View>(R.id.deletebutton) as Button
-            rearrangebtn = itemView.findViewById<View>(R.id.rearrangebutton) as ImageButton
+            deletebtn = itemView.findViewById<View>(R.id.deletebutton) as? Button
+            rearrangebtn = itemView.findViewById<View>(R.id.rearrangebutton) as? ImageButton
             if (editEnable) {
-                deletebtn.visibility = View.VISIBLE
-                rearrangebtn.visibility = View.VISIBLE
+                deletebtn?.visibility = View.VISIBLE
+                rearrangebtn?.visibility = View.VISIBLE
                 // 削除ボタンを押下された行を削除する
-                deletebtn.setOnClickListener { adapterListener.onAdapterDelBtnClicked(itemView) }
+                deletebtn?.setOnClickListener { adapterListener.onAdapterDelBtnClicked(itemView) }
             } else {
-                deletebtn.visibility = View.GONE
-                rearrangebtn.visibility = View.GONE
+                deletebtn?.visibility = View.GONE
+                rearrangebtn?.visibility = View.GONE
             }
             popupWindow = PopupWindow(itemView.context)
 
@@ -206,14 +215,14 @@ class ComicListAdapter (
             val contentView =
                 LayoutInflater.from(itemView.context).inflate(R.layout.popupmenu, null)
             popupWindow!!.setContentView(contentView)
-            popupContinue = contentView.findViewById<View>(R.id.popupContinue) as ToggleButton
-            popupComplete = contentView.findViewById<View>(R.id.popupComplete) as ToggleButton
-            popupContinue.setOnCheckedChangeListener { buttonView, _ ->
+            popupContinue = contentView.findViewById<View>(R.id.popupContinue) as? ToggleButton
+            popupComplete = contentView.findViewById<View>(R.id.popupComplete) as? ToggleButton
+            popupContinue?.setOnCheckedChangeListener { buttonView, _ ->
                 setEnableLayoutContinue(buttonView.context)
                 adapterListener.onAdapterStatusSelected(popupView, 0)
                 popupWindow!!.dismiss()
             }
-            popupComplete.setOnCheckedChangeListener { buttonView, _ ->
+            popupComplete?.setOnCheckedChangeListener { buttonView, _ ->
                 setEnableLayoutComplete(buttonView.context)
                 adapterListener.onAdapterStatusSelected(popupView, 1)
                 popupWindow!!.dismiss()
@@ -246,6 +255,9 @@ class ComicListAdapter (
     }
 
     companion object {
+        private const val TYPE_ITEM = 1
+        private const val TYPE_FOOTER = 2
+
         private val COMIC_COMPARATOR = object : DiffUtil.ItemCallback<Comic>() {
             override fun areItemsTheSame(oldItem: Comic, newItem: Comic): Boolean {
                 return oldItem === newItem
@@ -324,11 +336,15 @@ class ComicListAdapter (
      * ViewHolderの生成
      *
      * @param parent 親のViewGroup
-     * @param viewType
+     * @param viewType アダプタに設定するViewの種別
      * @return
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComicViewHolder {
-        return ComicViewHolder(inflater.inflate(R.layout.row, parent, false))
+        return when (viewType) {
+            TYPE_ITEM -> ComicViewHolder(inflater.inflate(R.layout.row, parent, false))
+            TYPE_FOOTER -> ComicViewHolder(inflater.inflate(R.layout.row_footer, parent, false))
+            else -> ComicViewHolder(inflater.inflate(R.layout.row_footer, parent, false))
+        }
     }
 
     /**
@@ -338,8 +354,37 @@ class ComicListAdapter (
      * @param position 一覧データの位置
      */
     override fun onBindViewHolder(holder: ComicViewHolder, position: Int) {
+        // フッターにはデータをバインドしない
+        if (position >= comicList?.size ?: 0) return
         val current = getItem(position)
         holder.bind(current)
+    }
+
+    /**
+     * 一覧に表示するデータ数＋フッター行数を返却する
+     *
+     * @return 表示データ数＋フッター行数
+     */
+    override fun getItemCount(): Int {
+        return if (comicList != null) {
+            comicList!!.size + 1
+        } else {
+            0
+        }
+    }
+
+    /**
+     * アダプタの位置に対応するViewの種別を返却する
+     *
+     * @param position アダプタの表示するViewの位置
+     * @return Viewの種別
+     */
+    override fun getItemViewType(position: Int): Int {
+        return if (position >= comicList?.size ?: 0) {
+            TYPE_FOOTER
+        } else {
+            TYPE_ITEM
+        }
     }
 
     /**

@@ -83,10 +83,10 @@ abstract class SimpleCallbackHelper(
         val point = Point(
             e.rawX.toInt(), e.rawY.toInt()
         )
-        val swipedViewHolder = recyclerView!!.findViewHolderForAdapterPosition(swipedPos)
-        val swipedItem = swipedViewHolder!!.itemView
+        val swipedViewHolder = recyclerView?.findViewHolderForAdapterPosition(swipedPos)
+        val swipedItem = swipedViewHolder?.itemView
         val rect = Rect()
-        swipedItem.getGlobalVisibleRect(rect)
+        swipedItem?.getGlobalVisibleRect(rect)
         if (e.action == MotionEvent.ACTION_DOWN || e.action == MotionEvent.ACTION_UP || e.action == MotionEvent.ACTION_MOVE) {
             if (rect.top < point.y && rect.bottom > point.y) gestureDetector.onTouchEvent(e) else {
                 recoverQueue.add(swipedPos)
@@ -123,6 +123,7 @@ abstract class SimpleCallbackHelper(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
+        if (target.itemView.getId() == R.id.row_footer) return false
         return simpleCallbackListener.onSimpleCallbackMove(viewHolder, target)
     }
 
