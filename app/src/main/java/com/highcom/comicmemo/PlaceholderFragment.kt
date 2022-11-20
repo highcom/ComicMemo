@@ -121,6 +121,7 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         recyclerView = binding.comicListView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = adapter
+        recyclerView!!.itemAnimator = null
 
         // 続刊・完結のデータ更新を監視する
         if (index.toLong() == ComicMemoRepository.STATE_CONTINUE) {
