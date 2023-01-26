@@ -103,11 +103,6 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        recyclerView!!.adapter = adapter
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
