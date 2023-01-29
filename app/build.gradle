@@ -11,8 +11,8 @@ android {
         applicationId "com.highcom.comicmemo"
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 12
-        versionName "3.0.1"
+        versionCode 13
+        versionName "3.1.0"
     }
     buildTypes {
         release {
