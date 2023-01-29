@@ -223,6 +223,15 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
     }
 
     /**
+     * 編集状態の有効・無効の取得処理
+     *
+     * @return 編集状態の有効・無効
+     */
+    fun getEditEnable(): Boolean {
+        return adapter.editEnable
+    }
+
+    /**
      * 巻数データ一覧をソートキーでソート処理
      *
      * @param key ソート種別
@@ -230,6 +239,15 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
     fun sortData(key: ComicListPersistent.SortType) {
         adapter.sortComicList(key)
         setSearchWordFilter(searchViewWord)
+    }
+
+    /**
+     * 巻数データ一覧のソート種別取得処理
+     *
+     * @return ソート種別
+     */
+    fun getSortType(): ComicListPersistent.SortType {
+        return adapter.getSortType()
     }
 
     /**

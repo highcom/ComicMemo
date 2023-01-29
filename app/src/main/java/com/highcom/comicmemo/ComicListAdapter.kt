@@ -304,6 +304,14 @@ class ComicListAdapter (
     }
 
     /**
+     * 巻数データ一覧のソート種別取得処理
+     *
+     * @return ソート種別
+     */
+    fun getSortType(): ComicListPersistent.SortType {
+        return sortType
+    }
+    /**
      * 巻数データ一覧の並べ替え処理
      *
      * @param fromPos 移動元の位置

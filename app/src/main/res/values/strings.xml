@@ -8,4 +8,12 @@
     <string name="query_hint">検索文字を入力</string>
     <string name="input_edit">編集</string>
     <string name="input_new">新規作成</string>
+    <string name="no_select_menu_icon">○</string>
+    <string name="select_menu_icon">●</string>
+    <string name="edit_mode_text">○ 編集モード切替(指定順)</string>
+    <string name="sort_operation_text">並べ替え</string>
+    <string name="sort_default_text">○ 並べ替え(指定順)</string>
+    <string name="sort_title_text">○ 並べ替え(タイトル)</string>
+    <string name="sort_author_text">○ 並べ替え(著作者)</string>
+    <string name="search_bar_title">○ Search Bar</string>
 </resources>

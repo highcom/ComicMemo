@@ -6,9 +6,24 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"
         android:visible="true"
-        android:title="Search Bar" />
-    <item android:id="@+id/edit_mode" android:title="編集モード切替(デフォルト)"></item>
-    <item android:id="@+id/sort_default" android:title="並べ替え(デフォルト)"></item>
-    <item android:id="@+id/sort_title" android:title="並べ替え(タイトル)"></item>
-    <item android:id="@+id/sort_author" android:title="並べ替え(著作者)"></item>
+        android:title="@string/search_bar_title" />
+    <item
+        android:id="@+id/edit_mode"
+        android:title="@string/edit_mode_text" />
+    <group android:id="@+id/sort_group" >
+        <item android:id="@+id/sort_operation" android:title="@string/sort_operation_text"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/sort_default"
+                    android:title="@string/sort_default_text" />
+                <item
+                    android:id="@+id/sort_title"
+                    android:title="@string/sort_title_text" />
+                <item
+                    android:id="@+id/sort_author"
+                    android:title="@string/sort_author_text" />
+            </menu>
+        </item>
+    </group>
 </menu>

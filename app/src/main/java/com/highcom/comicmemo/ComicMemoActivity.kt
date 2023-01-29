@@ -3,7 +3,8 @@ package com.highcom.comicmemo
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -13,17 +14,14 @@ import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.concurrent.thread
 
 /**
  * 巻数メモ一覧Activity
  */
-class ComicMemoActivity : AppCompatActivity() {
+class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
     /** 巻数一覧を制御するためのViewModel */
@@ -35,6 +33,10 @@ class ComicMemoActivity : AppCompatActivity() {
     private var sectionsPagerAdapter: SectionsPagerAdapter? = null
     /** 絞り込み検索文字列 */
     private var mSearchWord = ""
+    /** メニュー */
+    private var mMenu: Menu? = null
+    /** 現在選択中のメニュー */
+    private var currentMenuSelect: Int = R.id.sort_default
     /** Firebase解析 */
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
     /** AdMob広告 */
@@ -85,7 +87,7 @@ class ComicMemoActivity : AppCompatActivity() {
         )
 
         // 各セクションページに表示する一覧データの設定
-        sectionsPagerAdapter = SectionsPagerAdapter(this, comicPagerViewModel, supportFragmentManager)
+        sectionsPagerAdapter = SectionsPagerAdapter(applicationContext, this, comicPagerViewModel, supportFragmentManager)
         binding.viewPager.adapter = sectionsPagerAdapter
         binding.itemtabs.setupWithViewPager(binding.viewPager)
 
@@ -147,6 +149,8 @@ class ComicMemoActivity : AppCompatActivity() {
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_comic_memo, menu)
+        mMenu = menu
+        setInitialMenuTitle()
         // 文字列検索の処理を設定
         val searchMenuView = menu?.findItem(R.id.menu_search_view)
         val searchActionView = searchMenuView?.actionView as SearchView
@@ -170,6 +174,45 @@ class ComicMemoActivity : AppCompatActivity() {
     }
 
     /**
+     * 現在表示されているFragmentの変更通知
+     *
+     */
+    override fun notifyChangeCurrentFragment() {
+        setInitialMenuTitle()
+    }
+
+    /**
+     * Fragment毎に設定されているソート種別に合わせたメニュータイトル設定処理
+     *
+     */
+    private fun setInitialMenuTitle() {
+        // 選択メニュー状態を一旦元に戻す
+        mMenu?.findItem(R.id.edit_mode)?.title = mMenu?.findItem(R.id.edit_mode)?.title.toString()
+            .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
+        mMenu?.findItem(R.id.sort_default)?.title = mMenu?.findItem(R.id.sort_default)?.title.toString()
+            .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
+        mMenu?.findItem(R.id.sort_title)?.title = mMenu?.findItem(R.id.sort_title)?.title.toString()
+            .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
+        mMenu?.findItem(R.id.sort_author)?.title = mMenu?.findItem(R.id.sort_author)?.title.toString()
+            .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
+
+        val fragment = sectionsPagerAdapter?.currentFragment as PlaceholderFragment?
+        currentMenuSelect = when(fragment?.getSortType()) {
+            ComicListPersistent.SortType.ID -> R.id.sort_default
+            ComicListPersistent.SortType.TITLE -> R.id.sort_title
+            ComicListPersistent.SortType.AUTHOR -> R.id.sort_author
+            else -> R.id.sort_default
+        }
+        if (fragment?.getEditEnable() == true) {
+            currentMenuSelect = R.id.edit_mode
+        }
+            // 現在選択されている選択アイコンを設定する
+        val selectMenuTitle = mMenu?.findItem(currentMenuSelect)?.title.toString()
+            .replace(getString(R.string.no_select_menu_icon), getString(R.string.select_menu_icon))
+        mMenu?.findItem(currentMenuSelect)?.title = selectMenuTitle
+    }
+
+    /**
      * アクションバーのメニュー選択処理
      *
      * @param item 選択項目
@@ -181,26 +224,52 @@ class ComicMemoActivity : AppCompatActivity() {
             R.id.edit_mode -> {
                 // 編集状態
                 fragment.sortData(ComicListPersistent.SortType.ID)
+                if (fragment.getEditEnable()) {
+                    setCurrentSelectMenuTitle(mMenu?.findItem(R.id.sort_default), R.id.sort_default)
+                } else {
+                    setCurrentSelectMenuTitle(item, R.id.edit_mode)
+                }
                 fragment.changeEditEnable()
             }
             R.id.sort_default -> {
                 // idでのソート
+                setCurrentSelectMenuTitle(item, R.id.sort_default)
                 fragment.sortData(ComicListPersistent.SortType.ID)
                 fragment.setEditEnable(false)
             }
             R.id.sort_title -> {
                 // タイトル名でのソート
+                setCurrentSelectMenuTitle(item, R.id.sort_title)
                 fragment.sortData(ComicListPersistent.SortType.TITLE)
                 fragment.setEditEnable(false)
             }
             R.id.sort_author -> {
                 // 著者名でのソート
+                setCurrentSelectMenuTitle(item, R.id.sort_author)
                 fragment.sortData(ComicListPersistent.SortType.AUTHOR)
                 fragment.setEditEnable(false)
             }
             else -> {}
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * 選択メニュータイトル変更処理
+     * 選択されているメニューのタイトルの先頭文字を変更する
+     *
+     * @param item メニューアイテム
+     * @param id 選択メニューID
+     */
+    private fun setCurrentSelectMenuTitle(item: MenuItem?, id: Int) {
+        // 現在選択されているメニューの選択アイコンを戻す
+        val currentMenuTitle: String = mMenu?.findItem(currentMenuSelect)?.title.toString()
+            .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
+        mMenu?.findItem(currentMenuSelect)?.title = currentMenuTitle
+        // 今回選択されたメニューに選択アイコンを設定する
+        currentMenuSelect = id
+        val selectMenuTitle = item?.title.toString().replace(getString(R.string.no_select_menu_icon), getString(R.string.select_menu_icon))
+        item?.title = selectMenuTitle
     }
 
     /**

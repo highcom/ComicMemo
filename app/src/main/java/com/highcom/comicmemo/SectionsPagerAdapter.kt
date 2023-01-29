@@ -15,13 +15,17 @@ import androidx.fragment.app.FragmentPagerAdapter
  *
  * @param fm フラグメントマネージャ
  */
-class SectionsPagerAdapter(private val mContext: Context, private val comicPagerViewModel: ComicPagerViewModel, fm: FragmentManager?) :
+class SectionsPagerAdapter(private val mContext: Context, private val activity: ComicMemoActivity, private val comicPagerViewModel: ComicPagerViewModel, fm: FragmentManager?) :
     FragmentPagerAdapter(
         fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
     ) {
     private val fragmentList: MutableList<Fragment>
     var currentFragment: Fragment? = null
         private set
+
+    interface SectionPagerAdapterListener {
+        fun notifyChangeCurrentFragment()
+    }
 
     /**
      * カレントのFragment取得処理
@@ -66,6 +70,12 @@ class SectionsPagerAdapter(private val mContext: Context, private val comicPager
             currentFragment = `object` as Fragment
         }
         super.setPrimaryItem(container, position, `object`)
+    }
+
+    override fun finishUpdate(container: ViewGroup) {
+        super.finishUpdate(container)
+        // 初期化が終わった後から通知を始める
+        activity.notifyChangeCurrentFragment()
     }
 
     val allFragment: List<Fragment>
