@@ -20,6 +20,18 @@
         android:focusable="false"
         android:id="@+id/deletebutton" />
 
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:focusableInTouchMode="false"
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_baseline_drag_handle_24"
+        android:id="@+id/rearrangebutton" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,18 +41,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="3dp" >
-
-            <ImageButton
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:focusableInTouchMode="false"
-                android:layout_margin="5dp"
-                android:adjustViewBounds="true"
-                android:background="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/icon_rearrange"
-                android:id="@+id/rearrangebutton" />
 
             <TextView
                 android:id="@+id/title"
