@@ -144,7 +144,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
     /**
      * アクションバーのメニュー生成処理
      *
-     * @param menu アクションばーメニュー
+     * @param menu アクションバーメニュー
      * @return
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -248,6 +248,10 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
                 setCurrentSelectMenuTitle(item, R.id.sort_author)
                 fragment.sortData(ComicListPersistent.SortType.AUTHOR)
                 fragment.setEditEnable(false)
+            }
+            R.id.serach_book -> {
+                val intent = Intent(this@ComicMemoActivity, RakutenBookActivity::class.java)
+                startActivity(intent)
             }
             else -> {}
         }
