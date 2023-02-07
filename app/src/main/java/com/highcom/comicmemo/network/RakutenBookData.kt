@@ -1,4 +1,4 @@
-package com.highcom.comicmemo.datamodel
+package com.highcom.comicmemo.network
 
 data class RakutenBookData(
     val GenreInformation: List<Any>,
