@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import com.highcom.comicmemo.databinding.GridBookItemBinding
 import com.highcom.comicmemo.network.Item
 
+/**
+ * 書籍データの各アイテムをグリッド表示するためのAdapter
+ */
 class BookDataGridItemAdapter : ListAdapter<Item, BookItemViewHolder>(DiffCallback) {
     companion object DiffCallback : DiffUtil.ItemCallback<Item>() {
         override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {

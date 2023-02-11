@@ -11,6 +11,9 @@ import com.highcom.comicmemo.network.RakutenBookData
 import com.highcom.comicmemo.network.RakutenBookViewModel
 import com.highcom.comicmemo.network.Item
 
+/**
+ * 楽天書籍APIを利用した書籍一覧画面のActivity
+ */
 class RakutenBookActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRakutenBookBinding
