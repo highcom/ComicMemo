@@ -6,10 +6,14 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import com.highcom.comicmemo.network.RakutenBookData
 import com.highcom.comicmemo.network.RakutenBookViewModel
+import com.highcom.comicmemo.network.Item
 
 class RakutenBookActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityRakutenBookBinding
 
     private val viewModel: RakutenBookViewModel by lazy {
         val appId = getString(R.string.rakuten_app_id)
@@ -19,19 +23,23 @@ class RakutenBookActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_rakuten_book)
+        binding = ActivityRakutenBookBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val recyclerView = binding.bookItemGridView
+        val itemAdapter = BookDataGridItemAdapter()
+
+        recyclerView.adapter = itemAdapter
 
         // 楽天書籍データを監視
         viewModel.bookData.observe(this, Observer<RakutenBookData> {
-            val items = mutableListOf<String>()
+            val items = mutableListOf<Item>()
             val res = it.Items.iterator()
             for (item in res) {
-                items.add(item.Item.title)
+                items.add(item)
             }
 
-            val adapter = ArrayAdapter(this@RakutenBookActivity, android.R.layout.simple_list_item_1, items)
-            val list: ListView = findViewById(R.id.trend_list_view)
-            list.adapter = adapter
+            itemAdapter.submitList(items)
         })
     }
 }

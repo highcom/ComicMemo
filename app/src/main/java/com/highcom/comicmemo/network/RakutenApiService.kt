@@ -22,7 +22,7 @@ private val retrofit = Retrofit.Builder()
  * 楽天APIサービスインターフェース
  */
 interface RakutenApiService {
-    @GET("BooksBook/Search/20170404?format=json&booksGenreId=001001&sort=-releaseDate&hits=5")
+    @GET("BooksBook/Search/20170404?format=json&booksGenreId=001001&sort=-releaseDate&hits=30")
     fun items(@Query("applicationId") appId: String): retrofit2.Call<RakutenBookData>
 }
 
