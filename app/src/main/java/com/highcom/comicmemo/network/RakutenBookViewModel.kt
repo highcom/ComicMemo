@@ -11,6 +11,7 @@ enum class RakutenApiStatus { LOADING, ERROR, DONE }
  * @property appId 楽天API利用アプリケーションID
  */
 class RakutenBookViewModel(private val appId: String) : ViewModel() {
+    var page = 0
     @Suppress("UNCHECKED_CAST")
     class Factory(
         private val id: String
@@ -33,7 +34,7 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         get() = _bookData
 
     init {
-        getRakutenBookData(appId)
+        getRakutenBookData()
     }
 
     /**
@@ -41,10 +42,12 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
      *
      * @param appId 楽天API利用アプリケーションID
      */
-    private fun getRakutenBookData(appId: String) {
+    fun getRakutenBookData() {
+        // 呼び出される毎にページ番号を更新
+        ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            RakutenApi.retrofitService.items(appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            RakutenApi.retrofitService.items(page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
                     _status.value = RakutenApiStatus.ERROR
                 }
