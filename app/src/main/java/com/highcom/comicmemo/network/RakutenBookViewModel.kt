@@ -47,6 +47,8 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
      * @param appId 楽天API利用アプリケーションID
      */
     fun getSalesList() {
+        // APIの仕様で100ページを超える場合はエラーとなるので呼び出さない
+        if (page >= MAX_PAGE_COUNT) return
         // 他の種別でLiveDataが設定されていた場合は初期ページから取得
         if (liveDataKind != LiveDataKind.SALES) {
             liveDataKind = LiveDataKind.SALES
@@ -80,6 +82,8 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
      * @param word 検索文字列
      */
     fun search(word: String) {
+        // APIの仕様で100ページを超える場合はエラーとなるので呼び出さない
+        if (page >= MAX_PAGE_COUNT) return
         // 他の種別でLiveDataが設定されていた場合は初期ページから取得
         if (liveDataKind != LiveDataKind.SEARCH) {
             liveDataKind = LiveDataKind.SEARCH
@@ -127,5 +131,9 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         }
 
         _bookList.value = items
+    }
+
+    companion object {
+        private const val MAX_PAGE_COUNT = 100
     }
 }
