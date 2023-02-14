@@ -14,6 +14,8 @@ enum class LiveDataKind { SALES, SEARCH }
 class RakutenBookViewModel(private val appId: String) : ViewModel() {
     /** LiveDataに設定しているデータ種別 */
     var liveDataKind = LiveDataKind.SALES
+    /** 検索ワード */
+    var searchWord = ""
     /** 表示ページ数 */
     var page = 0
     @Suppress("UNCHECKED_CAST")
@@ -84,9 +86,10 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
     fun search(word: String) {
         // APIの仕様で100ページを超える場合はエラーとなるので呼び出さない
         if (page >= MAX_PAGE_COUNT) return
-        // 他の種別でLiveDataが設定されていた場合は初期ページから取得
-        if (liveDataKind != LiveDataKind.SEARCH) {
+        // 他の種別でLiveDataが設定されていたか検索ワードが変わった場合は初期ページから取得
+        if (liveDataKind != LiveDataKind.SEARCH || searchWord != word) {
             liveDataKind = LiveDataKind.SEARCH
+            searchWord = word
             _bookList.value = null
             page = 0
         }
@@ -94,7 +97,7 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            RakutenApi.retrofitService.searchItems(word, page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            RakutenApi.retrofitService.searchItems(searchWord, page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
                     _status.value = RakutenApiStatus.ERROR
                 }
