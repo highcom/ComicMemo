@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".RakutenBookActivity">
+    <item
+        android:id="@+id/menu_rakuten_book_search_view"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always"
+        android:visible="true"
+        android:title="@string/search_bar_title" />
+</menu>

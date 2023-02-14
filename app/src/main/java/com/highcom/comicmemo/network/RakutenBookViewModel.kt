@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 
 enum class RakutenApiStatus { LOADING, ERROR, DONE }
+enum class LiveDataKind { SALES, SEARCH }
 
 /**
  * 楽天書籍検索ViewModel
@@ -11,6 +12,9 @@ enum class RakutenApiStatus { LOADING, ERROR, DONE }
  * @property appId 楽天API利用アプリケーションID
  */
 class RakutenBookViewModel(private val appId: String) : ViewModel() {
+    /** LiveDataに設定しているデータ種別 */
+    var liveDataKind = LiveDataKind.SALES
+    /** 表示ページ数 */
     var page = 0
     @Suppress("UNCHECKED_CAST")
     class Factory(
@@ -28,13 +32,13 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         get() = _status
 
     // 楽天APIのレスポンスデータを保持する内部変数
-    private val _bookData = MutableLiveData<RakutenBookData>()
+    private val _bookList = MutableLiveData<List<Item>>()
     // 楽天APIのレスポンスデータ
-    val bookData: LiveData<RakutenBookData>
-        get() = _bookData
+    val bookList: LiveData<List<Item>>
+        get() = _bookList
 
     init {
-        getRakutenBookData()
+        getSalesList()
     }
 
     /**
@@ -42,12 +46,18 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
      *
      * @param appId 楽天API利用アプリケーションID
      */
-    fun getRakutenBookData() {
+    fun getSalesList() {
+        // 他の種別でLiveDataが設定されていた場合は初期ページから取得
+        if (liveDataKind != LiveDataKind.SALES) {
+            liveDataKind = LiveDataKind.SALES
+            _bookList.value = null
+            page = 0
+        }
         // 呼び出される毎にページ番号を更新
         ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            RakutenApi.retrofitService.items(page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            RakutenApi.retrofitService.salesItems(page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
                     _status.value = RakutenApiStatus.ERROR
                 }
@@ -55,12 +65,67 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
                 override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
                     if (response.isSuccessful) {
                         response.body()?.let {
-                            _bookData.value = response.body()
                             _status.value = RakutenApiStatus.DONE
+                            setBookList(it)
                         }
                     }
                 }
             })
         }
+    }
+
+    /**
+     * 引数で指定された文字列での書籍データをタイトル検索処理
+     *
+     * @param word 検索文字列
+     */
+    fun search(word: String) {
+        // 他の種別でLiveDataが設定されていた場合は初期ページから取得
+        if (liveDataKind != LiveDataKind.SEARCH) {
+            liveDataKind = LiveDataKind.SEARCH
+            _bookList.value = null
+            page = 0
+        }
+        // 呼び出される毎にページ番号を更新
+        ++page
+        viewModelScope.launch {
+            _status.value = RakutenApiStatus.LOADING
+            RakutenApi.retrofitService.searchItems(word, page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+                override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+                    _status.value = RakutenApiStatus.ERROR
+                }
+
+                override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            _status.value = RakutenApiStatus.DONE
+                            setBookList(it)
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    /**
+     * 楽天APIレスポンスデータから書籍データリストに設定する処理
+     *
+     * @param data レスポンスデータ
+     */
+    private fun setBookList(data: RakutenBookData) {
+        val items = mutableListOf<Item>()
+        // 既に表示しているデータを一度設定
+        _bookList.value?.let {
+            for (item in it.iterator()) {
+                items.add(item)
+            }
+        }
+        // APIで新しく取得したデータを追加する
+        val res = data.Items.iterator()
+        for (item in res) {
+            items.add(item)
+        }
+
+        _bookList.value = items
     }
 }

@@ -1,6 +1,6 @@
 package com.highcom.comicmemo.network
 
-data class ItemX(
+data class ItemEntity(
     val affiliateUrl: String,
     val author: String,
     val authorKana: String,
