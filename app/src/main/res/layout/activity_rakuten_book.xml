@@ -7,24 +7,11 @@
     android:background="@color/sirahanairo"
     tools:context=".RakutenBookActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/book_item_grid_view"
-        android:scrollbars="vertical"
+    <fragment
+        android:id="@+id/rakuten_book_container"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="3"
-        tools:ignore="MissingConstraints" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible"/>
+        android:layout_height="match_parent"
+        app:defaultNavHost="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

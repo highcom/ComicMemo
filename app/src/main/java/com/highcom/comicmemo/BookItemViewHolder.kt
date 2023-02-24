@@ -13,7 +13,17 @@ import com.highcom.comicmemo.network.Item
  * @property binding 設定する書籍アイテム
  */
 class BookItemViewHolder(private var binding: GridBookItemBinding): RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: Item) {
+    /**
+     * 書籍に対するイベントリスナー
+     */
+    interface BookItemListener {
+        /**
+         * 書籍選択時イベント
+         */
+        fun bookItemSelected()
+    }
+
+    fun bind(item: Item, listener: BookItemListener) {
         // 画像URLから画像を表示する
         val imgUri = item.Item.mediumImageUrl.toUri().buildUpon().scheme("https").build()
         Glide.with(binding.itemImageView.context)
@@ -25,5 +35,9 @@ class BookItemViewHolder(private var binding: GridBookItemBinding): RecyclerView
             .into(binding.itemImageView)
         // タイトルを設定
         binding.itemTextView.text = item.Item.title
+
+        binding.itemImageView.setOnClickListener {
+            listener.bookItemSelected()
+        }
     }
 }

@@ -15,6 +15,7 @@
         <entry key="app/src/main/res/layout/activity_comic_memo.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_input_memo.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_rakuten_book.xml" value="0.1734375" />
+        <entry key="app/src/main/res/layout/fragment_book_list.xml" value="0.22418478260869565" />
         <entry key="app/src/main/res/layout/fragment_comic_memo.xml" value="0.19927536231884058" />
         <entry key="app/src/main/res/layout/grid_book_item.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/layout/input_memo.xml" value="0.165" />

@@ -10,7 +10,7 @@ import com.highcom.comicmemo.network.Item
 /**
  * 書籍データの各アイテムをグリッド表示するためのAdapter
  */
-class BookDataGridItemAdapter : ListAdapter<Item, BookItemViewHolder>(DiffCallback) {
+class BookDataGridItemAdapter(private val listener: BookItemViewHolder.BookItemListener) : ListAdapter<Item, BookItemViewHolder>(DiffCallback) {
     companion object DiffCallback : DiffUtil.ItemCallback<Item>() {
         override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
             return oldItem === newItem
@@ -28,6 +28,6 @@ class BookDataGridItemAdapter : ListAdapter<Item, BookItemViewHolder>(DiffCallba
 
     override fun onBindViewHolder(holder: BookItemViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, listener)
     }
 }

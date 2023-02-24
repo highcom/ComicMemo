@@ -22,7 +22,7 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
     class Factory(
         private val id: String
     ) : ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return RakutenBookViewModel(appId = id) as T
         }
     }
