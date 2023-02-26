@@ -20,7 +20,7 @@ class BookItemViewHolder(private var binding: GridBookItemBinding): RecyclerView
         /**
          * 書籍選択時イベント
          */
-        fun bookItemSelected()
+        fun bookItemSelected(item: Item)
     }
 
     fun bind(item: Item, listener: BookItemListener) {
@@ -37,7 +37,7 @@ class BookItemViewHolder(private var binding: GridBookItemBinding): RecyclerView
         binding.itemTextView.text = item.Item.title
 
         binding.itemImageView.setOnClickListener {
-            listener.bookItemSelected()
+            listener.bookItemSelected(item)
         }
     }
 }

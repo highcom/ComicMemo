@@ -34,9 +34,9 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         get() = _status
 
     // 楽天APIのレスポンスデータを保持する内部変数
-    private val _bookList = MutableLiveData<List<Item>>()
+    private val _bookList = MutableLiveData<List<Item>?>()
     // 楽天APIのレスポンスデータ
-    val bookList: LiveData<List<Item>>
+    val bookList: LiveData<List<Item>?>
         get() = _bookList
 
     init {

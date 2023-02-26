@@ -5,9 +5,13 @@
       <map>
         <entry key="app/src/main/res/drawable/ic_baseline_done_24.xml" value="0.1555" />
         <entry key="app/src/main/res/drawable/ic_baseline_drag_handle_24.xml" value="0.202" />
+        <entry key="app/src/main/res/drawable/ic_baseline_open_in_browser_24.xml" value="0.198" />
+        <entry key="app/src/main/res/drawable/no_frame_button.xml" value="0.202" />
         <entry key="app/src/main/res/drawable/original_button.xml" value="0.1895" />
+        <entry key="app/src/main/res/drawable/round_button.xml" value="0.202" />
         <entry key="app/src/main/res/drawable/shape_rouded_corners.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/shape_rouded_corners_top_5dp.xml" value="0.1895" />
+        <entry key="app/src/main/res/drawable/shape_rounded_left_corners.xml" value="0.202" />
         <entry key="app/src/main/res/drawable/shape_rounded_top_left_corners.xml" value="0.1895" />
         <entry key="app/src/main/res/drawable/splash.xml" value="0.125" />
         <entry key="app/src/main/res/drawable/toggle_select_button.xml" value="0.1105" />
@@ -15,6 +19,7 @@
         <entry key="app/src/main/res/layout/activity_comic_memo.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_input_memo.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_rakuten_book.xml" value="0.1734375" />
+        <entry key="app/src/main/res/layout/fragment_book_detail.xml" value="0.22418478260869565" />
         <entry key="app/src/main/res/layout/fragment_book_list.xml" value="0.22418478260869565" />
         <entry key="app/src/main/res/layout/fragment_comic_memo.xml" value="0.19927536231884058" />
         <entry key="app/src/main/res/layout/grid_book_item.xml" value="0.20052083333333334" />

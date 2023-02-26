@@ -6,11 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
+import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.network.RakutenBookViewModel
 
 /**
@@ -89,7 +91,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
     /**
      * 書籍詳細画面への遷移処理
      */
-    override fun bookItemSelected() {
-        findNavController().navigate(R.id.action_bookListFragment_to_bookDetailFragment)
+    override fun bookItemSelected(item: Item) {
+        findNavController().navigate(R.id.action_bookListFragment_to_bookDetailFragment, bundleOf("BUNDLE_ITEM_DATA" to item))
     }
 }

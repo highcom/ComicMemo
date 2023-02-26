@@ -1,5 +1,7 @@
 package com.highcom.comicmemo.network
 
+import java.io.Serializable
+
 data class ItemEntity(
     val affiliateUrl: String,
     val author: String,
@@ -31,4 +33,4 @@ data class ItemEntity(
     val subTitleKana: String,
     val title: String,
     val titleKana: String
-)
+) : Serializable

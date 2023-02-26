@@ -320,7 +320,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/broken_image/baseline_broken_image_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/open_in_browser/baseline_open_in_browser_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -330,7 +330,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_baseline_broken_image_24" />
+                            <entry key="color" value="007aff" />
+                            <entry key="outputName" value="ic_baseline_open_in_browser_24" />
                           </map>
                         </option>
                       </PersistentState>
