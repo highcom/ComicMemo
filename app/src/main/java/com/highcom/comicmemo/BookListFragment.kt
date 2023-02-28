@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
 import com.highcom.comicmemo.network.Item
+import com.highcom.comicmemo.network.RakutenApiStatus
 import com.highcom.comicmemo.network.RakutenBookViewModel
 
 /**
@@ -46,11 +47,23 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         recyclerView.adapter = itemAdapter
         recyclerView.addOnScrollListener(InfiniteScrollListener())
 
+        // 楽天APIの呼び出し状況に応じてプログレスサークルの表示
+        viewModel.status.observe(viewLifecycleOwner) { apiStatus ->
+            when (apiStatus) {
+                RakutenApiStatus.LOADING -> {
+                    nowLoading = true
+                    handler.post { binding.progressBar.visibility = View.VISIBLE }
+                }
+                RakutenApiStatus.DONE, RakutenApiStatus.ERROR -> {
+                    nowLoading = false
+                    handler.post { binding.progressBar.visibility = View.INVISIBLE }
+                }
+            }
+        }
+
         // 楽天書籍データを監視
         viewModel.bookList.observe(viewLifecycleOwner) {
             itemAdapter.submitList(it)
-            nowLoading = false
-            handler.post { binding.progressBar.visibility = View.INVISIBLE }
         }
     }
 
@@ -76,9 +89,6 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
 
             // 一番下までスクロールされた場合
             if (itemCount == childCount + firstPosition) {
-                // API 問い合わせ中はtrue
-                nowLoading = true
-                handler.post { binding.progressBar.visibility = View.VISIBLE }
                 if (searchWord != null) {
                     viewModel.search(searchWord!!)
                 } else {
