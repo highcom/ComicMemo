@@ -54,10 +54,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textColor="@android:color/black"
+                    android:textStyle="bold"
                     android:text="@string/detail_title"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -78,10 +79,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textColor="@android:color/black"
+                    android:textStyle="bold"
                     android:text="@string/detail_subtitle"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -90,7 +92,6 @@
                     android:textSize="12sp"
                     android:textColor="@android:color/black"
                     android:layout_weight="1"
-                    android:text="@string/detail_none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -101,9 +102,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textColor="@android:color/black"
-                    android:layout_weight="2"
+                    android:textStyle="bold"
+                    android:layout_weight="3"
                     android:text="@string/detail_author"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -124,9 +126,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textColor="@android:color/black"
-                    android:layout_weight="2"
+                    android:textStyle="bold"
+                    android:layout_weight="3"
                     android:text="@string/detail_publisher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -147,9 +150,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textColor="@android:color/black"
-                    android:layout_weight="2"
+                    android:textStyle="bold"
+                    android:layout_weight="3"
                     android:text="@string/detail_sales"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -168,10 +172,14 @@
                 android:id="@+id/detail_caption_view"
                 android:textSize="12sp"
                 android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <Button
                 android:id="@+id/detail_url"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#00000000"

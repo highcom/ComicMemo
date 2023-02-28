@@ -16,11 +16,11 @@
     <string name="sort_title_text">○ 並べ替え(タイトル)</string>
     <string name="sort_author_text">○ 並べ替え(著作者)</string>
     <string name="search_bar_title">○ Search Bar</string>
-    <string name="serach_book">書籍検索</string>
-    <string name="trend_book">トレンド</string>
+    <string name="serach_book">人気書籍検索</string>
+    <string name="trend_book">人気書籍</string>
     <string name="detail_new_button">この書籍で\n巻数メモを作成</string>
     <string name="detail_title">タイトル</string>
-    <string name="detail_none">-</string>
+    <string name="detail_none">ー</string>
     <string name="detail_subtitle"></string>
     <string name="detail_author">著者名</string>
     <string name="detail_publisher">出版社</string>
