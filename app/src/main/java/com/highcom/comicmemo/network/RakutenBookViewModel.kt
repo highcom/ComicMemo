@@ -14,8 +14,6 @@ enum class LiveDataKind { SALES, SEARCH }
 class RakutenBookViewModel(private val appId: String) : ViewModel() {
     /** LiveDataに設定しているデータ種別 */
     var liveDataKind = LiveDataKind.SALES
-    /** 検索ワード */
-    var searchWord = ""
     /** 表示ページ数 */
     var page = 0
     @Suppress("UNCHECKED_CAST")
@@ -27,20 +25,33 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         }
     }
 
-    // 楽天APIのステータスを保持する内部変数
+    /** 検索ワードを保持する内部変数 */
+    private val _searchWord = MutableLiveData<String?>()
+    /** 検索ワード */
+    val searchWord: LiveData<String?>
+        get() = _searchWord
+
+    /** 楽天APIのステータスを保持する内部変数 */
     private val _status = MutableLiveData<RakutenApiStatus>()
-    // 楽天APIのステータス
+    /** 楽天APIのステータス */
     val status: LiveData<RakutenApiStatus>
         get() = _status
 
-    // 楽天APIのレスポンスデータを保持する内部変数
+    /** 楽天APIのレスポンスデータを保持する内部変数 */
     private val _bookList = MutableLiveData<List<Item>?>()
-    // 楽天APIのレスポンスデータ
+    /** 楽天APIのレスポンスデータ */
     val bookList: LiveData<List<Item>?>
         get() = _bookList
 
     init {
         getSalesList()
+    }
+
+    /**
+     * 検索文字列をクリアする
+     */
+    fun clearSerachWord() {
+        _searchWord.value = null
     }
 
     /**
@@ -87,9 +98,9 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         // APIの仕様で100ページを超える場合はエラーとなるので呼び出さない
         if (page >= MAX_PAGE_COUNT) return
         // 他の種別でLiveDataが設定されていたか検索ワードが変わった場合は初期ページから取得
-        if (liveDataKind != LiveDataKind.SEARCH || searchWord != word) {
+        if (liveDataKind != LiveDataKind.SEARCH || !_searchWord.value.equals(word)) {
             liveDataKind = LiveDataKind.SEARCH
-            searchWord = word
+            _searchWord.value = word
             _bookList.value = null
             page = 0
         }
@@ -97,7 +108,7 @@ class RakutenBookViewModel(private val appId: String) : ViewModel() {
         ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            RakutenApi.retrofitService.searchItems(searchWord, page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            RakutenApi.retrofitService.searchItems(_searchWord.value ?: "", page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
                     _status.value = RakutenApiStatus.ERROR
                 }

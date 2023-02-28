@@ -65,6 +65,11 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         viewModel.bookList.observe(viewLifecycleOwner) {
             itemAdapter.submitList(it)
         }
+
+        // 検索文字列を監視
+        viewModel.searchWord.observe(viewLifecycleOwner) {
+            searchWord = it
+        }
     }
 
     /**

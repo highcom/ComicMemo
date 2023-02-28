@@ -23,8 +23,6 @@ import kotlinx.coroutines.launch
 class RakutenBookActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRakutenBookBinding
-    /** 検索文字列 */
-    private var searchWord: String? = null
 
     private val viewModel: RakutenBookViewModel by viewModels()
 
@@ -54,8 +52,7 @@ class RakutenBookActivity : AppCompatActivity() {
         searchActionView.queryHint = getString(R.string.query_hint)
         searchActionView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                searchWord = query
-                searchWord?.let {
+                query?.let {
                     viewModel.search(it)
                 }
                 return false
@@ -67,7 +64,7 @@ class RakutenBookActivity : AppCompatActivity() {
         })
         // バツボタンが押下されて検索を終了する場合
         searchActionView.setOnCloseListener {
-            searchWord = null
+            viewModel.clearSerachWord()
             viewModel.getSalesList()
             false
         }
