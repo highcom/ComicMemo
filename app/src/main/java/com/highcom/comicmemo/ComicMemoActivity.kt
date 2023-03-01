@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
@@ -24,10 +23,6 @@ import java.util.*
 class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
-    /** 巻数一覧を制御するためのViewModel */
-    private val comicPagerViewModel: ComicPagerViewModel by viewModels {
-        ComicPagerViewModelFactory((application as ComicMemoApplication).repository)
-    }
 
     /** タブレイアウトのセクションページアダプタ */
     private var sectionsPagerAdapter: SectionsPagerAdapter? = null
@@ -87,7 +82,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         )
 
         // 各セクションページに表示する一覧データの設定
-        sectionsPagerAdapter = SectionsPagerAdapter(applicationContext, this, comicPagerViewModel, supportFragmentManager)
+        sectionsPagerAdapter = SectionsPagerAdapter(applicationContext, this, supportFragmentManager)
         binding.viewPager.adapter = sectionsPagerAdapter
         binding.itemtabs.setupWithViewPager(binding.viewPager)
 

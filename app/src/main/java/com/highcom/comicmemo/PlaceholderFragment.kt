@@ -22,9 +22,8 @@ import java.util.*
 /**
  * 巻数データ一覧を表示するためのFragment
  *
- * @property comicPagerViewModel 巻数一覧を制御するためのViewModel
  */
-class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) : Fragment(), AdapterListener {
+class PlaceholderFragment : Fragment(), AdapterListener {
     private lateinit var binding: FragmentComicMemoBinding
     /** 巻数一覧を制御するためのViewModel */
     private val pageViewModel: ComicPagerViewModel by viewModels {
@@ -329,8 +328,8 @@ class PlaceholderFragment(private val comicPagerViewModel: ComicPagerViewModel) 
     companion object {
         private const val COMIC_NUM_MAX = 999
         private const val ARG_SECTION_NUMBER = "section_number"
-        fun newInstance(index: Int, comicPagerViewModel: ComicPagerViewModel): PlaceholderFragment {
-            val fragment = PlaceholderFragment(comicPagerViewModel)
+        fun newInstance(index: Int): PlaceholderFragment {
+            val fragment = PlaceholderFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_SECTION_NUMBER, index)
             fragment.arguments = bundle
