@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
@@ -115,6 +116,7 @@ class RakutenBookActivity : AppCompatActivity() {
                     (application as ComicMemoApplication).repository.update(comic)
                 }
             }
+            Toast.makeText(applicationContext, getString(R.string.register_book) + comic.title , Toast.LENGTH_LONG).show()
         }
     }
 }
