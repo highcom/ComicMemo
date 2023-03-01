@@ -110,7 +110,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
     private fun loadBanner() {
         // 広告リクエストの生成
         mAdView = AdView(this)
-        mAdView?.adUnitId = "ca-app-pub-3217012767112748/8829713111"
+        mAdView?.adUnitId = getString(R.string.admob_comic_memo_id)
         binding.adViewFrame.removeAllViews()
         binding.adViewFrame.addView(mAdView)
         val adSize = adSize

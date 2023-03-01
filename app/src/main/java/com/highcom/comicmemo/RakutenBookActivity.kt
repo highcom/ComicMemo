@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -12,6 +12,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.RakutenBookViewModel
@@ -24,8 +27,10 @@ import kotlinx.coroutines.launch
 class RakutenBookActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRakutenBookBinding
-
+    /** 人気書籍検索画面のViewModel */
     private val viewModel: RakutenBookViewModel by viewModels()
+    /** AdMob広告 */
+    private var mAdView: AdView? = null
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
         return RakutenBookViewModel.Factory(getString(R.string.rakuten_app_id))
@@ -43,8 +48,53 @@ class RakutenBookActivity : AppCompatActivity() {
 
         // アクションバーの戻るボタンを表示
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // 広告のロード
+        binding.adViewBookListFrame.post { loadBanner() }
     }
 
+    /**
+     * AdMobバナー広告のロード
+     */
+    private fun loadBanner() {
+        // 広告リクエストの生成
+        mAdView = AdView(this)
+        mAdView?.adUnitId = getString(R.string.admob_book_list_id)
+        binding.adViewBookListFrame.removeAllViews()
+        binding.adViewBookListFrame.addView(mAdView)
+        val adSize = adSize
+        mAdView?.adSize = adSize
+        val adRequest = AdRequest.Builder().build()
+
+        // 広告のロード
+        mAdView?.loadAd(adRequest)
+    }
+
+    /**
+     * 広告の幅に使用する画面の幅 (装飾を減らしたもの) を決定する
+     */
+    private val adSize: AdSize
+        get() {
+            // 広告の幅に使用する画面の幅 (装飾を減らしたもの) を決定
+            val display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+            val density = outMetrics.density
+            var adWidthPixels = binding.adViewBookListFrame.width.toFloat()
+
+            // 広告がレイアウトされていない場合は、デフォルトで全画面幅にする
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
+
+    /**
+     * アクションバーのメニュー生成処理
+     *
+     * @param menu メニュー
+     * @return
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_rakuten_book, menu)
         // 文字列検索の処理を設定
