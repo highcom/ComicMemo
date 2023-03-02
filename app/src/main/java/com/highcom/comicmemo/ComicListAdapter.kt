@@ -1,5 +1,6 @@
 package com.highcom.comicmemo
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -260,11 +261,12 @@ class ComicListAdapter (
 
         private val COMIC_COMPARATOR = object : DiffUtil.ItemCallback<Comic>() {
             override fun areItemsTheSame(oldItem: Comic, newItem: Comic): Boolean {
-                return oldItem === newItem
+                return oldItem.id == newItem.id
             }
 
+            @SuppressLint("DiffUtilEquals")
             override fun areContentsTheSame(oldItem: Comic, newItem: Comic): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem === newItem
             }
         }
     }

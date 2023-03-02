@@ -89,8 +89,6 @@ class PlaceholderFragment : Fragment(), AdapterListener {
             // 移動位置情報を初期化
             fromPos = -1
             toPos = -1
-            // 項目入れ替え後にAdapterを再設定する事で＋ボタンを動作させる
-            recyclerView.adapter = adapter
         }
 
     }
@@ -98,7 +96,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            index = arguments!!.getInt(ARG_SECTION_NUMBER)
+            index = requireArguments().getInt(ARG_SECTION_NUMBER)
         }
     }
 
@@ -116,7 +114,6 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         recyclerView = binding.comicListView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = adapter
-        recyclerView!!.itemAnimator = null
 
         // 続刊・完結のデータ更新を監視する
         if (index.toLong() == ComicMemoRepository.STATE_CONTINUE) {
@@ -213,12 +210,11 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         if (!enable && adapter.editEnable) {
             adapter.editEnable = false
             simpleCallbackHelper!!.setSwipeEnable(true)
-            recyclerView!!.adapter = adapter
         } else if (enable && !adapter.editEnable) {
             adapter.editEnable = true
             simpleCallbackHelper!!.setSwipeEnable(false)
-            recyclerView!!.adapter = adapter
         }
+        recyclerView!!.adapter = adapter
     }
 
     /**
