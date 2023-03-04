@@ -169,4 +169,9 @@ class RakutenBookActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, getString(R.string.register_book) + comic.title , Toast.LENGTH_LONG).show()
         }
     }
+
+    public override fun onDestroy() {
+        mAdView?.destroy()
+        super.onDestroy()
+    }
 }
