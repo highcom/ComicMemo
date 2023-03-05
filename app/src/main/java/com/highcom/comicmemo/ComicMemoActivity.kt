@@ -108,8 +108,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         mAdView?.adUnitId = getString(R.string.admob_comic_memo_id)
         binding.adViewFrame.removeAllViews()
         binding.adViewFrame.addView(mAdView)
-        val adSize = adSize
-        mAdView?.adSize = adSize
+        mAdView?.setAdSize(adSize)
         val adRequest = AdRequest.Builder().build()
 
         // 広告のロード

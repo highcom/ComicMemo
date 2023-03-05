@@ -61,8 +61,7 @@ class RakutenBookActivity : AppCompatActivity() {
         mAdView?.adUnitId = getString(R.string.admob_book_list_id)
         binding.adViewBookListFrame.removeAllViews()
         binding.adViewBookListFrame.addView(mAdView)
-        val adSize = adSize
-        mAdView?.adSize = adSize
+        mAdView?.setAdSize(adSize)
         val adRequest = AdRequest.Builder().build()
 
         // 広告のロード
