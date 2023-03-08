@@ -1,5 +1,6 @@
 package com.highcom.comicmemo
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -280,8 +281,8 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // Fragmentからの呼び出されるので、下位16bitで判定する
-        if (requestCode and 0xFFFF != 1001) return
+        // 入力完了意外で戻ってきた場合は登録しない
+        if (resultCode != Activity.RESULT_OK) return
 
         val comic = data?.getSerializableExtra("COMIC") as? Comic
         if (comic != null) {
