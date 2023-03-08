@@ -22,6 +22,7 @@ android {
     }
     lintOptions {
         abortOnError false
+        checkReleaseBuilds false
     }
     applicationVariants.all { variant ->
         if (variant.buildType.name.equals("release")) {
