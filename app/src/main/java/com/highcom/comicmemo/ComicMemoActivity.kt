@@ -14,7 +14,8 @@ import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -286,7 +287,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
 
         val comic = data?.getSerializableExtra("COMIC") as? Comic
         if (comic != null) {
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 // idが0の場合は新規作成でDBのautoGenerateで自動採番される
                 if (comic.id == 0L) {
                     (application as ComicMemoApplication).repository.insert(comic)

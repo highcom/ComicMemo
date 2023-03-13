@@ -18,7 +18,8 @@ import com.google.android.gms.ads.AdView
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.RakutenBookViewModel
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -157,7 +158,7 @@ class RakutenBookActivity : AppCompatActivity() {
 
         val comic = data?.getSerializableExtra("COMIC") as? Comic
         if (comic != null) {
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 // idが0の場合は新規作成でDBのautoGenerateで自動採番される
                 if (comic.id == 0L) {
                     (application as ComicMemoApplication).repository.insert(comic)
