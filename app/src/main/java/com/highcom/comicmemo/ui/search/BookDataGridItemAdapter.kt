@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,9 @@ import com.highcom.comicmemo.network.Item
 /**
  * 書籍データの各アイテムをグリッド表示するためのAdapter
  */
-class BookDataGridItemAdapter(private val listener: BookItemViewHolder.BookItemListener) : ListAdapter<Item, BookItemViewHolder>(DiffCallback) {
+class BookDataGridItemAdapter(private val listener: BookItemViewHolder.BookItemListener) : ListAdapter<Item, BookItemViewHolder>(
+    DiffCallback
+) {
     companion object DiffCallback : DiffUtil.ItemCallback<Item>() {
         override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
             return oldItem === newItem

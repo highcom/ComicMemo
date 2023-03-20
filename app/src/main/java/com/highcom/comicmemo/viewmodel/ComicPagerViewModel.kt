@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.viewmodel
 
 import androidx.lifecycle.*
 import com.highcom.comicmemo.datamodel.Comic

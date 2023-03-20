@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.edit
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.View.OnTouchListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.highcom.comicmemo.R
 import java.util.*
 
 /**

@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.edit
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.highcom.comicmemo.R
 import com.highcom.comicmemo.datamodel.Comic
 
 object ComicListPersistent {

@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.search
 
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.highcom.comicmemo.ui.edit.InputMemoActivity
+import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.Item

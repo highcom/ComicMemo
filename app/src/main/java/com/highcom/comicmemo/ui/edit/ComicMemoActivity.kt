@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.edit
 
 import android.app.Activity
 import android.content.Intent
@@ -10,8 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.highcom.comicmemo.ComicMemoApplication
+import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.ui.search.RakutenBookActivity
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
 import kotlinx.coroutines.CoroutineScope
@@ -268,7 +271,9 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         mMenu?.findItem(currentMenuSelect)?.title = currentMenuTitle
         // 今回選択されたメニューに選択アイコンを設定する
         currentMenuSelect = id
-        val selectMenuTitle = item?.title.toString().replace(getString(R.string.no_select_menu_icon), getString(R.string.select_menu_icon))
+        val selectMenuTitle = item?.title.toString().replace(getString(R.string.no_select_menu_icon), getString(
+            R.string.select_menu_icon
+        ))
         item?.title = selectMenuTitle
     }
 

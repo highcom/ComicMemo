@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.search
 
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
 import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.network.RakutenApiStatus

@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.edit
 
 import android.app.Activity
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityInputMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import java.util.*

@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.edit
 
 import android.content.Intent
 import android.graphics.Color
@@ -10,14 +10,16 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.highcom.comicmemo.ComicListAdapter.AdapterListener
-import com.highcom.comicmemo.SimpleCallbackHelper.SimpleCallbackListener
+import com.highcom.comicmemo.ComicMemoApplication
+import com.highcom.comicmemo.R
+import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
+import com.highcom.comicmemo.ui.edit.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
+import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 import java.io.Serializable
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.highcom.comicmemo
+package com.highcom.comicmemo.ui.search
 
 import android.app.Activity
 import android.content.Intent
@@ -15,6 +15,8 @@ import androidx.navigation.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.highcom.comicmemo.ComicMemoApplication
+import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.RakutenBookViewModel
