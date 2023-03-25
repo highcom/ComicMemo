@@ -19,6 +19,7 @@ import com.highcom.comicmemo.ComicMemoApplication
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.network.RakutenApi
 import com.highcom.comicmemo.network.RakutenBookViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +37,7 @@ class RakutenBookActivity : AppCompatActivity() {
     private var mAdView: AdView? = null
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        return RakutenBookViewModel.Factory(getString(R.string.rakuten_app_id))
+        return RakutenBookViewModel.Factory(RakutenApi.retrofitService, getString(R.string.rakuten_app_id))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
