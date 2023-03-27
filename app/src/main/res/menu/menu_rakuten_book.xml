@@ -7,4 +7,19 @@
         app:showAsAction="always"
         android:visible="true"
         android:title="@string/search_bar_title" />
+    <item
+        android:id="@+id/search_mode_comic"
+        android:title="@string/search_comic" />
+    <item
+        android:id="@+id/search_mode_novel"
+        android:title="@string/search_novel" />
+    <item
+        android:id="@+id/search_mode_light_novel"
+        android:title="@string/search_light_novel" />
+    <item
+        android:id="@+id/search_mode_paperback"
+        android:title="@string/search_paperback" />
+    <item
+        android:id="@+id/search_mode_new_book"
+        android:title="@string/search_new_book" />
 </menu>

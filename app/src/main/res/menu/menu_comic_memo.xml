@@ -27,6 +27,6 @@
         </item>
     </group>
     <item
-        android:id="@+id/serach_book"
-        android:title="@string/serach_book" />
+        android:id="@+id/search_book"
+        android:title="@string/search_book" />
 </menu>

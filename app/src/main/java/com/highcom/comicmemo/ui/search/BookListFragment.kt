@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
 import com.highcom.comicmemo.network.Item
-import com.highcom.comicmemo.network.RakutenApiStatus
-import com.highcom.comicmemo.network.RakutenBookViewModel
+import com.highcom.comicmemo.viewmodel.RakutenApiStatus
+import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 
 /**
  * 楽天APIを利用して取得した書籍の一覧を表示するFragment

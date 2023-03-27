@@ -1,6 +1,9 @@
-package com.highcom.comicmemo.network
+package com.highcom.comicmemo.viewmodel
 
 import androidx.lifecycle.*
+import com.highcom.comicmemo.network.Item
+import com.highcom.comicmemo.network.RakutenApiService
+import com.highcom.comicmemo.network.RakutenBookData
 import kotlinx.coroutines.launch
 
 enum class RakutenApiStatus { LOADING, ERROR, DONE }
@@ -11,18 +14,19 @@ enum class LiveDataKind { SALES, SEARCH }
  *
  * @property appId 楽天API利用アプリケーションID
  */
-class RakutenBookViewModel(private val rakutenApiService: RakutenApiService, private val appId: String) : ViewModel() {
+class RakutenBookViewModel(private var genreId: String, private val rakutenApiService: RakutenApiService, private val appId: String) : ViewModel() {
     /** LiveDataに設定しているデータ種別 */
     var liveDataKind = LiveDataKind.SALES
     /** 表示ページ数 */
     var page = 0
     @Suppress("UNCHECKED_CAST")
     class Factory(
+        private val genreId: String,
         private val apiService: RakutenApiService,
         private val id: String
     ) : ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RakutenBookViewModel(rakutenApiService = apiService, appId = id) as T
+            return RakutenBookViewModel(genreId = genreId, rakutenApiService = apiService, appId = id) as T
         }
     }
 
@@ -58,22 +62,24 @@ class RakutenBookViewModel(private val rakutenApiService: RakutenApiService, pri
     /**
      * 楽天APIを利用した書籍データ取得処理
      *
-     * @param appId 楽天API利用アプリケーションID
+     * @param id 楽天API検索ジャンルID
      */
-    fun getSalesList() {
+    fun getSalesList(id: String = genreId) {
         // APIの仕様で100ページを超える場合はエラーとなるので呼び出さない
         if (page >= MAX_PAGE_COUNT) return
         // 他の種別でLiveDataが設定されていた場合は初期ページから取得
-        if (liveDataKind != LiveDataKind.SALES) {
+        if (liveDataKind != LiveDataKind.SALES || genreId != id) {
             liveDataKind = LiveDataKind.SALES
             _bookList.value = null
             page = 0
+            // 検索ジャンルIDの設定
+            genreId = id
         }
         // 呼び出される毎にページ番号を更新
         ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            rakutenApiService.salesItems(page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            rakutenApiService.salesItems(genreId, page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
                     _status.value = RakutenApiStatus.ERROR
                 }
@@ -109,7 +115,7 @@ class RakutenBookViewModel(private val rakutenApiService: RakutenApiService, pri
         ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            rakutenApiService.searchItems(_searchWord.value ?: "", page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            rakutenApiService.searchItems(genreId, _searchWord.value ?: "", page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
                     _status.value = RakutenApiStatus.ERROR
                 }
@@ -149,6 +155,17 @@ class RakutenBookViewModel(private val rakutenApiService: RakutenApiService, pri
     }
 
     companion object {
+        /** 検索ジャンル：漫画（コミック） */
+        const val GENRE_ID_COMIC = "001001"
+        /** 検索ジャンル：小説・エッセイ */
+        const val GENRE_ID_NOVEL = "001004"
+        /** 検索ジャンル：ライトノベル */
+        const val GENRE_ID_LIGHT_NOVEL = "001017"
+        /** 検索ジャンル：文庫 */
+        const val GENRE_ID_PAPERBACK = "001019"
+        /** 検索ジャンル：新書 */
+        const val GENRE_ID_NEW_BOOK = "001020"
+        /** 検索結果の最大ページ数 */
         private const val MAX_PAGE_COUNT = 100
     }
 }

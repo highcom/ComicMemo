@@ -20,7 +20,7 @@ import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.RakutenApi
-import com.highcom.comicmemo.network.RakutenBookViewModel
+import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,11 +33,15 @@ class RakutenBookActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRakutenBookBinding
     /** 人気書籍検索画面のViewModel */
     private val viewModel: RakutenBookViewModel by viewModels()
+    /** メニュー */
+    private var mMenu: Menu? = null
+    /** 現在選択中のメニュー */
+    private var currentMenuSelect: Int = R.id.search_mode_comic
     /** AdMob広告 */
     private var mAdView: AdView? = null
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        return RakutenBookViewModel.Factory(RakutenApi.retrofitService, getString(R.string.rakuten_app_id))
+        return RakutenBookViewModel.Factory(RakutenBookViewModel.GENRE_ID_COMIC, RakutenApi.retrofitService, getString(R.string.rakuten_app_id))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +104,10 @@ class RakutenBookActivity : AppCompatActivity() {
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_rakuten_book, menu)
+        // 初期検索種別を設定
+        mMenu = menu
+        mMenu?.findItem(R.id.search_mode_comic)?.title = mMenu?.findItem(R.id.search_mode_comic)?.title.toString()
+            .replace(getString(R.string.no_select_menu_icon), getString(R.string.select_menu_icon))
         // 文字列検索の処理を設定
         val searchMenuView = menu?.findItem(R.id.menu_rakuten_book_search_view)
         val searchActionView = searchMenuView?.actionView as SearchView
@@ -142,8 +150,48 @@ class RakutenBookActivity : AppCompatActivity() {
                     }
                 }
             }
+            R.id.search_mode_comic -> {
+                setCurrentSelectMenuTitle(item, R.id.search_mode_comic)
+                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_COMIC)
+            }
+            R.id.search_mode_novel -> {
+                setCurrentSelectMenuTitle(item, R.id.search_mode_novel)
+                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_NOVEL)
+            }
+            R.id.search_mode_light_novel -> {
+                setCurrentSelectMenuTitle(item, R.id.search_mode_light_novel)
+                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_LIGHT_NOVEL)
+            }
+            R.id.search_mode_paperback -> {
+                setCurrentSelectMenuTitle(item, R.id.search_mode_paperback)
+                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_PAPERBACK)
+            }
+            R.id.search_mode_new_book -> {
+                setCurrentSelectMenuTitle(item, R.id.search_mode_new_book)
+                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_NEW_BOOK)
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * 選択メニュータイトル変更処理
+     * 選択されているメニューのタイトルの先頭文字を変更する
+     *
+     * @param item メニューアイテム
+     * @param id 選択メニューID
+     */
+    private fun setCurrentSelectMenuTitle(item: MenuItem?, id: Int) {
+        // 現在選択されているメニューの選択アイコンを戻す
+        val currentMenuTitle: String = mMenu?.findItem(currentMenuSelect)?.title.toString()
+            .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
+        mMenu?.findItem(currentMenuSelect)?.title = currentMenuTitle
+        // 今回選択されたメニューに選択アイコンを設定する
+        currentMenuSelect = id
+        val selectMenuTitle = item?.title.toString().replace(getString(R.string.no_select_menu_icon), getString(
+            R.string.select_menu_icon
+        ))
+        item?.title = selectMenuTitle
     }
 
     /**

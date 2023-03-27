@@ -248,7 +248,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
                 fragment.sortData(ComicListPersistent.SortType.AUTHOR)
                 fragment.setEditEnable(false)
             }
-            R.id.serach_book -> {
+            R.id.search_book -> {
                 val intent = Intent(this@ComicMemoActivity, RakutenBookActivity::class.java)
                 startActivity(intent)
             }
