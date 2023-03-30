@@ -14,19 +14,19 @@ enum class LiveDataKind { SALES, SEARCH }
  *
  * @property appId 楽天API利用アプリケーションID
  */
-class RakutenBookViewModel(private var genreId: String, private val rakutenApiService: RakutenApiService, private val appId: String) : ViewModel() {
+class RakutenBookViewModel(private val rakutenApiService: RakutenApiService, private val appId: String, private var genreId: String) : ViewModel() {
     /** LiveDataに設定しているデータ種別 */
     var liveDataKind = LiveDataKind.SALES
     /** 表示ページ数 */
     var page = 0
     @Suppress("UNCHECKED_CAST")
     class Factory(
-        private val genreId: String,
         private val apiService: RakutenApiService,
-        private val id: String
+        private val id: String,
+        private val genreId: String
     ) : ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RakutenBookViewModel(genreId = genreId, rakutenApiService = apiService, appId = id) as T
+            return RakutenBookViewModel(rakutenApiService = apiService, appId = id, genreId = genreId) as T
         }
     }
 

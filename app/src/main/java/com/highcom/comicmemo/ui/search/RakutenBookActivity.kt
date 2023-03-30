@@ -41,7 +41,7 @@ class RakutenBookActivity : AppCompatActivity() {
     private var mAdView: AdView? = null
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        return RakutenBookViewModel.Factory(RakutenBookViewModel.GENRE_ID_COMIC, RakutenApi.retrofitService, getString(R.string.rakuten_app_id))
+        return RakutenBookViewModel.Factory(RakutenApi.retrofitService, getString(R.string.rakuten_app_id), RakutenBookViewModel.GENRE_ID_COMIC)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

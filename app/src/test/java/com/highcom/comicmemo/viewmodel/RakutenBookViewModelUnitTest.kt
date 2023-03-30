@@ -70,18 +70,19 @@ class RakutenBookViewModelUnitTest {
     }
 
     /**
-     * 楽天APIを利用した書籍データ取得処理の初回呼び出し成功テスト
+     * 楽天APIを利用した書籍データ取得処理(ジャンル：コミック)の初回呼び出し成功テスト
      *
      */
     @Test
-    fun getSalesList_success() {
+    fun getSalesList_comic_success() {
         behavior.apply {
             setDelay(0, TimeUnit.MILLISECONDS) // 即座に結果が返ってくるようにする
             setVariancePercent(0)
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123").create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
+            .create(RakutenBookViewModel::class.java)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
 
@@ -131,7 +132,73 @@ class RakutenBookViewModelUnitTest {
         assertEquals(LiveDataKind.SALES, target.liveDataKind)
         assertEquals(1, target.page)
         assertEquals(RakutenApiStatus.DONE, target.status.value)
-        assertEquals("機械仕掛けの太陽", target.bookList.value?.first()?.Item?.title )
+        assertEquals("機械仕掛けの太陽", target.bookList.value?.first()?.Item?.title)
+    }
+
+    /**
+     * 楽天APIを利用した書籍データ取得処理(ジャンル：小説)の初回呼び出し成功テスト
+     *
+     */
+    @Test
+    fun getSalesList_novel_success() {
+        behavior.apply {
+            setDelay(0, TimeUnit.MILLISECONDS) // 即座に結果が返ってくるようにする
+            setVariancePercent(0)
+            setFailurePercent(0)
+            setErrorPercent(0)
+        }
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_NOVEL)
+            .create(RakutenBookViewModel::class.java)
+        val mockObserver = spyk<Observer<List<Item>?>>()
+        target.bookList.observeForever(mockObserver)
+
+        val result = mutableListOf<Item>()
+        result.add(Item(
+            ItemEntity(
+                affiliateUrl = "",
+                author = "村上 春樹",
+                authorKana = "ムラカミ ハルキ",
+                availability = "5",
+                booksGenreId = "001004008007/001004015",
+                chirayomiUrl = "",
+                contents = "",
+                discountPrice = 0,
+                discountRate = 0,
+                isbn = "9784103534372",
+                itemCaption = "",
+                itemPrice = 2970,
+                itemUrl = "https://books.rakuten.co.jp/rb/17415481/",
+                largeImageUrl = "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4372/9784103534372_1_3.jpg?_ex=200x200",
+                limitedFlag = 0,
+                listPrice = 0,
+                mediumImageUrl = "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4372/9784103534372_1_3.jpg?_ex=120x120",
+                postageFlag = 2,
+                publisherName = "新潮社",
+                reviewAverage = "4.0",
+                reviewCount = 2,
+                salesDate = "2023年04月13日",
+                seriesName = "",
+                seriesNameKana = "",
+                size = "単行本",
+                smallImageUrl = "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4372/9784103534372_1_3.jpg?_ex=64x64",
+                subTitle = "",
+                subTitleKana = "",
+                title = "街とその不確かな壁",
+                titleKana = "マチトソノフタシカナカベ"
+            )
+        ))
+
+        // LiveDataの値の変更が通知されるまで待つ
+        Thread.sleep(1000)
+        // 変化通知が呼び出されている事を確認
+        verify(exactly = 1) {
+            mockObserver.onChanged(result)
+        }
+
+        assertEquals(LiveDataKind.SALES, target.liveDataKind)
+        assertEquals(1, target.page)
+        assertEquals(RakutenApiStatus.DONE, target.status.value)
+        assertEquals("街とその不確かな壁", target.bookList.value?.first()?.Item?.title)
     }
 
     /**
@@ -146,7 +213,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123")
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
             .create(RakutenBookViewModel::class.java)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -175,7 +242,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123").create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
+            .create(RakutenBookViewModel::class.java)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -188,18 +256,19 @@ class RakutenBookViewModelUnitTest {
     }
 
     /**
-     * 引数で指定された文字列での書籍データをタイトル検索処理初回呼び出し成功テスト
+     * 引数で指定された文字列での書籍データをタイトル検索処理(ジャンル：コミック)初回呼び出し成功テスト
      *
      */
     @Test
-    fun search_success() {
+    fun search_comic_success() {
         behavior.apply {
             setDelay(0, TimeUnit.MILLISECONDS) // 即座に結果が返ってくるようにする
             setVariancePercent(0)
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123").create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
+            .create(RakutenBookViewModel::class.java)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -217,6 +286,36 @@ class RakutenBookViewModelUnitTest {
     }
 
     /**
+     * 引数で指定された文字列での書籍データをタイトル検索処理(ジャンル：小説)初回呼び出し成功テスト
+     *
+     */
+    @Test
+    fun search_novel_success() {
+        behavior.apply {
+            setDelay(0, TimeUnit.MILLISECONDS) // 即座に結果が返ってくるようにする
+            setVariancePercent(0)
+            setFailurePercent(0)
+            setErrorPercent(0)
+        }
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_NOVEL)
+            .create(RakutenBookViewModel::class.java)
+        val mockObserver = spyk<Observer<List<Item>?>>()
+        target.bookList.observeForever(mockObserver)
+        // LiveDataの値の変更が通知されるまで待つ
+        Thread.sleep(1000)
+
+        target.search("ONE PIECE")
+        // LiveDataの値の変更が通知されるまで待つ
+        Thread.sleep(1000)
+
+        assertEquals(LiveDataKind.SEARCH, target.liveDataKind)
+        assertEquals(1, target.page)
+        assertEquals(RakutenApiStatus.DONE, target.status.value)
+        assertEquals("ONE PIECE", target.searchWord.value )
+        assertEquals("太陽のかけら アルパインクライマー 谷口けいの軌跡", target.bookList.value?.first()?.Item?.title )
+    }
+
+    /**
      * 引数で指定された文字列での書籍データをタイトル検索処理2回呼び出し成功テスト
      *
      */
@@ -228,7 +327,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123").create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
+            .create(RakutenBookViewModel::class.java)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -258,7 +358,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123").create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
+            .create(RakutenBookViewModel::class.java)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
