@@ -52,8 +52,8 @@ class PlaceholderFragment : Fragment(), AdapterListener {
      *
      */
     inner class MySimpleCallbackListener : SimpleCallbackListener {
-        var fromPos = -1
-        var toPos = -1
+        private var fromPos = -1
+        private var toPos = -1
         /**
          * 並べ替えイベントコールバック
          *
@@ -145,7 +145,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                 viewHolder: RecyclerView.ViewHolder,
                 underlayButtons: MutableList<UnderlayButton>
             ) {
-                if (viewHolder.itemView.getId() == R.id.row_footer) return
+                if (viewHolder.itemView.id == R.id.row_footer) return
 
                 underlayButtons.add(UnderlayButton(
                     "削除",
@@ -255,9 +255,8 @@ class PlaceholderFragment : Fragment(), AdapterListener {
      * 巻数データ選択時の詳細画面遷移処理
      *
      * @param view 選択した巻数データView
-     * @param position 選択位置
      */
-    override fun onAdapterClicked(view: View, position: Int) {
+    override fun onAdapterClicked(view: View) {
         // 編集状態でない場合は入力画面に遷移しない
         if (!adapter.editEnable) {
             return

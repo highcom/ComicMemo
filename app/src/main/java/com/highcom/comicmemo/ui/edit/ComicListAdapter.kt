@@ -67,7 +67,7 @@ class ComicListAdapter (
      *
      */
     interface AdapterListener {
-        fun onAdapterClicked(view: View, position: Int)
+        fun onAdapterClicked(view: View)
         fun onAdapterStatusSelected(view: View?, status: Long)
         fun onAdapterAddBtnClicked(view: View)
         fun onAdapterDelBtnClicked(view: View)
@@ -78,6 +78,7 @@ class ComicListAdapter (
      *
      * @param itemView 巻数データのアイテム
      */
+    @SuppressLint("InflateParams")
     inner class ComicViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         /** バインドしている巻数データ */
         var comic: Comic? = null
@@ -123,10 +124,7 @@ class ComicListAdapter (
             status = comic.status
             itemView.tag = comic
             itemView.setOnClickListener { view ->
-                adapterListener.onAdapterClicked(
-                    view,
-                    position
-                )
+                adapterListener.onAdapterClicked(view)
             }
             itemView.setOnLongClickListener(OnLongClickListener { view ->
                 if (editEnable) return@OnLongClickListener true
@@ -216,7 +214,7 @@ class ComicListAdapter (
             // PopupWindowに表示するViewを生成
             val contentView =
                 LayoutInflater.from(itemView.context).inflate(R.layout.popupmenu, null)
-            popupWindow!!.setContentView(contentView)
+            popupWindow!!.contentView = contentView
             popupContinue = contentView.findViewById<View>(R.id.popupContinue) as? ToggleButton
             popupComplete = contentView.findViewById<View>(R.id.popupComplete) as? ToggleButton
             popupContinue?.setOnCheckedChangeListener { buttonView, _ ->
@@ -236,14 +234,14 @@ class ComicListAdapter (
                 200f,
                 itemView.context.resources.displayMetrics
             )
-            popupWindow!!.setHeight(WindowManager.LayoutParams.WRAP_CONTENT)
-            popupWindow!!.setWidth(width.toInt())
+            popupWindow!!.height = WindowManager.LayoutParams.WRAP_CONTENT
+            popupWindow!!.width = width.toInt()
             // PopupWindow!!の外をタッチしたらPopupWindow!!が閉じるように設定
-            popupWindow!!.setOutsideTouchable(true)
+            popupWindow!!.isOutsideTouchable = true
             // PopupWindow!!外のUIのタッチイベントが走らないようにフォーカスを持っておく
-            popupWindow!!.setFocusable(true)
+            popupWindow!!.isFocusable = true
             // PopupWindow!!内のクリックを可能にしておく
-            popupWindow!!.setTouchable(true)
+            popupWindow!!.isTouchable = true
             // レイアウトファイルで設定した背景のさらに背景(黒とか)が生成される為、ここで好みの背景を設定しておく
             popupWindow!!.setBackgroundDrawable(
                 ColorDrawable(

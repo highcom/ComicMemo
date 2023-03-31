@@ -45,7 +45,7 @@ class SectionsPagerAdapter(private val mContext: Context, private val activity: 
      * @param position セクションページ位置
      * @return タイトル名
      */
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return mContext.resources.getString(TAB_TITLES[position])
     }
 
