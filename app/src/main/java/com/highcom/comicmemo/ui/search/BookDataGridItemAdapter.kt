@@ -29,7 +29,7 @@ class BookDataGridItemAdapter(private val listener: BookItemViewHolder.BookItemL
     }
 
     override fun onBindViewHolder(holder: BookItemViewHolder, position: Int) {
-        val item = getItem(position)
+        val item = getItem(holder.bindingAdapterPosition)
         holder.bind(item, listener)
     }
 }

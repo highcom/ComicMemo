@@ -364,8 +364,8 @@ class ComicListAdapter (
      */
     override fun onBindViewHolder(holder: ComicViewHolder, position: Int) {
         // フッターにはデータをバインドしない
-        if (position >= comicList?.size ?: 0) return
-        val current = getItem(position)
+        if (holder.bindingAdapterPosition >= comicList?.size ?: 0) return
+        val current = getItem(holder.bindingAdapterPosition)
         holder.bind(current)
     }
 
