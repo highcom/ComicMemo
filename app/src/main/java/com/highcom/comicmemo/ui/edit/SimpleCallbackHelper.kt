@@ -112,6 +112,14 @@ abstract class SimpleCallbackHelper(
     }
 
     /**
+     * ボタン描画バッファクリア処理
+     *
+     */
+    fun clearButtonBuffer() {
+        buttonsBuffer.clear()
+    }
+
+    /**
      * 移動操作中のイベント処理
      *
      * @param recyclerView

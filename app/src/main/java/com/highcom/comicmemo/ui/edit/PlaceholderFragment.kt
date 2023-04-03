@@ -153,6 +153,9 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                     Color.parseColor("#FF3C30"),
                     viewHolder as ComicListAdapter.ComicViewHolder
                 ) { holder, _ ->
+                    // 項目が削除されるためバッファデータをクリアして描画データの再生成
+                    clearButtonBuffer()
+                    // 最後に更新した項目IDをクリアする
                     ComicListPersistent.lastUpdateId = 0L
                     // データベースから削除する
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
@@ -164,6 +167,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                     Color.parseColor("#C7C7CB"),
                     viewHolder
                 ) { holder, _ ->
+                    // 最後に更新した項目IDをクリアする
                     ComicListPersistent.lastUpdateId = 0L
                     // 入力画面を生成
                     val intent = Intent(context, InputMemoActivity::class.java)
