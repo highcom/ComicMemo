@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.ComicMemoApplication
@@ -120,6 +121,8 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         recyclerView = binding.comicListView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = adapter
+        // プラスボタン押下時のアニメーションによるちらつきを止める
+        (recyclerView!!.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
         // 続刊・完結のデータ更新を監視する
         if (index.toLong() == ComicMemoRepository.STATE_CONTINUE) {

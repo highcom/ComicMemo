@@ -3,8 +3,8 @@
     <item>
         <shape android:shape="rectangle">
             <corners
-                android:topLeftRadius="10dp"
-                android:bottomLeftRadius="10dp"
+                android:topLeftRadius="6dp"
+                android:bottomLeftRadius="6dp"
                 />
             <solid
                 android:color="@color/red"

@@ -119,7 +119,7 @@ class ComicListAdapter (
             if (id!! == ComicListPersistent.lastUpdateId) {
                 number?.setTextColor(Color.RED)
             } else {
-                number?.setTextColor(Color.GRAY)
+                number?.setTextColor(Color.BLACK)
             }
             status = comic.status
             itemView.tag = comic
