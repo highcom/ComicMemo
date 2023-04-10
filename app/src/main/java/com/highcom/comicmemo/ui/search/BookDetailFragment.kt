@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.ui.edit.InputMemoActivity
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
@@ -38,7 +39,7 @@ class BookDetailFragment : Fragment() {
 
         // 選択されたアイテムデータを取得する
         requireArguments().let { arguments ->
-            item = arguments.getSerializable("BUNDLE_ITEM_DATA") as Item
+            item = arguments.getSerializable(ComicMemoConstants.BUNDLE_ITEM_DATA) as Item
         }
 
         // 画像URLから画像を表示する
@@ -61,7 +62,7 @@ class BookDetailFragment : Fragment() {
         binding.detailUrl.setOnClickListener {
             val uri = Uri.parse(item.Item.itemUrl)
             val intent = Intent(Intent.ACTION_VIEW, uri)
-            val chooser = Intent.createChooser(intent, "選択")
+            val chooser = Intent.createChooser(intent, getString(R.string.chooser_title))
             startActivity(chooser)
         }
         // 選択した書籍の情報から巻数メモデータを新規作成する
@@ -70,8 +71,8 @@ class BookDetailFragment : Fragment() {
             val intent = Intent(context, InputMemoActivity::class.java)
             // 選択した書籍からデータを作成
             val comic = Comic(0, item.Item.title, item.Item.author, "", "", "", 0)
-            intent.putExtra("EDIT", false)
-            intent.putExtra("COMIC", comic as Serializable)
+            intent.putExtra(ComicMemoConstants.ARG_EDIT, false)
+            intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
             startActivityForResult(intent, 1001)
         }
     }

@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.highcom.comicmemo.ComicMemoApplication
+import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
@@ -97,9 +98,9 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
             if (sectionsPagerAdapter!!.currentFragment != null) {
                 val index =
                     (sectionsPagerAdapter!!.currentFragment as PlaceholderFragment).index.toLong()
-                intent.putExtra("STATUS", index)
+                intent.putExtra(ComicMemoConstants.ARG_STATUS, index)
             }
-            intent.putExtra("EDIT", false)
+            intent.putExtra(ComicMemoConstants.ARG_EDIT, false)
             startActivityForResult(intent, 1001)
         }
     }
@@ -290,7 +291,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         // 入力完了意外で戻ってきた場合は登録しない
         if (resultCode != Activity.RESULT_OK) return
 
-        val comic = data?.getSerializableExtra("COMIC") as? Comic
+        val comic = data?.getSerializableExtra(ComicMemoConstants.ARG_COMIC) as? Comic
         if (comic != null) {
             CoroutineScope(Dispatchers.Default).launch {
                 // idが0の場合は新規作成でDBのautoGenerateで自動採番される

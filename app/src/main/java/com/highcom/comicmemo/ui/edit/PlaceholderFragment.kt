@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.ComicMemoApplication
+import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
 import com.highcom.comicmemo.ui.edit.SimpleCallbackHelper.SimpleCallbackListener
@@ -103,7 +104,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            index = requireArguments().getInt(ARG_SECTION_NUMBER)
+            index = requireArguments().getInt(ComicMemoConstants.ARG_SECTION_NUMBER)
         }
     }
 
@@ -151,7 +152,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                 if (viewHolder.itemView.id == R.id.row_footer) return
 
                 underlayButtons.add(UnderlayButton(
-                    "削除",
+                    getString(R.string.swipe_delete),
                     0,
                     Color.parseColor("#FF3C30"),
                     viewHolder as ComicListAdapter.ComicViewHolder
@@ -165,7 +166,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                     comic?.let { pageViewModel.delete(it.id) }
                 })
                 underlayButtons.add(UnderlayButton(
-                    "編集",
+                    getString(R.string.swipe_edit),
                     0,
                     Color.parseColor("#C7C7CB"),
                     viewHolder
@@ -176,8 +177,8 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                     val intent = Intent(context, InputMemoActivity::class.java)
                     // 選択アイテムを設定
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
-                    intent.putExtra("EDIT", true)
-                    intent.putExtra("COMIC", comic as Serializable)
+                    intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
+                    intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
                     startActivityForResult(intent, 1001)
                 })
             }
@@ -273,8 +274,8 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         val intent = Intent(context, InputMemoActivity::class.java)
         // 選択アイテムを設定
         val comic = view.tag as Comic
-        intent.putExtra("EDIT", true)
-        intent.putExtra("COMIC", comic as Serializable)
+        intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
+        intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
         startActivityForResult(intent, 1001)
     }
 
@@ -306,7 +307,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         // 巻数を+1する
         var num = comic.number.toInt()
         // 999を上限とする
-        if (num >= COMIC_NUM_MAX) {
+        if (num >= ComicMemoConstants.COMIC_NUM_MAX) {
             return
         }
         num++
@@ -334,12 +335,10 @@ class PlaceholderFragment : Fragment(), AdapterListener {
     }
 
     companion object {
-        private const val COMIC_NUM_MAX = 999
-        private const val ARG_SECTION_NUMBER = "section_number"
         fun newInstance(index: Int): PlaceholderFragment {
             val fragment = PlaceholderFragment()
             val bundle = Bundle()
-            bundle.putInt(ARG_SECTION_NUMBER, index)
+            bundle.putInt(ComicMemoConstants.ARG_SECTION_NUMBER, index)
             fragment.arguments = bundle
             return fragment
         }

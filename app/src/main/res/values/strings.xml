@@ -6,6 +6,8 @@
     <string name="tab_text_1">続刊</string>
     <string name="tab_text_2">完結</string>
     <string name="query_hint">検索文字を入力</string>
+    <string name="swipe_delete">削除</string>
+    <string name="swipe_edit">編集</string>
     <string name="input_edit">編集</string>
     <string name="input_new">新規作成</string>
     <string name="no_select_menu_icon">○</string>
@@ -24,6 +26,7 @@
     <string name="search_paperback">○ 文庫</string>
     <string name="search_new_book">○ 新書</string>
     <string name="register_book">登録しました：</string>
+    <string name="chooser_title">選択</string>
     <string name="detail_new_button">この書籍で\n巻数メモを作成</string>
     <string name="detail_title">タイトル</string>
     <string name="detail_none">ー</string>

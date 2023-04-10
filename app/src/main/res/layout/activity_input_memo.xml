@@ -67,6 +67,34 @@
                 android:layout_weight="1"
                 android:inputType="number"
                 android:maxLength="3" />
+
+            <Button
+                android:id="@+id/editAddbutton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:textColor="@color/blue"
+                android:background="@drawable/original_button"
+                android:focusableInTouchMode="false"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:focusable="false"
+                android:text="╋" />
+
+            <Button
+                android:id="@+id/editMinusButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:textColor="@color/blue"
+                android:background="@drawable/original_button"
+                android:focusableInTouchMode="false"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:focusable="false"
+                android:text="━" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

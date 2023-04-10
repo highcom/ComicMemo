@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityInputMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
@@ -37,12 +38,35 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
 
         // 渡されたデータを取得する
         val intent = intent
-        isEdit = intent.getBooleanExtra("EDIT", false)
-        status = intent.getLongExtra("STATUS", 0L)
-        comic = intent.getSerializableExtra("COMIC") as? Comic ?: Comic(0, "", "", "", "", "", status)
+        isEdit = intent.getBooleanExtra(ComicMemoConstants.ARG_EDIT, false)
+        status = intent.getLongExtra(ComicMemoConstants.ARG_STATUS, 0L)
+        comic = intent.getSerializableExtra(ComicMemoConstants.ARG_COMIC) as? Comic ?: Comic(0, "", "", "", "", "", status)
         binding.editTitle.setText(comic.title)
         binding.editAuthor.setText(comic.author)
         binding.editNumber.setText(comic.number)
+        binding.editAddbutton.setOnClickListener {
+            var strNumber = binding.editNumber.text.toString()
+            if (strNumber.isEmpty()) strNumber = "0"
+            var chgNumber = strNumber.toInt()
+            // 999を上限とする
+            if (chgNumber >= ComicMemoConstants.COMIC_NUM_MAX) {
+                return@setOnClickListener
+            }
+            chgNumber++
+            binding.editNumber.setText(chgNumber.toString())
+        }
+        binding.editMinusButton.setOnClickListener {
+            var strNumber = binding.editNumber.text.toString()
+            if (strNumber.isEmpty()) strNumber = "0"
+            var chgNumber = strNumber.toInt()
+            // 0を下限とする
+            if (chgNumber <= ComicMemoConstants.COMIC_NUM_MIN) {
+                return@setOnClickListener
+            }
+            chgNumber--
+            binding.editNumber.setText(chgNumber.toString())
+        }
+
         binding.editMemo.setText(comic.memo)
 
         tbContinue = binding.toggleContinue
@@ -100,7 +124,7 @@ class InputMemoActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeLis
                 comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()
                 comic.status = java.lang.Long.valueOf(status)
                 val intent = Intent()
-                intent.putExtra("COMIC", comic)
+                intent.putExtra(ComicMemoConstants.ARG_COMIC, comic)
                 setResult(Activity.RESULT_OK, intent)
                 // 詳細画面を終了
                 finish()
