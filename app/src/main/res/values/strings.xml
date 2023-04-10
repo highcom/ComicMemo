@@ -3,6 +3,11 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_comic_memo_tab">ComicMemoTabActivity</string>
+    <string name="review_dialog_title">巻数メモを応援して下さい！</string>
+    <string name="review_dialog_message">いつも巻数メモをご利用頂きありがとうございます。使いやすいアプリとなるよう日々改善を続けていくための励みになります。</string>
+    <string name="review_dialog_rate">巻数メモをレビューで応援</string>
+    <string name="review_dialog_rate_later">後で応援をする</string>
+    <string name="review_dialog_rate_cancel">応援しない</string>
     <string name="tab_text_1">続刊</string>
     <string name="tab_text_2">完結</string>
     <string name="query_hint">検索文字を入力</string>

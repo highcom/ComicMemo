@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.highcom.comicmemo.R
 import com.highcom.comicmemo.ComicMemoApplication
 import com.highcom.comicmemo.ComicMemoConstants
-import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.ui.search.RakutenBookActivity
@@ -59,10 +59,24 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         )
         // 広告のロード
         binding.adViewFrame.post { loadBanner() }
+        // レビュー評価依頼のダイアログに表示する内容を設定
+        val options = RmpAppirater.Options(
+            getString(R.string.review_dialog_title),
+            getString(R.string.review_dialog_message),
+            getString(R.string.review_dialog_rate),
+            getString(R.string.review_dialog_rate_later),
+            getString(R.string.review_dialog_rate_cancel)
+        )
         // 起動時にアプリの評価をお願いする
         RmpAppirater.appLaunched(this,
-            ShowRateDialogCondition { _, appThisVersionCodeLaunchCount, _, _, _, rateClickDate, reminderClickDate, doNotShowAgain -> // 現在のアプリのバージョンで3回以上起動したか
-                if (appThisVersionCodeLaunchCount < 3) {
+            ShowRateDialogCondition { appLaunchCount, appThisVersionCodeLaunchCount, _, appVersionCode, _, rateClickDate, reminderClickDate, doNotShowAgain -> // 現在のアプリのバージョンで3回以上起動したか
+                // レビュー依頼の文言を変えたバージョンでは、まだレビューをしておらず
+                // 長く利用していてバージョンアップしたユーザーに新バージョンで3回目に一度だけ必ず表示する
+                if (appVersionCode == 17 && rateClickDate == null && appLaunchCount > 30 && appThisVersionCodeLaunchCount == 3L) {
+                    return@ShowRateDialogCondition true
+                }
+
+                if (appThisVersionCodeLaunchCount < 10) {
                     return@ShowRateDialogCondition false
                 }
                 // ダイアログで「いいえ」を選択していないか
@@ -84,7 +98,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
                     }
                 }
                 true
-            }
+            }, options
         )
 
         // 各セクションページに表示する一覧データの設定
