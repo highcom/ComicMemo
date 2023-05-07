@@ -178,6 +178,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                     // 選択アイテムを設定
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
                     intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
+                    intent.putExtra(ComicMemoConstants.ARG_STATUS, comic?.status ?:0L)
                     intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
                     startActivityForResult(intent, 1001)
                 })
@@ -275,6 +276,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         // 選択アイテムを設定
         val comic = view.tag as Comic
         intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
+        intent.putExtra(ComicMemoConstants.ARG_STATUS, comic.status)
         intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
         startActivityForResult(intent, 1001)
     }
