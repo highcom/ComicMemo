@@ -103,9 +103,9 @@ class ComicListAdapter (
         /** 並べ替えボタン */
         var rearrangebtn: ImageButton?
         /** ポップアップメニュー続刊 */
-        var popupContinue: ToggleButton?
+        var popupContinue: ToggleButton? = null
         /** ポップアップメニュー完結 */
-        var popupComplete: ToggleButton?
+        var popupComplete: ToggleButton? = null
 
         fun bind(comic: Comic) {
             this.comic = comic
@@ -126,6 +126,8 @@ class ComicListAdapter (
             itemView.setOnClickListener { view ->
                 adapterListener.onAdapterClicked(view)
             }
+            // 続刊・完結のポップアップウインドウの設定
+            setupPopupWindow(itemView.context, status ?: 0L)
             itemView.setOnLongClickListener(OnLongClickListener { view ->
                 if (editEnable) return@OnLongClickListener true
                 // PopupWindowの実装をする　続刊と完結を選択できるようにする
@@ -134,18 +136,71 @@ class ComicListAdapter (
                 popupView = view
                 true
             })
+        }
+
+        /**
+         * ポップアップメニューの設定
+         *
+         * @param context コンテキスト
+         * @param status 続刊・完結の状態
+         */
+        private fun setupPopupWindow(context: Context, status: Long) {
+            popupWindow = PopupWindow(context)
+
+            // PopupWindowに表示するViewを生成
+            val contentView =
+                LayoutInflater.from(context).inflate(R.layout.popupmenu, null)
+            popupWindow!!.contentView = contentView
+            popupContinue = contentView.findViewById<View>(R.id.popupContinue) as? ToggleButton
+            popupComplete = contentView.findViewById<View>(R.id.popupComplete) as? ToggleButton
+            popupContinue?.setOnCheckedChangeListener { buttonView, _ ->
+                setEnableLayoutContinue(buttonView.context)
+                adapterListener.onAdapterStatusSelected(popupView, 0)
+                popupWindow!!.dismiss()
+            }
+            popupComplete?.setOnCheckedChangeListener { buttonView, _ ->
+                setEnableLayoutComplete(buttonView.context)
+                adapterListener.onAdapterStatusSelected(popupView, 1)
+                popupWindow!!.dismiss()
+            }
+
+            // PopupWindowに表示するViewのサイズを設定
+            val width = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                200f,
+                context.resources.displayMetrics
+            )
+            popupWindow!!.height = WindowManager.LayoutParams.WRAP_CONTENT
+            popupWindow!!.width = width.toInt()
+            // PopupWindow!!の外をタッチしたらPopupWindow!!が閉じるように設定
+            popupWindow!!.isOutsideTouchable = true
+            // PopupWindow!!外のUIのタッチイベントが走らないようにフォーカスを持っておく
+            popupWindow!!.isFocusable = true
+            // PopupWindow!!内のクリックを可能にしておく
+            popupWindow!!.isTouchable = true
+            // レイアウトファイルで設定した背景のさらに背景(黒とか)が生成される為、ここで好みの背景を設定しておく
+            popupWindow!!.setBackgroundDrawable(
+                ColorDrawable(
+                    ContextCompat.getColor(
+                        context,
+                        android.R.color.white
+                    )
+                )
+            )
+            // 状態に応じて有効ボタンの表示設定
             if (status == 0L) {
-                setEnableLayoutContinue(itemView.context)
+                setEnableLayoutContinue(context)
             } else {
-                setEnableLayoutComplete(itemView.context)
+                setEnableLayoutComplete(context)
             }
         }
+
         /**
          * ポップアップメニューの続刊を有効にする
          *
          * @param context コンテキスト
          */
-        fun setEnableLayoutContinue(context: Context?) {
+        private fun setEnableLayoutContinue(context: Context?) {
             popupContinue?.setTextColor(ContextCompat.getColor(context!!, R.color.white))
             popupContinue?.setBackgroundDrawable(
                 context?.let {
@@ -171,7 +226,7 @@ class ComicListAdapter (
          *
          * @param context コンテキスト
          */
-        fun setEnableLayoutComplete(context: Context?) {
+        private fun setEnableLayoutComplete(context: Context?) {
             popupContinue?.setTextColor(ContextCompat.getColor(context!!, R.color.appcolor))
             popupContinue?.setBackgroundDrawable(
                 context?.let {
@@ -193,7 +248,6 @@ class ComicListAdapter (
         }
 
         init {
-
             // カウント追加ボタン処理
             addbtn?.setOnClickListener { adapterListener.onAdapterAddBtnClicked(itemView) }
 
@@ -209,48 +263,6 @@ class ComicListAdapter (
                 deletebtn?.visibility = View.GONE
                 rearrangebtn?.visibility = View.GONE
             }
-            popupWindow = PopupWindow(itemView.context)
-
-            // PopupWindowに表示するViewを生成
-            val contentView =
-                LayoutInflater.from(itemView.context).inflate(R.layout.popupmenu, null)
-            popupWindow!!.contentView = contentView
-            popupContinue = contentView.findViewById<View>(R.id.popupContinue) as? ToggleButton
-            popupComplete = contentView.findViewById<View>(R.id.popupComplete) as? ToggleButton
-            popupContinue?.setOnCheckedChangeListener { buttonView, _ ->
-                setEnableLayoutContinue(buttonView.context)
-                adapterListener.onAdapterStatusSelected(popupView, 0)
-                popupWindow!!.dismiss()
-            }
-            popupComplete?.setOnCheckedChangeListener { buttonView, _ ->
-                setEnableLayoutComplete(buttonView.context)
-                adapterListener.onAdapterStatusSelected(popupView, 1)
-                popupWindow!!.dismiss()
-            }
-
-            // PopupWindowに表示するViewのサイズを設定
-            val width = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                200f,
-                itemView.context.resources.displayMetrics
-            )
-            popupWindow!!.height = WindowManager.LayoutParams.WRAP_CONTENT
-            popupWindow!!.width = width.toInt()
-            // PopupWindow!!の外をタッチしたらPopupWindow!!が閉じるように設定
-            popupWindow!!.isOutsideTouchable = true
-            // PopupWindow!!外のUIのタッチイベントが走らないようにフォーカスを持っておく
-            popupWindow!!.isFocusable = true
-            // PopupWindow!!内のクリックを可能にしておく
-            popupWindow!!.isTouchable = true
-            // レイアウトファイルで設定した背景のさらに背景(黒とか)が生成される為、ここで好みの背景を設定しておく
-            popupWindow!!.setBackgroundDrawable(
-                ColorDrawable(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        android.R.color.white
-                    )
-                )
-            )
         }
     }
 
