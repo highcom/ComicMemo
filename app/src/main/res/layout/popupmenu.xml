@@ -5,18 +5,19 @@
     android:layout_height="match_parent"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
-    android:background="@drawable/shape_rouded_corners"
+    android:background="@color/sirahanairo"
     android:elevation="8dp">
     <ToggleButton android:text="続刊"
         android:id="@+id/popupContinue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:textOn="続刊"
         android:textOff="続刊"
         android:textColor="@color/white"
         android:background="@drawable/toggle_select_button"
         android:focusableInTouchMode="false"
-        android:layout_margin="4dp"
+        android:layout_marginLeft="8dp"
         android:focusable="false"
         android:checked="true"/>
 
@@ -24,12 +25,13 @@
         android:id="@+id/popupComplete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:textOn="完結"
         android:textOff="完結"
         android:textColor="@color/appcolor"
         android:background="@drawable/toggle_unselect_button"
         android:focusableInTouchMode="false"
-        android:layout_margin="4dp"
+        android:layout_marginLeft="4dp"
         android:focusable="false"
         android:checked="false"/>
 </LinearLayout>

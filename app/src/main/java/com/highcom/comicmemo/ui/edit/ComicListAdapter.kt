@@ -130,6 +130,8 @@ class ComicListAdapter (
             setupPopupWindow(itemView.context, status ?: 0L)
             itemView.setOnLongClickListener(OnLongClickListener { view ->
                 if (editEnable) return@OnLongClickListener true
+                // 選択されたViewに合わせて高さを調節
+                popupWindow!!.height = view.height
                 // PopupWindowの実装をする　続刊と完結を選択できるようにする
                 popupWindow!!.showAsDropDown(view, view.width, -view.height)
                 // PopupWindowで選択したViewに対して更新できるようにViewを保持する
