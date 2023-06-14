@@ -49,7 +49,7 @@ class RakutenBookActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRakutenBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        title = getString(R.string.trend_book)
+        title = getString(R.string.trend_book) + getString(R.string.header_comic)
 
         val navController = findNavController(R.id.rakuten_book_container)
         val navGraph = navController.navInflater.inflate(R.navigation.rakuten_book_navigation)
@@ -154,22 +154,27 @@ class RakutenBookActivity : AppCompatActivity() {
             R.id.search_mode_comic -> {
                 setCurrentSelectMenuTitle(item, R.id.search_mode_comic)
                 viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_COMIC)
+                title = getString(R.string.trend_book) + getString(R.string.header_comic)
             }
             R.id.search_mode_novel -> {
                 setCurrentSelectMenuTitle(item, R.id.search_mode_novel)
                 viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_NOVEL)
+                title = getString(R.string.trend_book) + getString(R.string.header_novel)
             }
             R.id.search_mode_light_novel -> {
                 setCurrentSelectMenuTitle(item, R.id.search_mode_light_novel)
                 viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_LIGHT_NOVEL)
+                title = getString(R.string.trend_book) + getString(R.string.header_light_novel)
             }
             R.id.search_mode_paperback -> {
                 setCurrentSelectMenuTitle(item, R.id.search_mode_paperback)
                 viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_PAPERBACK)
+                title = getString(R.string.trend_book) + getString(R.string.header_paperback)
             }
             R.id.search_mode_new_book -> {
                 setCurrentSelectMenuTitle(item, R.id.search_mode_new_book)
                 viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_NEW_BOOK)
+                title = getString(R.string.trend_book) + getString(R.string.header_new_book)
             }
         }
         return super.onOptionsItemSelected(item)
