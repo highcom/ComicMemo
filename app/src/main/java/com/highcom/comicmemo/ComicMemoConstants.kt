@@ -10,4 +10,6 @@ object ComicMemoConstants {
     const val ARG_SECTION_NUMBER = "SECTION_NUMBER"
 
     const val BUNDLE_ITEM_DATA = "BUNDLE_ITEM_DATA"
+
+    const val SELECT_GENRE = "SELECT_GENRE"
 }

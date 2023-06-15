@@ -1,7 +1,9 @@
 package com.highcom.comicmemo.ui.search
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -34,6 +36,10 @@ class RakutenBookActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRakutenBookBinding
     /** 人気書籍検索画面のViewModel */
     private val viewModel: RakutenBookViewModel by viewModels()
+    /** ComicMemoアプリ用SharedPreference */
+    private lateinit var sharedPreferences: SharedPreferences
+    /** 現在選択中のメニュー */
+    private var currentGenreSelect = RakutenBookViewModel.GENRE_ID_COMIC
     /** メニュー */
     private var mMenu: Menu? = null
     /** 現在選択中のメニュー */
@@ -42,14 +48,17 @@ class RakutenBookActivity : AppCompatActivity() {
     private var mAdView: AdView? = null
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        return RakutenBookViewModel.Factory(RakutenApi.retrofitService, getString(R.string.rakuten_app_id), RakutenBookViewModel.GENRE_ID_COMIC)
+        return RakutenBookViewModel.Factory(RakutenApi.retrofitService, getString(R.string.rakuten_app_id), currentGenreSelect)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRakutenBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        title = getString(R.string.trend_book) + getString(R.string.header_comic)
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+        currentGenreSelect = sharedPreferences.getString(ComicMemoConstants.SELECT_GENRE, RakutenBookViewModel.GENRE_ID_COMIC) ?: RakutenBookViewModel.GENRE_ID_COMIC
+        setMenu(currentGenreSelect)
+        setTitle(currentGenreSelect)
 
         val navController = findNavController(R.id.rakuten_book_container)
         val navGraph = navController.navInflater.inflate(R.navigation.rakuten_book_navigation)
@@ -98,6 +107,36 @@ class RakutenBookActivity : AppCompatActivity() {
         }
 
     /**
+     * メニュー選択設定
+     *
+     * @param genre 選択ジャンル
+     */
+    private fun setMenu(genre: String) {
+        when (genre) {
+            RakutenBookViewModel.GENRE_ID_COMIC -> currentMenuSelect = R.id.search_mode_comic
+            RakutenBookViewModel.GENRE_ID_NOVEL -> currentMenuSelect = R.id.search_mode_novel
+            RakutenBookViewModel.GENRE_ID_LIGHT_NOVEL -> currentMenuSelect = R.id.search_mode_light_novel
+            RakutenBookViewModel.GENRE_ID_PAPERBACK -> currentMenuSelect = R.id.search_mode_paperback
+            RakutenBookViewModel.GENRE_ID_NEW_BOOK -> currentMenuSelect = R.id.search_mode_new_book
+        }
+    }
+
+    /**
+     * タイトル名称設定
+     *
+     * @param genre 選択ジャンル
+     */
+    private fun setTitle(genre: String) {
+        when (genre) {
+            RakutenBookViewModel.GENRE_ID_COMIC -> title = getString(R.string.trend_book) + getString(R.string.header_comic)
+            RakutenBookViewModel.GENRE_ID_NOVEL -> title = getString(R.string.trend_book) + getString(R.string.header_novel)
+            RakutenBookViewModel.GENRE_ID_LIGHT_NOVEL -> title = getString(R.string.trend_book) + getString(R.string.header_light_novel)
+            RakutenBookViewModel.GENRE_ID_PAPERBACK -> title = getString(R.string.trend_book) + getString(R.string.header_paperback)
+            RakutenBookViewModel.GENRE_ID_NEW_BOOK -> title = getString(R.string.trend_book) + getString(R.string.header_new_book)
+        }
+    }
+
+    /**
      * アクションバーのメニュー生成処理
      *
      * @param menu メニュー
@@ -107,7 +146,7 @@ class RakutenBookActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_rakuten_book, menu)
         // 初期検索種別を設定
         mMenu = menu
-        mMenu?.findItem(R.id.search_mode_comic)?.title = mMenu?.findItem(R.id.search_mode_comic)?.title.toString()
+        mMenu?.findItem(currentMenuSelect)?.title = mMenu?.findItem(currentMenuSelect)?.title.toString()
             .replace(getString(R.string.no_select_menu_icon), getString(R.string.select_menu_icon))
         // 文字列検索の処理を設定
         val searchMenuView = menu?.findItem(R.id.menu_rakuten_book_search_view)
@@ -150,33 +189,33 @@ class RakutenBookActivity : AppCompatActivity() {
                         else -> popBackStack()
                     }
                 }
+                return super.onOptionsItemSelected(item)
             }
             R.id.search_mode_comic -> {
-                setCurrentSelectMenuTitle(item, R.id.search_mode_comic)
-                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_COMIC)
-                title = getString(R.string.trend_book) + getString(R.string.header_comic)
+                currentGenreSelect = RakutenBookViewModel.GENRE_ID_COMIC
             }
             R.id.search_mode_novel -> {
-                setCurrentSelectMenuTitle(item, R.id.search_mode_novel)
-                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_NOVEL)
-                title = getString(R.string.trend_book) + getString(R.string.header_novel)
+                currentGenreSelect = RakutenBookViewModel.GENRE_ID_NOVEL
             }
             R.id.search_mode_light_novel -> {
-                setCurrentSelectMenuTitle(item, R.id.search_mode_light_novel)
-                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_LIGHT_NOVEL)
-                title = getString(R.string.trend_book) + getString(R.string.header_light_novel)
+                currentGenreSelect = RakutenBookViewModel.GENRE_ID_LIGHT_NOVEL
             }
             R.id.search_mode_paperback -> {
-                setCurrentSelectMenuTitle(item, R.id.search_mode_paperback)
-                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_PAPERBACK)
-                title = getString(R.string.trend_book) + getString(R.string.header_paperback)
+                currentGenreSelect = RakutenBookViewModel.GENRE_ID_PAPERBACK
             }
             R.id.search_mode_new_book -> {
-                setCurrentSelectMenuTitle(item, R.id.search_mode_new_book)
-                viewModel.getSalesList(RakutenBookViewModel.GENRE_ID_NEW_BOOK)
-                title = getString(R.string.trend_book) + getString(R.string.header_new_book)
+                currentGenreSelect = RakutenBookViewModel.GENRE_ID_NEW_BOOK
             }
         }
+        // 前回選択したメニューの状態を戻して今回選択されたメニューを選択状態にする
+        setCurrentSelectMenuTitle(item, currentMenuSelect)
+        // 選択された項目でメニューとジャンルを設定
+        currentMenuSelect =item.itemId
+        viewModel.getSalesList(currentGenreSelect)
+        setTitle(currentGenreSelect)
+        // 次回起動時のために選択したジャンルを保存する
+        sharedPreferences.edit().putString(ComicMemoConstants.SELECT_GENRE, currentGenreSelect).apply()
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -193,7 +232,6 @@ class RakutenBookActivity : AppCompatActivity() {
             .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
         mMenu?.findItem(currentMenuSelect)?.title = currentMenuTitle
         // 今回選択されたメニューに選択アイコンを設定する
-        currentMenuSelect = id
         val selectMenuTitle = item?.title.toString().replace(getString(R.string.no_select_menu_icon), getString(
             R.string.select_menu_icon
         ))
