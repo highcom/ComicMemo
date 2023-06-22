@@ -16,6 +16,7 @@ import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.ui.search.RakutenBookActivity
+import dagger.hilt.android.AndroidEntryPoint
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +27,7 @@ import java.util.*
 /**
  * 巻数メモ一覧Activity
  */
+@AndroidEntryPoint
 class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
