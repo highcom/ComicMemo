@@ -11,7 +11,6 @@ import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.highcom.comicmemo.R
-import com.highcom.comicmemo.ComicMemoApplication
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
@@ -312,9 +311,10 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
             CoroutineScope(Dispatchers.Default).launch {
                 // idが0の場合は新規作成でDBのautoGenerateで自動採番される
                 if (comic.id == 0L) {
-                    (application as ComicMemoApplication).repository.insert(comic)
+                    // TODO:ViewModelにメソッドを追加
+//                    (application as ComicMemoApplication).repository.insert(comic)
                 } else {
-                    (application as ComicMemoApplication).repository.update(comic)
+//                    (application as ComicMemoApplication).repository.update(comic)
                 }
             }
         }

@@ -3,28 +3,19 @@ package com.highcom.comicmemo.viewmodel
 import androidx.lifecycle.*
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * 巻数データ一覧の操作用ViewModel
  *
  * @property repository 巻数データのデータ操作用リポジトリ
  */
-class ComicPagerViewModel(private val repository: ComicMemoRepository) : ViewModel() {
+@HiltViewModel
+class ComicPagerViewModel @Inject constructor(private val repository: ComicMemoRepository) : ViewModel() {
     val continueComics: LiveData<List<Comic>> = repository.continueComics.asLiveData()
     val completeComics: LiveData<List<Comic>> = repository.completeComics.asLiveData()
-
-    /**
-     * 巻数データ一覧の操作用ViewModel生成用ファクトリ
-     *
-     * @property repository 巻数データのデータ操作用リポジトリ
-     */
-    class Factory(private val repository: ComicMemoRepository) : ViewModelProvider.NewInstanceFactory() {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ComicPagerViewModel(repository) as T
-        }
-    }
 
     /**
      * 作成した巻数データの登録処理

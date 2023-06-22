@@ -17,7 +17,6 @@ import androidx.navigation.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.highcom.comicmemo.ComicMemoApplication
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
@@ -256,9 +255,10 @@ class RakutenBookActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.Default).launch {
                 // idが0の場合は新規作成でDBのautoGenerateで自動採番される
                 if (comic.id == 0L) {
-                    (application as ComicMemoApplication).repository.insert(comic)
+                    // TODO:ViewModelにメソッドを追加
+//                    (application as ComicMemoApplication).repository.insert(comic)
                 } else {
-                    (application as ComicMemoApplication).repository.update(comic)
+//                    (application as ComicMemoApplication).repository.update(comic)
                 }
             }
             Toast.makeText(applicationContext, getString(R.string.register_book) + comic.title , Toast.LENGTH_LONG).show()
