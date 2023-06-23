@@ -308,14 +308,11 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
 
         val comic = data?.getSerializableExtra(ComicMemoConstants.ARG_COMIC) as? Comic
         if (comic != null) {
-            CoroutineScope(Dispatchers.Default).launch {
-                // idが0の場合は新規作成でDBのautoGenerateで自動採番される
-                if (comic.id == 0L) {
-                    // TODO:ViewModelにメソッドを追加
-//                    (application as ComicMemoApplication).repository.insert(comic)
-                } else {
-//                    (application as ComicMemoApplication).repository.update(comic)
-                }
+            // idが0の場合は新規作成でDBのautoGenerateで自動採番される
+            if (comic.id == 0L) {
+                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).insert(comic)
+            } else {
+                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).update(comic)
             }
         }
         // 入力画面で作成されたデータを一覧に反映する

@@ -183,6 +183,24 @@ class PlaceholderFragment : Fragment(), AdapterListener {
     }
 
     /**
+     * 巻数データ追加処理
+     *
+     * @param comic 巻数データ
+     */
+    fun insert(comic: Comic) {
+        pageViewModel.insert(comic)
+    }
+
+    /**
+     * 巻数データ更新処理
+     *
+     * @param comic 巻数データ
+     */
+    fun update(comic: Comic) {
+        pageViewModel.update(comic)
+    }
+
+    /**
      * 検索文字列での巻数データ一覧ノフィルタ処理
      *
      * @param word 検索文字列
