@@ -9,11 +9,9 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.highcom.comicmemo.ComicMemoApplication
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
@@ -22,6 +20,7 @@ import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.Serializable
 import java.util.*
 
@@ -29,6 +28,7 @@ import java.util.*
  * 巻数データ一覧を表示するためのFragment
  *
  */
+@AndroidEntryPoint
 class PlaceholderFragment : Fragment(), AdapterListener {
     private lateinit var binding: FragmentComicMemoBinding
     /** 巻数一覧を制御するためのViewModel */
@@ -44,10 +44,6 @@ class PlaceholderFragment : Fragment(), AdapterListener {
     /** 0:続刊 1:完結のインデックス */
     var index = 0
         private set
-
-    override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        return ComicPagerViewModel.Factory((activity?.application as ComicMemoApplication).repository)
-    }
 
     /**
      * スワイプメニュー用リスナー
@@ -184,6 +180,24 @@ class PlaceholderFragment : Fragment(), AdapterListener {
                 })
             }
         }
+    }
+
+    /**
+     * 巻数データ追加処理
+     *
+     * @param comic 巻数データ
+     */
+    fun insert(comic: Comic) {
+        pageViewModel.insert(comic)
+    }
+
+    /**
+     * 巻数データ更新処理
+     *
+     * @param comic 巻数データ
+     */
+    fun update(comic: Comic) {
+        pageViewModel.update(comic)
     }
 
     /**

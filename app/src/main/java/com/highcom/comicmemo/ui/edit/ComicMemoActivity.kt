@@ -11,11 +11,11 @@ import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.highcom.comicmemo.R
-import com.highcom.comicmemo.ComicMemoApplication
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.ui.search.RakutenBookActivity
+import dagger.hilt.android.AndroidEntryPoint
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +26,7 @@ import java.util.*
 /**
  * 巻数メモ一覧Activity
  */
+@AndroidEntryPoint
 class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
@@ -307,13 +308,11 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
 
         val comic = data?.getSerializableExtra(ComicMemoConstants.ARG_COMIC) as? Comic
         if (comic != null) {
-            CoroutineScope(Dispatchers.Default).launch {
-                // idが0の場合は新規作成でDBのautoGenerateで自動採番される
-                if (comic.id == 0L) {
-                    (application as ComicMemoApplication).repository.insert(comic)
-                } else {
-                    (application as ComicMemoApplication).repository.update(comic)
-                }
+            // idが0の場合は新規作成でDBのautoGenerateで自動採番される
+            if (comic.id == 0L) {
+                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).insert(comic)
+            } else {
+                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).update(comic)
             }
         }
         // 入力画面で作成されたデータを一覧に反映する

@@ -1,8 +1,6 @@
 package com.highcom.comicmemo.datamodel
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -53,25 +51,4 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     exportSchema = false)
 abstract class ComicMemoRoomDatabase : RoomDatabase() {
     abstract fun comicDao(): ComicDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: ComicMemoRoomDatabase? = null
-
-        fun getDatabase(
-            context: Context,
-        ): ComicMemoRoomDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    ComicMemoRoomDatabase::class.java,
-                    "ComicMemoDB"
-                )
-                    .addMigrations(MIGRATION_2_3)
-                    .build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
 }

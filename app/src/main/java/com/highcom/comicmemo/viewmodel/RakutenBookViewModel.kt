@@ -1,10 +1,14 @@
 package com.highcom.comicmemo.viewmodel
 
 import androidx.lifecycle.*
+import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 enum class RakutenApiStatus { LOADING, ERROR, DONE }
 enum class LiveDataKind { SALES, SEARCH }
@@ -12,23 +16,19 @@ enum class LiveDataKind { SALES, SEARCH }
 /**
  * 楽天書籍検索ViewModel
  *
- * @property appId 楽天API利用アプリケーションID
+ * @property repository 巻数データのデータ操作用リポジトリ
+ * @property rakutenApiService 楽天APIサービスインターフェース
  */
-class RakutenBookViewModel(private val rakutenApiService: RakutenApiService, private val appId: String, private var genreId: String) : ViewModel() {
+@HiltViewModel
+class RakutenBookViewModel @Inject constructor(private val repository: ComicMemoRepository, private val rakutenApiService: RakutenApiService) : ViewModel() {
+    /** 楽天APIアプリケーションID */
+    lateinit var appId: String
+    /** 検索ジャンルID1 */
+    lateinit var genreId: String
     /** LiveDataに設定しているデータ種別 */
     var liveDataKind = LiveDataKind.SALES
     /** 表示ページ数 */
     var page = 0
-    @Suppress("UNCHECKED_CAST")
-    class Factory(
-        private val apiService: RakutenApiService,
-        private val id: String,
-        private val genreId: String
-    ) : ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RakutenBookViewModel(rakutenApiService = apiService, appId = id, genreId = genreId) as T
-        }
-    }
 
     /** 検索ワードを保持する内部変数 */
     private val _searchWord = MutableLiveData<String?>()
@@ -48,8 +48,34 @@ class RakutenBookViewModel(private val rakutenApiService: RakutenApiService, pri
     val bookList: LiveData<List<Item>?>
         get() = _bookList
 
-    init {
+    /**
+     * 楽天書籍検索ViewModelを利用するための初期設定処理
+     *
+     * @param appId 楽天APIアプリID
+     * @param genreId 検索ジャンルID
+     */
+    fun initialize(appId: String, genreId: String) {
+        this.appId = appId
+        this.genreId = genreId
         getSalesList()
+    }
+
+    /**
+     * 作成した巻数データの登録処理
+     *
+     * @param comic 巻数データ
+     */
+    fun insert(comic: Comic) = viewModelScope.launch {
+        repository.insert(comic)
+    }
+
+    /**
+     * 巻数データの更新
+     *
+     * @param comic 巻数データ
+     */
+    fun update(comic: Comic) = viewModelScope.launch {
+        repository.update(comic)
     }
 
     /**

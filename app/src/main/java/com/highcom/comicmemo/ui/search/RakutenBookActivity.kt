@@ -12,25 +12,21 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.highcom.comicmemo.ComicMemoApplication
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import com.highcom.comicmemo.datamodel.Comic
-import com.highcom.comicmemo.network.RakutenApi
 import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * 楽天書籍APIを利用した書籍画面のActivity
  */
+@AndroidEntryPoint
 class RakutenBookActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRakutenBookBinding
@@ -47,10 +43,6 @@ class RakutenBookActivity : AppCompatActivity() {
     /** AdMob広告 */
     private var mAdView: AdView? = null
 
-    override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        return RakutenBookViewModel.Factory(RakutenApi.retrofitService, getString(R.string.rakuten_app_id), currentGenreSelect)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRakutenBookBinding.inflate(layoutInflater)
@@ -66,6 +58,8 @@ class RakutenBookActivity : AppCompatActivity() {
 
         // アクションバーの戻るボタンを表示
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // ViewModelの初期設定
+        viewModel.initialize(getString(R.string.rakuten_app_id), currentGenreSelect)
         // 広告のロード
         binding.adViewBookListFrame.post { loadBanner() }
     }
@@ -253,13 +247,11 @@ class RakutenBookActivity : AppCompatActivity() {
 
         val comic = data?.getSerializableExtra(ComicMemoConstants.ARG_COMIC) as? Comic
         if (comic != null) {
-            CoroutineScope(Dispatchers.Default).launch {
-                // idが0の場合は新規作成でDBのautoGenerateで自動採番される
-                if (comic.id == 0L) {
-                    (application as ComicMemoApplication).repository.insert(comic)
-                } else {
-                    (application as ComicMemoApplication).repository.update(comic)
-                }
+            // idが0の場合は新規作成でDBのautoGenerateで自動採番される
+            if (comic.id == 0L) {
+                viewModel.insert(comic)
+            } else {
+                viewModel.update(comic)
             }
             Toast.makeText(applicationContext, getString(R.string.register_book) + comic.title , Toast.LENGTH_LONG).show()
         }
