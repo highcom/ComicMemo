@@ -1,7 +1,13 @@
 package com.highcom.comicmemo.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import com.highcom.comicmemo.datamodel.ComicDao
+import com.highcom.comicmemo.datamodel.ComicMemoRepository
+import com.highcom.comicmemo.datamodel.ComicMemoRoomDatabase
 import com.highcom.comicmemo.network.*
 import io.mockk.spyk
 import io.mockk.verify
@@ -20,18 +26,28 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 import junit.framework.Assert.assertEquals
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 import java.util.concurrent.TimeUnit
 
 /**
  * 楽天書籍検索ViewModelのUnitTest
  *
  */
+@RunWith(MockitoJUnitRunner::class)
 class RakutenBookViewModelUnitTest {
 
     // LiveDataをテストするための設定
     // java.lang.RuntimeException: Method getMainLooper in android.os.Looper not mocked. 対策で必要
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @Mock
+    private lateinit var context: Context
+
+    private lateinit var comicDao: ComicDao
+    private lateinit var db: ComicMemoRoomDatabase
 
     private lateinit var behavior: NetworkBehavior
     private lateinit var mockRakutenApiService: MockRakutenApiService
@@ -42,6 +58,10 @@ class RakutenBookViewModelUnitTest {
         // viewModelScopeを利用するための設定
         // Exception in thread "main" java.lang.IllegalStateException 対策で必要
         Dispatchers.setMain(Dispatchers.Unconfined)
+
+        // テスト用のRoomDatabaseを作成
+        db = Room.inMemoryDatabaseBuilder(context, ComicMemoRoomDatabase::class.java).build()
+        comicDao = db.comicDao()
 
         // Retrofitのモックライブラリを作成
         val httpLogging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -81,8 +101,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
 
@@ -147,8 +167,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_NOVEL)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_NOVEL)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
 
@@ -213,8 +233,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -242,8 +262,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -267,8 +287,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -297,8 +317,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_NOVEL)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_NOVEL)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -327,8 +347,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -358,8 +378,8 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel.Factory(mockRakutenApiService, "123", RakutenBookViewModel.GENRE_ID_COMIC)
-            .create(RakutenBookViewModel::class.java)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
