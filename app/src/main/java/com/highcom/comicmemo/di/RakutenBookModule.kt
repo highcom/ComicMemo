@@ -31,7 +31,7 @@ class RakutenBookModule {
             .build()
     }
 
-    @Provides
     @Singleton
+    @Provides
     fun provideRakutenApiService(retrofit: Retrofit): RakutenApiService = retrofit.create(RakutenApiService::class.java)
 }
