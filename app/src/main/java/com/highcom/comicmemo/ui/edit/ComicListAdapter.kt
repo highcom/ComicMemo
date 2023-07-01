@@ -44,15 +44,9 @@ object ComicListPersistent {
 class ComicListAdapter (
     context: Context?,
     listener: AdapterListener
-) : ListAdapter<Comic, ComicListAdapter.ComicViewHolder>(COMIC_COMPARATOR), Filterable {
+) : ListAdapter<Comic, ComicListAdapter.ComicViewHolder>(COMIC_COMPARATOR) {
     /** レイアウト */
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    /** 表示する巻数一覧データ */
-    private var comicList: List<Comic>? = null
-    /** 登録されている巻数一覧データ */
-    private var origComicList: List<Comic>? = null
-    /** ソートしている種別 */
-    private var sortType: ComicListPersistent.SortType = ComicListPersistent.SortType.ID
     /** 編集が有効かどうか */
     var editEnable = false
     /** アダプタの操作イベントリスナー */
@@ -285,77 +279,6 @@ class ComicListAdapter (
     }
 
     /**
-     * フィルタ前の関数データ一覧設定
-     *
-     * @param list フィルタ前の関数データ一覧
-     */
-    fun setOrigComicList(list: List<Comic>?) {
-        origComicList = list
-        comicList = origComicList
-    }
-
-    /**
-     * 巻数データ一覧のソート処理
-     *
-     * @param key ソート種別
-     */
-    fun sortComicList(key: ComicListPersistent.SortType) {
-        sortType = key
-        // 比較処理の実装
-        val comparator = Comparator<Comic> { t1, t2 ->
-            var result = when(sortType) {
-                ComicListPersistent.SortType.ID -> t1.id.compareTo(t2.id)
-                ComicListPersistent.SortType.TITLE -> t1.title.compareTo(t2.title)
-                ComicListPersistent.SortType.AUTHOR -> t1.author.compareTo(t2.author)
-            }
-
-            // ソート順が決まらない場合には、idで比較する
-            if (result == 0) {
-                result = t1.id.compareTo(t2.id)
-            }
-            return@Comparator result
-        }
-        comicList = comicList?.sortedWith(comparator)
-    }
-
-    /**
-     * 巻数データ一覧のソート種別取得処理
-     *
-     * @return ソート種別
-     */
-    fun getSortType(): ComicListPersistent.SortType {
-        return sortType
-    }
-    /**
-     * 巻数データ一覧の並べ替え処理
-     *
-     * @param fromPos 移動元の位置
-     * @param toPos 移動先の位置
-     */
-    fun rearrangeComicList(fromPos: Int, toPos: Int): List<Comic> {
-        val origComicIds = ArrayList<Long>()
-        val rearrangeComicList = ArrayList<Comic>()
-        // 元のIDの並びを保持と並べ替えができるリストに入れ替える
-        origComicList?.let {
-            for (comic in origComicList!!) {
-                origComicIds.add(comic.id)
-                rearrangeComicList.add(comic)
-            }
-        }
-        // 引数で渡された位置で並べ替え
-        val fromComic = rearrangeComicList[fromPos]
-        rearrangeComicList.removeAt(fromPos)
-        rearrangeComicList.add(toPos, fromComic)
-        // 再度IDを振り直す
-        val itr = origComicIds.listIterator()
-        for (comic in rearrangeComicList) {
-            comic.id = itr.next()
-        }
-
-        return rearrangeComicList
-    }
-
-    /**
      * ViewHolderの生成
      *
      * @param parent 親のViewGroup
@@ -378,8 +301,9 @@ class ComicListAdapter (
      */
     override fun onBindViewHolder(holder: ComicViewHolder, position: Int) {
         // フッターにはデータをバインドしない
-        if (holder.bindingAdapterPosition >= comicList?.size ?: 0) return
-        val current = getItem(holder.bindingAdapterPosition)
+        // getItemCountとgetItemをプロパティアクセスすると動作に問題が発生するのでsuperで明示的にメソッドアクセスする
+        if (holder.bindingAdapterPosition >= super.getItemCount()) return
+        val current = super.getItem(holder.bindingAdapterPosition)
         holder.bind(current)
     }
 
@@ -389,10 +313,10 @@ class ComicListAdapter (
      * @return 表示データ数＋フッター行数
      */
     override fun getItemCount(): Int {
-        return if (comicList != null) {
-            comicList!!.size + 1
+        return if (super.getItemCount() > 0) {
+            super.getItemCount() + 1
         } else {
-            0
+            1
         }
     }
 
@@ -403,48 +327,10 @@ class ComicListAdapter (
      * @return Viewの種別
      */
     override fun getItemViewType(position: Int): Int {
-        return if (position >= comicList?.size ?: 0) {
+        return if (position >= super.getItemCount()) {
             TYPE_FOOTER
         } else {
             TYPE_ITEM
         }
     }
-
-    /**
-     * 検索文字列での一覧のフィルタ処理
-     *
-     * @return フィルタした結果
-     */
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val oReturn = FilterResults()
-                val results = ArrayList<Comic>()
-                if (constraint != null) {
-                    if (origComicList!!.isNotEmpty()) {
-                        for (orig in origComicList!!) {
-                            if (orig.title.lowercase().contains(constraint.toString())) results.add(orig)
-                        }
-                    }
-                    oReturn.values = results
-                } else {
-                    oReturn.values = origComicList
-                }
-                return oReturn
-            }
-
-            override fun publishResults(
-                constraint: CharSequence?,
-                results: FilterResults
-            ) {
-                val resultList = results.values as List<Comic>?
-                resultList?.let {
-                    comicList = resultList
-                    sortComicList(sortType)
-                    submitList(comicList)
-                }
-            }
-        }
-    }
-
 }

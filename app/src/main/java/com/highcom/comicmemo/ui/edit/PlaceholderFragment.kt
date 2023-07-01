@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
-import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
-import com.highcom.comicmemo.ui.edit.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
+import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
+import com.highcom.comicmemo.ui.edit.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.Serializable
@@ -29,7 +29,7 @@ import java.util.*
  *
  */
 @AndroidEntryPoint
-class PlaceholderFragment : Fragment(), AdapterListener {
+class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     private lateinit var binding: FragmentComicMemoBinding
     /** 巻数一覧を制御するためのViewModel */
     private val pageViewModel: ComicPagerViewModel by viewModels()
@@ -44,6 +44,10 @@ class PlaceholderFragment : Fragment(), AdapterListener {
     /** 0:続刊 1:完結のインデックス */
     var index = 0
         private set
+    /** 登録されている巻数一覧データ */
+    private var origComicList: List<Comic>? = null
+    /** ソートしている種別 */
+    private var sortType: ComicListPersistent.SortType = ComicListPersistent.SortType.ID
 
     /**
      * スワイプメニュー用リスナー
@@ -88,7 +92,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         ) {
             ComicListPersistent.lastUpdateId = 0L
             // 入れ替え完了後に最後に一度DBの更新をする
-            val rearrangeComicList = adapter.rearrangeComicList(fromPos, toPos)
+            val rearrangeComicList = rearrangeComicList(fromPos, toPos)
             pageViewModel.update(rearrangeComicList)
             // 移動位置情報を初期化
             fromPos = -1
@@ -125,14 +129,14 @@ class PlaceholderFragment : Fragment(), AdapterListener {
         if (index.toLong() == ComicMemoRepository.STATE_CONTINUE) {
             pageViewModel.continueComics.observe(viewLifecycleOwner) { continueComics ->
                 continueComics.let {
-                    adapter.setOrigComicList(it)
+                    origComicList = it
                     setSearchWordFilter(searchViewWord)
                 }
             }
         } else if (index.toLong() == ComicMemoRepository.STATE_COMPLETE) {
             pageViewModel.completeComics.observe(viewLifecycleOwner) { completeComics ->
                 completeComics.let {
-                    adapter.setOrigComicList(it)
+                    origComicList = it
                     setSearchWordFilter(searchViewWord)
                 }
             }
@@ -207,7 +211,6 @@ class PlaceholderFragment : Fragment(), AdapterListener {
      */
     fun setSearchWordFilter(word: String) {
         searchViewWord = word
-        val filter = (recyclerView!!.adapter as Filterable?)!!.filter
         if (TextUtils.isEmpty(searchViewWord)) {
             filter.filter(null)
         } else {
@@ -261,7 +264,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
      * @param key ソート種別
      */
     fun sortData(key: ComicListPersistent.SortType) {
-        adapter.sortComicList(key)
+        sortType = key
         setSearchWordFilter(searchViewWord)
     }
 
@@ -271,7 +274,7 @@ class PlaceholderFragment : Fragment(), AdapterListener {
      * @return ソート種別
      */
     fun getSortType(): ComicListPersistent.SortType {
-        return adapter.getSortType()
+        return sortType
     }
 
     /**
@@ -348,6 +351,92 @@ class PlaceholderFragment : Fragment(), AdapterListener {
     override fun onPause() {
         super.onPause()
         ComicListPersistent.lastUpdateId = 0L
+    }
+
+    /**
+     * 検索文字列での一覧のフィルタ処理
+     *
+     * @return フィルタした結果
+     */
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val oReturn = FilterResults()
+                val results = ArrayList<Comic>()
+                if (constraint != null) {
+                    if (origComicList!!.isNotEmpty()) {
+                        for (orig in origComicList!!) {
+                            if (orig.title.lowercase().contains(constraint.toString())) results.add(orig)
+                        }
+                    }
+                    oReturn.values = results
+                } else {
+                    oReturn.values = origComicList
+                }
+                return oReturn
+            }
+
+            override fun publishResults(
+                constraint: CharSequence?,
+                results: FilterResults
+            ) {
+                val resultList = sortComicList(sortType, results.values as MutableList<Comic>?)
+                adapter.submitList(resultList)
+            }
+        }
+    }
+
+    /**
+     * 巻数データ一覧のソート処理
+     *
+     * @param key ソート種別
+     */
+    private fun sortComicList(key: ComicListPersistent.SortType, comicList: List<Comic>?): List<Comic>? {
+        sortType = key
+        // 比較処理の実装
+        val comparator = Comparator<Comic> { t1, t2 ->
+            var result = when(sortType) {
+                ComicListPersistent.SortType.ID -> t1.id.compareTo(t2.id)
+                ComicListPersistent.SortType.TITLE -> t1.title.compareTo(t2.title)
+                ComicListPersistent.SortType.AUTHOR -> t1.author.compareTo(t2.author)
+            }
+
+            // ソート順が決まらない場合には、idで比較する
+            if (result == 0) {
+                result = t1.id.compareTo(t2.id)
+            }
+            return@Comparator result
+        }
+        return comicList?.sortedWith(comparator)
+    }
+
+    /**
+     * 巻数データ一覧の並べ替え処理
+     *
+     * @param fromPos 移動元の位置
+     * @param toPos 移動先の位置
+     */
+    private fun rearrangeComicList(fromPos: Int, toPos: Int): List<Comic> {
+        val origComicIds = ArrayList<Long>()
+        val rearrangeComicList = ArrayList<Comic>()
+        // 元のIDの並びを保持と並べ替えができるリストに入れ替える
+        origComicList?.let {
+            for (comic in origComicList!!) {
+                origComicIds.add(comic.id)
+                rearrangeComicList.add(comic)
+            }
+        }
+        // 引数で渡された位置で並べ替え
+        val fromComic = rearrangeComicList[fromPos]
+        rearrangeComicList.removeAt(fromPos)
+        rearrangeComicList.add(toPos, fromComic)
+        // 再度IDを振り直す
+        val itr = origComicIds.listIterator()
+        for (comic in rearrangeComicList) {
+            comic.id = itr.next()
+        }
+
+        return rearrangeComicList
     }
 
     companion object {
