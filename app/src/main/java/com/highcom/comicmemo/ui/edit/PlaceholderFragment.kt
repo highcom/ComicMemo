@@ -44,6 +44,8 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     /** 0:続刊 1:完結のインデックス */
     var index = 0
         private set
+    /** 初期表示かどうか */
+    private var isInitPositionSet: Boolean = false
     /** 登録されている巻数一覧データ */
     private var origComicList: List<Comic>? = null
     /** ソートしている種別 */
@@ -103,6 +105,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isInitPositionSet = false
         if (arguments != null) {
             index = requireArguments().getInt(ComicMemoConstants.ARG_SECTION_NUMBER)
         }
@@ -382,6 +385,11 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             ) {
                 val resultList = sortComicList(sortType, results.values as MutableList<Comic>?)
                 adapter.submitList(resultList)
+                // 初期表示の時は先頭位置にする
+                if (!isInitPositionSet) {
+                    recyclerView?.scrollToPosition(0)
+                    isInitPositionSet = true
+                }
             }
         }
     }
