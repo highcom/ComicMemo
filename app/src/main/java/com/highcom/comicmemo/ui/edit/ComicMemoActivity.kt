@@ -18,9 +18,6 @@ import com.highcom.comicmemo.ui.search.RakutenBookActivity
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater.ShowRateDialogCondition
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -183,6 +180,15 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
                 }
                 return false
             }
+        })
+        searchActionView.setOnCloseListener(SearchView.OnCloseListener {
+            // 検索終了時もスクロールを先頭の初期位置に戻す
+            val fragments = sectionsPagerAdapter!!.allFragment
+            for (fragment in fragments) {
+                (fragment as PlaceholderFragment).setSmoothScrollPosition(0)
+            }
+
+            return@OnCloseListener false
         })
 
         return super.onCreateOptionsMenu(menu)

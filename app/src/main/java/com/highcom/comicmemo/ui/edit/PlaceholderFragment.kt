@@ -281,6 +281,15 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     }
 
     /**
+     * スクロール位置の設定処理
+     *
+     * @param position スクロール位置
+     */
+    fun setSmoothScrollPosition(position: Int) {
+        recyclerView?.smoothScrollToPosition(position)
+    }
+
+    /**
      * 巻数データ選択時の詳細画面遷移処理
      *
      * @param view 選択した巻数データView
