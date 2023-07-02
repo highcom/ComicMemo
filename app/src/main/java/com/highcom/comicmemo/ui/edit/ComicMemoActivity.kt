@@ -29,7 +29,7 @@ import java.util.*
  * 巻数メモ一覧Activity
  */
 @AndroidEntryPoint
-class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener {
+class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener, PlaceholderFragment.UpdateComicListListener {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
     /** タブレイアウトのセクションページアダプタ */
@@ -316,6 +316,21 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
             R.string.select_menu_icon
         ))
         item?.title = selectMenuTitle
+    }
+
+    override fun onUpdateContinueComicsCount(count: Int) {
+        // 続刊タブに巻数一覧数を設定する
+        val tab1 = binding.itemtabs.getTabAt(0)
+        val fragment1 = sectionsPagerAdapter!!.allFragment.get(0) as PlaceholderFragment
+        tab1?.text = getString(R.string.tab_text_1) + "（" + count + "）"
+
+    }
+
+    override fun onUpdateCompleteComicsCount(count: Int) {
+        // 完結タブに巻数一覧数を設定する
+        val tab2 = binding.itemtabs.getTabAt(1)
+        val fragment2 = sectionsPagerAdapter!!.allFragment.get(1) as PlaceholderFragment
+        tab2?.text = getString(R.string.tab_text_2) + "（" + count + "）"
     }
 
     /**

@@ -26,7 +26,7 @@ class SectionsPagerAdapter(private val activity: ComicMemoActivity) : FragmentSt
      * @return 巻数データ一覧のフラグメント
      */
     override fun createFragment(position: Int): Fragment {
-        val fragment: Fragment = PlaceholderFragment.newInstance(position)
+        val fragment: Fragment = PlaceholderFragment.newInstance(position, activity)
         fragmentList.add(fragment)
         // アクティブになる時に初めてインスタンスが生成されるのでカレントは必ず更新
         currentFragment = fragment
