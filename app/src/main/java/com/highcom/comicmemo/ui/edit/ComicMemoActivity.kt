@@ -1,11 +1,14 @@
 package com.highcom.comicmemo.ui.edit
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
@@ -24,7 +27,7 @@ import java.util.*
  * 巻数メモ一覧Activity
  */
 @AndroidEntryPoint
-class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener {
+class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener, PlaceholderFragment.UpdateComicListListener {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
 
@@ -297,6 +300,21 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
             R.string.select_menu_icon
         ))
         item?.title = selectMenuTitle
+    }
+
+    override fun onUpdateContinueComicsCount(count: Int) {
+        // 続刊タブに巻数一覧数を設定する
+        val tab1 = binding.itemtabs.getTabAt(0)
+        val fragment1 = sectionsPagerAdapter!!.allFragment.get(0) as PlaceholderFragment
+        tab1?.text = getString(R.string.tab_text_1) + "（" + count + "）"
+
+    }
+
+    override fun onUpdateCompleteComicsCount(count: Int) {
+        // 完結タブに巻数一覧数を設定する
+        val tab2 = binding.itemtabs.getTabAt(1)
+        val fragment2 = sectionsPagerAdapter!!.allFragment.get(1) as PlaceholderFragment
+        tab2?.text = getString(R.string.tab_text_2) + "（" + count + "）"
     }
 
     /**

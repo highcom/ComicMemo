@@ -51,6 +51,28 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     /** ソートしている種別 */
     private var sortType: ComicListPersistent.SortType = ComicListPersistent.SortType.ID
 
+    private lateinit var updateComicListListener: UpdateComicListListener
+    /**
+     * 巻数一覧更新通知リスナー
+     *
+     */
+    interface UpdateComicListListener {
+        /**
+         * 続刊の巻数一覧数更新通知
+         *
+         * @param count 巻数一覧数
+         */
+        fun onUpdateContinueComicsCount(count: Int)
+
+        /**
+         * 完結の巻数一覧数更新通知
+         *
+         * @param count 巻数一覧数
+         */
+        fun onUpdateCompleteComicsCount(count: Int)
+    }
+
+
     /**
      * スワイプメニュー用リスナー
      *
@@ -133,6 +155,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             pageViewModel.continueComics.observe(viewLifecycleOwner) { continueComics ->
                 continueComics.let {
                     origComicList = it
+                    updateComicListListener.onUpdateContinueComicsCount(origComicList?.size ?: 0)
                     setSearchWordFilter(searchViewWord)
                 }
             }
@@ -140,6 +163,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             pageViewModel.completeComics.observe(viewLifecycleOwner) { completeComics ->
                 completeComics.let {
                     origComicList = it
+                    updateComicListListener.onUpdateCompleteComicsCount(origComicList?.size ?: 0)
                     setSearchWordFilter(searchViewWord)
                 }
             }
@@ -457,8 +481,9 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     }
 
     companion object {
-        fun newInstance(index: Int): PlaceholderFragment {
+        fun newInstance(index: Int, listener: UpdateComicListListener): PlaceholderFragment {
             val fragment = PlaceholderFragment()
+            fragment.updateComicListListener = listener
             val bundle = Bundle()
             bundle.putInt(ComicMemoConstants.ARG_SECTION_NUMBER, index)
             fragment.arguments = bundle

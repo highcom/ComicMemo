@@ -34,7 +34,7 @@ class SectionsPagerAdapter(private val mContext: Context, private val activity: 
      * @return 巻数データ一覧のフラグメント
      */
     override fun getItem(position: Int): Fragment {
-        val fragment: Fragment = PlaceholderFragment.newInstance(position)
+        val fragment: Fragment = PlaceholderFragment.newInstance(position, activity)
         fragmentList.add(fragment)
         return fragment
     }
