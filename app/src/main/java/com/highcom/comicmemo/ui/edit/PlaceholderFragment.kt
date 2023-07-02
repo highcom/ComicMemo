@@ -289,6 +289,10 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
         recyclerView?.smoothScrollToPosition(position)
     }
 
+    fun getOrigComicListCount(): Int {
+        return origComicList?.size ?: 0
+    }
+
     /**
      * 巻数データ選択時の詳細画面遷移処理
      *
@@ -392,7 +396,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 constraint: CharSequence?,
                 results: FilterResults
             ) {
-                val resultList = sortComicList(sortType, results.values as MutableList<Comic>?)
+                val resultList = sortComicList(results.values as MutableList<Comic>?)
                 adapter.submitList(resultList)
                 // 初期表示の時は先頭位置にする
                 if (!isInitPositionSet) {
@@ -406,10 +410,8 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     /**
      * 巻数データ一覧のソート処理
      *
-     * @param key ソート種別
      */
-    private fun sortComicList(key: ComicListPersistent.SortType, comicList: List<Comic>?): List<Comic>? {
-        sortType = key
+    private fun sortComicList(comicList: List<Comic>?): List<Comic>? {
         // 比較処理の実装
         val comparator = Comparator<Comic> { t1, t2 ->
             var result = when(sortType) {

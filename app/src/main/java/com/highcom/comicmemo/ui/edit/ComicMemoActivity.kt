@@ -1,14 +1,19 @@
 package com.highcom.comicmemo.ui.edit
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.google.android.gms.ads.*
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.ComicMemoConstants
@@ -27,9 +32,8 @@ import java.util.*
 class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPagerAdapterListener {
     /** バインディング */
     private lateinit var binding: ActivityComicMemoBinding
-
     /** タブレイアウトのセクションページアダプタ */
-    private var sectionsPagerAdapter: SectionsPagerAdapter? = null
+    private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     /** 絞り込み検索文字列 */
     private var mSearchWord = ""
     /** メニュー */
@@ -100,18 +104,32 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         )
 
         // 各セクションページに表示する一覧データの設定
-        sectionsPagerAdapter = SectionsPagerAdapter(applicationContext, this, supportFragmentManager)
+        sectionsPagerAdapter = SectionsPagerAdapter(this)
         binding.viewPager.adapter = sectionsPagerAdapter
-        binding.itemtabs.setupWithViewPager(binding.viewPager)
+        TabLayoutMediator(binding.itemtabs, binding.viewPager) { tab, position ->
+            if (position == 0) tab.text = getString(R.string.tab_text_1)
+            else if (position == 1) tab.text = getString(R.string.tab_text_2)
+        }.attach()
+
+        // タブ切り替えによるアクティブなフラグメントを設定
+        binding.itemtabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val fragment = sectionsPagerAdapter.allFragment.getOrNull(tab?.position ?: 0)
+                sectionsPagerAdapter.setCurrentFragment(fragment)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
 
         // 追加ボタン処理
         binding.fabNewEdit.setOnClickListener {
             val intent = Intent(this@ComicMemoActivity, InputMemoActivity::class.java)
-            if (sectionsPagerAdapter!!.currentFragment != null) {
-                val index =
-                    (sectionsPagerAdapter!!.currentFragment as PlaceholderFragment).index.toLong()
-                intent.putExtra(ComicMemoConstants.ARG_STATUS, index)
-            }
+            val index = (sectionsPagerAdapter.currentFragment as PlaceholderFragment?)?.index?.toLong() ?: 0
+            intent.putExtra(ComicMemoConstants.ARG_STATUS, index)
             intent.putExtra(ComicMemoConstants.ARG_EDIT, false)
             startActivityForResult(intent, 1001)
         }
@@ -174,7 +192,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 mSearchWord = newText ?: ""
-                val fragments = sectionsPagerAdapter!!.allFragment
+                val fragments = sectionsPagerAdapter.allFragment
                 for (fragment in fragments) {
                     (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
                 }
@@ -183,7 +201,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         })
         searchActionView.setOnCloseListener(SearchView.OnCloseListener {
             // 検索終了時もスクロールを先頭の初期位置に戻す
-            val fragments = sectionsPagerAdapter!!.allFragment
+            val fragments = sectionsPagerAdapter.allFragment
             for (fragment in fragments) {
                 (fragment as PlaceholderFragment).setSmoothScrollPosition(0)
             }
@@ -217,7 +235,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         mMenu?.findItem(R.id.sort_author)?.title = mMenu?.findItem(R.id.sort_author)?.title.toString()
             .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))
 
-        val fragment = sectionsPagerAdapter?.currentFragment as PlaceholderFragment?
+        val fragment = sectionsPagerAdapter.currentFragment as PlaceholderFragment?
         currentMenuSelect = when(fragment?.getSortType()) {
             ComicListPersistent.SortType.ID -> R.id.sort_default
             ComicListPersistent.SortType.TITLE -> R.id.sort_title
@@ -240,35 +258,35 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
      * @return
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val fragment = sectionsPagerAdapter!!.currentFragment as PlaceholderFragment
+        val fragment = sectionsPagerAdapter.currentFragment as PlaceholderFragment?
         when (item.itemId) {
             R.id.edit_mode -> {
                 // 編集状態
-                fragment.sortData(ComicListPersistent.SortType.ID)
-                if (fragment.getEditEnable()) {
+                fragment?.sortData(ComicListPersistent.SortType.ID)
+                if (fragment?.getEditEnable() == true) {
                     setCurrentSelectMenuTitle(mMenu?.findItem(R.id.sort_default), R.id.sort_default)
                 } else {
                     setCurrentSelectMenuTitle(item, R.id.edit_mode)
                 }
-                fragment.changeEditEnable()
+                fragment?.changeEditEnable()
             }
             R.id.sort_default -> {
                 // idでのソート
                 setCurrentSelectMenuTitle(item, R.id.sort_default)
-                fragment.sortData(ComicListPersistent.SortType.ID)
-                fragment.setEditEnable(false)
+                fragment?.sortData(ComicListPersistent.SortType.ID)
+                fragment?.setEditEnable(false)
             }
             R.id.sort_title -> {
                 // タイトル名でのソート
                 setCurrentSelectMenuTitle(item, R.id.sort_title)
-                fragment.sortData(ComicListPersistent.SortType.TITLE)
-                fragment.setEditEnable(false)
+                fragment?.sortData(ComicListPersistent.SortType.TITLE)
+                fragment?.setEditEnable(false)
             }
             R.id.sort_author -> {
                 // 著者名でのソート
                 setCurrentSelectMenuTitle(item, R.id.sort_author)
-                fragment.sortData(ComicListPersistent.SortType.AUTHOR)
-                fragment.setEditEnable(false)
+                fragment?.sortData(ComicListPersistent.SortType.AUTHOR)
+                fragment?.setEditEnable(false)
             }
             R.id.search_book -> {
                 val intent = Intent(this@ComicMemoActivity, RakutenBookActivity::class.java)
@@ -276,6 +294,7 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
             }
             else -> {}
         }
+        notifyChangeCurrentFragment()
         return super.onOptionsItemSelected(item)
     }
 
@@ -316,13 +335,13 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         if (comic != null) {
             // idが0の場合は新規作成でDBのautoGenerateで自動採番される
             if (comic.id == 0L) {
-                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).insert(comic)
+                (sectionsPagerAdapter.currentFragment as PlaceholderFragment?)?.insert(comic)
             } else {
-                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).update(comic)
+                (sectionsPagerAdapter.currentFragment as PlaceholderFragment?)?.update(comic)
             }
         }
         // 入力画面で作成されたデータを一覧に反映する
-        val fragments = sectionsPagerAdapter!!.allFragment
+        val fragments = sectionsPagerAdapter.allFragment
         for (fragment in fragments) {
             (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
         }
