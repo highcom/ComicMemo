@@ -50,10 +50,11 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     private var origComicList: List<Comic>? = null
     /** ソートしている種別 */
     private var sortType: ComicListPersistent.SortType = ComicListPersistent.SortType.ID
+    /** 巻数一覧更新通知リスナー */
+    private var updateComicListListener: UpdateComicListListener? = null
 
-    private lateinit var updateComicListListener: UpdateComicListListener
     /**
-     * 巻数一覧更新通知リスナー
+     * 巻数一覧更新通知リスナーインタフェース
      *
      */
     interface UpdateComicListListener {
@@ -155,7 +156,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             pageViewModel.continueComics.observe(viewLifecycleOwner) { continueComics ->
                 continueComics.let {
                     origComicList = it
-                    updateComicListListener.onUpdateContinueComicsCount(origComicList?.size ?: 0)
+                    updateComicListListener?.onUpdateContinueComicsCount(origComicList?.size ?: 0)
                     setSearchWordFilter(searchViewWord)
                 }
             }
@@ -163,7 +164,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             pageViewModel.completeComics.observe(viewLifecycleOwner) { completeComics ->
                 completeComics.let {
                     origComicList = it
-                    updateComicListListener.onUpdateCompleteComicsCount(origComicList?.size ?: 0)
+                    updateComicListListener?.onUpdateCompleteComicsCount(origComicList?.size ?: 0)
                     setSearchWordFilter(searchViewWord)
                 }
             }

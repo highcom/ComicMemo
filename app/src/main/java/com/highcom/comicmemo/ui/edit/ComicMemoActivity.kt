@@ -302,18 +302,26 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         item?.title = selectMenuTitle
     }
 
+    /**
+     * 続刊の巻数一覧数更新処理
+     *
+     * @param count 巻数一覧数
+     */
     override fun onUpdateContinueComicsCount(count: Int) {
         // 続刊タブに巻数一覧数を設定する
         val tab1 = binding.itemtabs.getTabAt(0)
-        val fragment1 = sectionsPagerAdapter!!.allFragment.get(0) as PlaceholderFragment
         tab1?.text = getString(R.string.tab_text_1) + "（" + count + "）"
 
     }
 
+    /**
+     * 完結の巻数一覧数更新処理
+     *
+     * @param count 巻数一覧数
+     */
     override fun onUpdateCompleteComicsCount(count: Int) {
         // 完結タブに巻数一覧数を設定する
         val tab2 = binding.itemtabs.getTabAt(1)
-        val fragment2 = sectionsPagerAdapter!!.allFragment.get(1) as PlaceholderFragment
         tab2?.text = getString(R.string.tab_text_2) + "（" + count + "）"
     }
 
@@ -334,9 +342,9 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
         if (comic != null) {
             // idが0の場合は新規作成でDBのautoGenerateで自動採番される
             if (comic.id == 0L) {
-                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).insert(comic)
+                (sectionsPagerAdapter?.currentFragment as? PlaceholderFragment)?.insert(comic)
             } else {
-                (sectionsPagerAdapter?.currentFragment as PlaceholderFragment).update(comic)
+                (sectionsPagerAdapter?.currentFragment as? PlaceholderFragment)?.update(comic)
             }
         }
         // 入力画面で作成されたデータを一覧に反映する
