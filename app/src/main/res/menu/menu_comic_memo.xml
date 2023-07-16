@@ -29,4 +29,7 @@
     <item
         android:id="@+id/search_book"
         android:title="@string/search_book" />
+    <item
+        android:id="@+id/new_book"
+        android:title="@string/new_book" />
 </menu>

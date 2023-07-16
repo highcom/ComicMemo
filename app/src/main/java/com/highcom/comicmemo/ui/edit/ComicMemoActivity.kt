@@ -274,7 +274,15 @@ class ComicMemoActivity : AppCompatActivity(), SectionsPagerAdapter.SectionPager
                 fragment.setEditEnable(false)
             }
             R.id.search_book -> {
+                // 人気書籍検索
                 val intent = Intent(this@ComicMemoActivity, RakutenBookActivity::class.java)
+                intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_SEARCH)
+                startActivity(intent)
+            }
+            R.id.new_book -> {
+                // 新刊検索
+                val intent = Intent(this@ComicMemoActivity, RakutenBookActivity::class.java)
+                intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_NEW)
                 startActivity(intent)
             }
             else -> {}

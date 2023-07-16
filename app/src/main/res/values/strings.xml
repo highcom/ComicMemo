@@ -24,6 +24,7 @@
     <string name="sort_author_text">○ 並べ替え(著作者)</string>
     <string name="search_bar_title">○ Search Bar</string>
     <string name="search_book">人気書籍検索</string>
+    <string name="new_book">新刊検索</string>
     <string name="trend_book">人気書籍</string>
     <string name="header_comic">（漫画(ｺﾐｯｸ)）</string>
     <string name="header_novel">（小説･ｴｯｾｲ）</string>

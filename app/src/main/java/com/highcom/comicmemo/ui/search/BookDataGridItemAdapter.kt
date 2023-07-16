@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.databinding.GridBookItemBinding
+import com.highcom.comicmemo.databinding.NewBookItemBinding
 import com.highcom.comicmemo.network.Item
 
 /**
  * 書籍データの各アイテムをグリッド表示するためのAdapter
  */
-class BookDataGridItemAdapter(private val listener: BookItemViewHolder.BookItemListener) : ListAdapter<Item, BookItemViewHolder>(
+class BookDataGridItemAdapter(private val listener: BookItemViewHolder.BookItemListener, private val bookMode: Int) : ListAdapter<Item, BookItemViewHolder>(
     DiffCallback
 ) {
     companion object DiffCallback : DiffUtil.ItemCallback<Item>() {
@@ -25,7 +27,12 @@ class BookDataGridItemAdapter(private val listener: BookItemViewHolder.BookItemL
 
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): BookItemViewHolder {
-        return BookItemViewHolder(GridBookItemBinding.inflate(LayoutInflater.from(parent.context)))
+        // 検索モードによって生成するレイアウトを変更する
+        return if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
+            BookItemViewHolder(NewBookItemBinding.inflate(LayoutInflater.from(parent.context)))
+        } else {
+            BookItemViewHolder(GridBookItemBinding.inflate(LayoutInflater.from(parent.context)))
+        }
     }
 
     override fun onBindViewHolder(holder: BookItemViewHolder, position: Int) {

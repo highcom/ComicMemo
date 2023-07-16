@@ -1,12 +1,14 @@
 package com.highcom.comicmemo.viewmodel
 
 import androidx.lifecycle.*
+import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,12 +54,18 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      * 楽天書籍検索ViewModelを利用するための初期設定処理
      *
      * @param appId 楽天APIアプリID
+     * @param bookMode 書籍検索モード
      * @param genreId 検索ジャンルID
      */
-    fun initialize(appId: String, genreId: String) {
+    fun initialize(appId: String, bookMode: Int, genreId: String) {
         this.appId = appId
         this.genreId = genreId
-        getSalesList()
+        if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
+            // TODO:検索する著作者名を別途もらうようにする
+            searchAuthorList(listOf("尾田栄一郎", "原泰久", "鳴見なる"))
+        } else {
+            getSalesList()
+        }
     }
 
     /**
@@ -155,6 +163,36 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
                     }
                 }
             })
+        }
+    }
+
+    /**
+     * 引数で指定された著作者名一覧に対する新刊検索処理
+     *
+     * @param authors 著作者名一覧
+     */
+    fun searchAuthorList(authors: List<String>) {
+        viewModelScope.launch {
+            _status.value = RakutenApiStatus.LOADING
+            val callbackCounter = object : retrofit2.Callback<RakutenBookData> {
+                override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+                    _status.value = RakutenApiStatus.ERROR
+                }
+
+                override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            _status.value = RakutenApiStatus.DONE
+                            setBookList(it)
+                        }
+                    }
+                }
+            }
+
+            // 検索する著作者名の分だけAPIを呼び出す
+            for (author in authors) {
+                rakutenApiService.searchAuthorListItems(author, appId).enqueue(callbackCounter)
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.highcom.comicmemo.ui.search
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
@@ -9,8 +10,10 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
 import com.highcom.comicmemo.network.Item
@@ -42,11 +45,18 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recyclerView = binding.bookItemGridView
-        itemAdapter = BookDataGridItemAdapter(this)
+        val bookMode = requireArguments().getInt(ComicMemoConstants.KEY_BOOK_MODE)
 
-        recyclerView.adapter = itemAdapter
-        recyclerView.addOnScrollListener(InfiniteScrollListener())
+        itemAdapter = BookDataGridItemAdapter(this, bookMode)
+        binding.bookItemGridView.adapter = itemAdapter
+
+        // 検索モードによって1行に表示するアイテムの数を変更する
+        if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
+            (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 1
+        } else {
+            (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 3
+            binding.bookItemGridView.addOnScrollListener(InfiniteScrollListener())
+        }
 
         // 楽天APIの呼び出し状況に応じてプログレスサークルの表示
         viewModel.status.observe(viewLifecycleOwner) { apiStatus ->

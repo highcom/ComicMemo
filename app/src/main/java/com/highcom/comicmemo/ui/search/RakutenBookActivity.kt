@@ -34,6 +34,8 @@ class RakutenBookActivity : AppCompatActivity() {
     private val viewModel: RakutenBookViewModel by viewModels()
     /** ComicMemoアプリ用SharedPreference */
     private lateinit var sharedPreferences: SharedPreferences
+    /** 書籍検索モード */
+    private var bookMode: Int = 0
     /** 現在選択中のメニュー */
     private var currentGenreSelect = RakutenBookViewModel.GENRE_ID_COMIC
     /** メニュー */
@@ -47,19 +49,28 @@ class RakutenBookActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRakutenBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
-        currentGenreSelect = sharedPreferences.getString(ComicMemoConstants.SELECT_GENRE, RakutenBookViewModel.GENRE_ID_COMIC) ?: RakutenBookViewModel.GENRE_ID_COMIC
-        setMenu(currentGenreSelect)
-        setTitle(currentGenreSelect)
-
+        bookMode = intent.getIntExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_SEARCH)
+        if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
+            title = getString(R.string.new_book)
+        } else {
+            sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+            currentGenreSelect = sharedPreferences.getString(
+                ComicMemoConstants.SELECT_GENRE,
+                RakutenBookViewModel.GENRE_ID_COMIC
+            ) ?: RakutenBookViewModel.GENRE_ID_COMIC
+            setMenu(currentGenreSelect)
+            setTitle(currentGenreSelect)
+        }
+        // Fragmentナビゲーションの設定
         val navController = findNavController(R.id.rakuten_book_container)
         val navGraph = navController.navInflater.inflate(R.navigation.rakuten_book_navigation)
-        navController.setGraph(navGraph, null)
-
+        val bundle = Bundle()
+        bundle.putInt(ComicMemoConstants.KEY_BOOK_MODE, bookMode)
+        navController.setGraph(navGraph, bundle)
         // アクションバーの戻るボタンを表示
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // ViewModelの初期設定
-        viewModel.initialize(getString(R.string.rakuten_app_id), currentGenreSelect)
+        viewModel.initialize(getString(R.string.rakuten_app_id), bookMode, currentGenreSelect)
         // 広告のロード
         binding.adViewBookListFrame.post { loadBanner() }
     }
@@ -137,6 +148,9 @@ class RakutenBookActivity : AppCompatActivity() {
      * @return
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // 新刊検索の場合にはメニューを表示しない
+        if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) return super.onCreateOptionsMenu(menu)
+
         menuInflater.inflate(R.menu.menu_rakuten_book, menu)
         // 初期検索種別を設定
         mMenu = menu
