@@ -2,7 +2,7 @@ package com.highcom.comicmemo.network
 
 data class RakutenBookData(
     val GenreInformation: List<Any>,
-    val Items: List<Item>,
+    val Items: ArrayList<Item>,
     val carrier: Int,
     val count: Int,
     val first: Int,

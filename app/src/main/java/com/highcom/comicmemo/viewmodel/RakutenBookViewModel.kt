@@ -8,9 +8,11 @@ import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.scheduleAtFixedRate
 
 enum class RakutenApiStatus { LOADING, ERROR, DONE }
 enum class LiveDataKind { SALES, SEARCH }
@@ -62,7 +64,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         this.genreId = genreId
         if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
             // TODO:検索する著作者名を別途もらうようにする
-            searchAuthorList(listOf("尾田栄一郎", "原泰久", "鳴見なる"))
+            searchAuthorList(listOf("尾田栄一郎", "原泰久", "鳴見なる", "芥見下々", "金城宗幸", "川上泰樹"))
         } else {
             getSalesList()
         }
@@ -172,28 +174,48 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      * @param authors 著作者名一覧
      */
     fun searchAuthorList(authors: List<String>) {
+        val timer = Timer()
+        val authorItr = authors.iterator()
         viewModelScope.launch {
-            _status.value = RakutenApiStatus.LOADING
-            val callbackCounter = object : retrofit2.Callback<RakutenBookData> {
-                override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
-                    _status.value = RakutenApiStatus.ERROR
-                }
+            // 楽天API呼び出し制限のために遅延呼び出しする
+            timer.scheduleAtFixedRate(API_DELAY_TIME, API_PERIOD_TIME) {
+                // 著作者名リストを全て取得したらタイマーを終了
+                if (!authorItr.hasNext()) timer.cancel()
+                serachAuthor(authorItr)
+            }
+        }
+    }
 
-                override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let {
-                            _status.value = RakutenApiStatus.DONE
-                            setBookList(it)
+    /**
+     * 著作者名に対する新刊検索再帰呼び出し処理
+     *
+     * @param authorItr 著作者名リストのイテレータ
+     */
+    private fun serachAuthor(authorItr: Iterator<String>) {
+        // 著作者名リストを全て取得したら終了
+        if (!authorItr.hasNext()) return
+        val author = authorItr.next()
+        val currentDate = LocalDate.now()
+        rakutenApiService.searchAuthorListItems(author, appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+                _status.value = RakutenApiStatus.ERROR
+            }
+
+            override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _status.value = RakutenApiStatus.DONE
+                        // 現在の日付より過去に発売されているものは削除する
+                        it.Items.removeIf {
+                            val arr = it.Item.salesDate.split("年", "月", "日").toMutableList()
+                            val salesDate = LocalDate.of(arr[0].toIntOrNull() ?: 2000, arr[1].toIntOrNull() ?: 1, arr[2].toIntOrNull() ?: 1)
+                            salesDate.isBefore(currentDate)
                         }
+                        setBookList(it)
                     }
                 }
             }
-
-            // 検索する著作者名の分だけAPIを呼び出す
-            for (author in authors) {
-                rakutenApiService.searchAuthorListItems(author, appId).enqueue(callbackCounter)
-            }
-        }
+        })
     }
 
     /**
@@ -231,5 +253,9 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         const val GENRE_ID_NEW_BOOK = "001020"
         /** 検索結果の最大ページ数 */
         private const val MAX_PAGE_COUNT = 100
+        /** 楽天API呼び出し遅延時間 */
+        private const val API_DELAY_TIME = 0L
+        /** 楽天API呼び出し周期時間 */
+        private const val API_PERIOD_TIME = 1500L
     }
 }
