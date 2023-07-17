@@ -5,6 +5,7 @@ import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.network.Item
+import com.highcom.comicmemo.network.ItemEntity
 import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -211,6 +212,39 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
                             val salesDate = LocalDate.of(arr[0].toIntOrNull() ?: 2000, arr[1].toIntOrNull() ?: 1, arr[2].toIntOrNull() ?: 1)
                             salesDate.isBefore(currentDate)
                         }
+                        // ヘッダーとして著作者名を挿入する
+                        it.Items.add(0, Item(ItemEntity(
+                            affiliateUrl = "",
+                            author = author,
+                            authorKana = "",
+                            availability = "",
+                            booksGenreId = "",
+                            chirayomiUrl = "",
+                            contents = "",
+                            discountPrice = 0,
+                            discountRate = 0,
+                            isbn = "",
+                            itemCaption = "",
+                            itemPrice = 0,
+                            itemUrl = "",
+                            largeImageUrl = "",
+                            limitedFlag = 0,
+                            listPrice = 0,
+                            mediumImageUrl = "",
+                            postageFlag = 0,
+                            publisherName = "",
+                            reviewAverage = "",
+                            reviewCount = 0,
+                            salesDate = "",
+                            seriesName = "",
+                            seriesNameKana = "",
+                            size = TYPE_HEADER_ITEM,
+                            smallImageUrl = "",
+                            subTitle = "",
+                            subTitleKana = "",
+                            title = "",
+                            titleKana = ""
+                        )))
                         setBookList(it)
                     }
                 }
@@ -251,6 +285,8 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         const val GENRE_ID_PAPERBACK = "001019"
         /** 検索ジャンル：新書 */
         const val GENRE_ID_NEW_BOOK = "001020"
+        /** 新刊書籍ヘッダー判別値 */
+        const val TYPE_HEADER_ITEM = "999"
         /** 検索結果の最大ページ数 */
         private const val MAX_PAGE_COUNT = 100
         /** 楽天API呼び出し遅延時間 */

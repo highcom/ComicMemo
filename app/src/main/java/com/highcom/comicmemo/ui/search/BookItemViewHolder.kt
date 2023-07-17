@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.GridBookItemBinding
+import com.highcom.comicmemo.databinding.HeaderBookItemBinding
 import com.highcom.comicmemo.databinding.NewBookItemBinding
 import com.highcom.comicmemo.network.Item
 
@@ -21,6 +22,12 @@ class BookItemViewHolder: RecyclerView.ViewHolder {
         gridBookItemBinding = binding
     }
     /**
+     * 新刊書籍検索用書籍ヘッダ表示コンストラクタ
+     */
+    constructor(binding: HeaderBookItemBinding): super(binding.root) {
+        headerBookItemBinding = binding
+    }
+    /**
      * 新刊書籍検索用書籍アイテム表示コンストラクタ
      */
     constructor(binding: NewBookItemBinding): super(binding.root) {
@@ -28,6 +35,7 @@ class BookItemViewHolder: RecyclerView.ViewHolder {
     }
 
     private var gridBookItemBinding: GridBookItemBinding? = null
+    private var headerBookItemBinding: HeaderBookItemBinding? = null
     private var newBookItemBinding: NewBookItemBinding? = null
 
     /**
@@ -59,7 +67,11 @@ class BookItemViewHolder: RecyclerView.ViewHolder {
                 listener.bookItemSelected(item)
             }
         }
-        // 新刊書籍検索の場合
+        // 新刊書籍検索ヘッダーの場合
+        headerBookItemBinding?.also {
+            it.itemAuthorView.text = item.Item.author
+        }
+        // 新刊書籍検索アイテムの場合
         newBookItemBinding?.also { binding ->
             // 画像URLから画像を表示する
             val imgUri = item.Item.mediumImageUrl.toUri().buildUpon().scheme("https").build()
@@ -75,7 +87,7 @@ class BookItemViewHolder: RecyclerView.ViewHolder {
             // 発売日を設定
             binding.itemReleaseView.text = item.Item.salesDate
 
-            binding.itemImageView.setOnClickListener {
+            binding.itemContentView.setOnClickListener {
                 listener.bookItemSelected(item)
             }
         }
