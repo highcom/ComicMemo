@@ -12,7 +12,9 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -148,8 +150,12 @@ class RakutenBookActivity : AppCompatActivity() {
      * @return
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        // 新刊検索の場合にはメニューを表示しない
-        if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) return super.onCreateOptionsMenu(menu)
+        // 新刊検索の場合には著作者名編集メニューを表示する
+        if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
+            menuInflater.inflate(R.menu.menu_edit, menu)
+            title = getString(R.string.new_book)
+            return super.onCreateOptionsMenu(menu)
+        }
 
         menuInflater.inflate(R.menu.menu_rakuten_book, menu)
         // 初期検索種別を設定
@@ -197,6 +203,12 @@ class RakutenBookActivity : AppCompatActivity() {
                         else -> popBackStack()
                     }
                 }
+                return super.onOptionsItemSelected(item)
+            }
+            R.id.action_edit -> {
+                findNavController(R.id.rakuten_book_container).navigate(R.id.action_bookListFragment_to_authorEditFragment, null)
+                title = getString(R.string.edit_author)
+                item.setVisible(false)
                 return super.onOptionsItemSelected(item)
             }
             R.id.search_mode_comic -> {

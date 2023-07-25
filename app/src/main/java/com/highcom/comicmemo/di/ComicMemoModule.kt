@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.highcom.comicmemo.datamodel.ComicMemoRoomDatabase
 import com.highcom.comicmemo.datamodel.MIGRATION_2_3
+import com.highcom.comicmemo.datamodel.MIGRATION_3_4
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,9 +20,13 @@ class ComicMemoModule {
     @Provides
     fun provideDatabase(
         @ApplicationContext context: Context
-    ) = Room.databaseBuilder(context, ComicMemoRoomDatabase::class.java, "ComicMemoDB").addMigrations(MIGRATION_2_3).build()
+    ) = Room.databaseBuilder(context, ComicMemoRoomDatabase::class.java, "ComicMemoDB").addMigrations(MIGRATION_2_3, MIGRATION_3_4).build()
 
     @Singleton
     @Provides
     fun provideComicDao(db: ComicMemoRoomDatabase) = db.comicDao()
+
+    @Singleton
+    @Provides
+    fun provideAuthorDao(db: ComicMemoRoomDatabase) = db.authorDao()
 }

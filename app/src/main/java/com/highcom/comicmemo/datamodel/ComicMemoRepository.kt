@@ -9,7 +9,7 @@ import javax.inject.Inject
  *
  * @property comicDao 巻数データアクセスオブジェクト
  */
-class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao) {
+class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao, private val authorDao: AuthorDao) {
     companion object {
         const val STATE_CONTINUE = 0L
         const val STATE_COMPLETE = 1L
@@ -17,6 +17,7 @@ class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao) {
 
     val continueComics: Flow<List<Comic>> = comicDao.getComicByStatus(STATE_CONTINUE)
     val completeComics: Flow<List<Comic>> = comicDao.getComicByStatus(STATE_COMPLETE)
+    val authors: Flow<List<Author>> = authorDao.getAuthorList()
 
     @WorkerThread
     suspend fun insert(comic: Comic) {
@@ -41,5 +42,25 @@ class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao) {
     @WorkerThread
     suspend fun deleteAll() {
         comicDao.deleteAll()
+    }
+
+    @WorkerThread
+    suspend fun insertAuthor(author: Author) {
+        authorDao.insertAuthor(author)
+    }
+
+    @WorkerThread
+    suspend fun updateAuthor(author: Author) {
+        authorDao.updateAuthor(author)
+    }
+
+    @WorkerThread
+    suspend fun updateAuthors(authors: List<Author>) {
+        authorDao.updateAuthors(authors)
+    }
+
+    @WorkerThread
+    suspend fun deleteAuthor(id: Long) {
+        authorDao.deleteAuthor(id)
     }
 }

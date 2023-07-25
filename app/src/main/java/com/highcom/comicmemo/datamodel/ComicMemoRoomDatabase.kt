@@ -44,11 +44,34 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
 }
 
 /**
+ * 新刊検索機能追加に伴うマイグレーション操作
+ */
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.beginTransaction()
+        try {
+            // 著作者名の新しいテーブルを構築
+            database.execSQL("""
+                CREATE TABLE authorlist(
+                    id INTEGER PRIMARY KEY NOT NULL,
+                    author TEXT NOT NULL DEFAULT ''
+                )
+                """.trimIndent()
+            )
+
+            database.setTransactionSuccessful()
+        } finally {
+            database.endTransaction()
+        }
+    }
+}
+/**
  * 巻数データのRoomデータベース
  */
-@Database(entities = [Comic::class],
-    version = 3,
+@Database(entities = [Comic::class, Author::class],
+    version = 4,
     exportSchema = false)
 abstract class ComicMemoRoomDatabase : RoomDatabase() {
     abstract fun comicDao(): ComicDao
+    abstract fun authorDao(): AuthorDao
 }

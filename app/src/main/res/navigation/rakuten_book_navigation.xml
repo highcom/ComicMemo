@@ -13,10 +13,18 @@
         <action
             android:id="@+id/action_bookListFragment_to_bookDetailFragment"
             app:destination="@id/bookDetailFragment" />
+        <action
+            android:id="@+id/action_bookListFragment_to_authorEditFragment"
+            app:destination="@id/authorEditFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookDetailFragment"
         android:name="com.highcom.comicmemo.ui.search.BookDetailFragment"
         android:label="fragment_book_detail"
         tools:layout="@layout/fragment_book_detail" />
+    <fragment
+        android:id="@+id/authorEditFragment"
+        android:name="com.highcom.comicmemo.ui.search.AuthorEditFragment"
+        android:label="AuthorEditFragment"
+        tools:layout="@layout/fragment_author_edit" />
 </navigation>
