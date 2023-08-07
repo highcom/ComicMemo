@@ -36,11 +36,11 @@ class AuthorEditViewHolder(private var binding: AuthorEditItemBinding, listener:
     }
 
     init {
-        // 著作者名の領域に対する操作通知イベントを登録する
-        // TODO:ここは無くてもいい
-//        binding.itemAuthorText.setOnClickListener {
-//            listener.onContentsClicked(it)
-//        }
+        // 著作者名の領域に対するタップ操作通知イベントを登録する
+        binding.itemAuthorText.setOnClickListener {
+            listener.onContentsClicked(it)
+        }
+        // 著作者名の領域に対するフォーカス変更時の通知イベントを登録
         binding.itemAuthorText.setOnFocusChangeListener { view, bFocus ->
             if (bFocus) listener.onContentsClicked(view)
             else listener.onContentsOutOfFocused(view, author, binding.itemAuthorText.text.toString())
@@ -56,7 +56,6 @@ class AuthorEditViewHolder(private var binding: AuthorEditItemBinding, listener:
         this.author = author
         binding.itemAuthorText.setText(author.author)
         // 内容が空の場合、新規に作成されたものなので編集状態にする
-        // TODO:画面更新の方が後になるから違うタイミングの方が良いかもしれない
         if (author.author == "") {
             binding.itemAuthorText.performClick()
         }

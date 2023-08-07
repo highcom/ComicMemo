@@ -53,11 +53,13 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
     }
 
     override fun onContentsClicked(view: View) {
-        // Viewにフォーカスを当ててソフトキーボードを表示する
-        view.isFocusable = true
-        view.isFocusableInTouchMode = true
-        view.requestFocus()
-        (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(view, 0)
+        view.post {
+            // Viewにフォーカスを当ててソフトキーボードを表示する
+            view.isFocusable = true
+            view.isFocusableInTouchMode = true
+            view.requestFocus()
+            (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(view, 0)
+        }
     }
 
     override fun onContentsOutOfFocused(view: View, author: Author?, contents: String) {

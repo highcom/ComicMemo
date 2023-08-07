@@ -1,5 +1,6 @@
 package com.highcom.comicmemo.ui.search
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -17,11 +18,12 @@ class AuthorEditAdapter(val listener: AuthorEditViewHolder.AuthorEditViewHolderL
      */
     companion object DiffCallback : DiffUtil.ItemCallback<Author>() {
         override fun areItemsTheSame(oldAuthor: Author, newAuthor: Author): Boolean {
-            return oldAuthor === newAuthor
+            return oldAuthor.id == newAuthor.id
         }
 
+        @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(oldAuthor: Author, newAuthor: Author): Boolean {
-            return oldAuthor.author == newAuthor.author
+            return oldAuthor === newAuthor
         }
     }
 
