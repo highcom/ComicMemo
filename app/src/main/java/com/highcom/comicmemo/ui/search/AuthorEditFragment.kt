@@ -16,6 +16,7 @@ import com.highcom.comicmemo.datamodel.Author
 import com.highcom.comicmemo.ui.edit.ComicListPersistent
 import com.highcom.comicmemo.ui.SimpleCallbackHelper
 import com.highcom.comicmemo.viewmodel.AuthorEditViewModel
+import java.util.ArrayList
 
 /**
  * 著作者名の一覧表示と編集用のFragment
@@ -28,11 +29,15 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
     private val viewModel: AuthorEditViewModel by activityViewModels()
     /** スワイプメニュー用ヘルパー */
     private var simpleCallbackHelper: SimpleCallbackHelper? = null
+    /** 登録されている著作者名一覧データ */
+    private var authorList: List<Author>? = null
 
     /**
      * スワイプメニュー用コールバックリスナー
      */
     inner class AuthorEditCallbackListener : SimpleCallbackHelper.SimpleCallbackListener {
+        private var fromPos = -1
+        private var toPos = -1
         /**
          * 並べ替えイベントコールバック
          *
@@ -44,7 +49,14 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            TODO("Not yet implemented")
+            // 移動元位置は最初のイベント時の値を保持する
+            if (fromPos == -1) fromPos = viewHolder.adapterPosition
+            // 通知用の移動元位置は毎回更新する
+            val notifyFromPos = viewHolder.adapterPosition
+            // 移動先位置は最後イベント時の値を保持する
+            toPos = target.adapterPosition
+            authorEditAdapter.notifyItemMoved(notifyFromPos, toPos)
+            return true
         }
 
         /**
@@ -57,7 +69,39 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
         ) {
-            TODO("Not yet implemented")
+            // 入れ替え完了後に最後に一度DBの更新をする
+            val authorList = rearrangeAuthorList(fromPos, toPos)
+            viewModel.update(authorList)
+            // 移動位置情報を初期化
+            fromPos = -1
+            toPos = -1
+        }
+
+        /**
+         * 巻数データ一覧の並べ替え処理
+         *
+         * @param fromPos 移動元の位置
+         * @param toPos 移動先の位置
+         */
+        private fun rearrangeAuthorList(fromPos: Int, toPos: Int): List<Author> {
+            val authorIds = ArrayList<Long>()
+            val rearrangeAuthorList = ArrayList<Author>()
+            // 元のIDの並びを保持と並べ替えができるリストに入れ替える
+            for (author in authorList!!) {
+                authorIds.add(author.id)
+                rearrangeAuthorList.add(author)
+            }
+            // 引数で渡された位置で並べ替え
+            val fromComic = rearrangeAuthorList[fromPos]
+            rearrangeAuthorList.removeAt(fromPos)
+            rearrangeAuthorList.add(toPos, fromComic)
+            // 再度IDを振り直す
+            val itr = authorIds.listIterator()
+            for (author in rearrangeAuthorList) {
+                author.id = itr.next()
+            }
+
+            return rearrangeAuthorList
         }
     }
 
@@ -75,6 +119,7 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
         authorEditAdapter = AuthorEditAdapter(this)
         binding.authorEditView.adapter = authorEditAdapter
         viewModel.authors.observe(viewLifecycleOwner) {
+            authorList = it
             authorEditAdapter.submitList(it)
             // 新規作成時は対象のセルにフォーカスされるようにスクロールする
             for (pos in it.indices) {
