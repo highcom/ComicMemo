@@ -17,8 +17,9 @@ import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
+import com.highcom.comicmemo.ui.SimpleCallbackHelper
 import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
-import com.highcom.comicmemo.ui.edit.SimpleCallbackHelper.SimpleCallbackListener
+import com.highcom.comicmemo.ui.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.Serializable
@@ -37,7 +38,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     private var recyclerView: RecyclerView? = null
     /** 巻数データを表示するためのadapter */
     private lateinit var adapter: ComicListAdapter
-    /** スワイプメニュー用リスナー */
+    /** スワイプメニュー用ヘルパー */
     private var simpleCallbackHelper: SimpleCallbackHelper? = null
     /** 検索文字列 */
     private var searchViewWord = ""
@@ -72,7 +73,6 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
          */
         fun onUpdateCompleteComicsCount(count: Int)
     }
-
 
     /**
      * スワイプメニュー用リスナー
@@ -171,7 +171,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
         }
 
         val scale = resources.displayMetrics.density
-        // ドラックアンドドロップの操作を実装する
+        // 項目スワイプ時の操作を実装する
         simpleCallbackHelper = object : SimpleCallbackHelper(context, recyclerView, scale, MySimpleCallbackListener()) {
             override fun instantiateUnderlayButton(
                 viewHolder: RecyclerView.ViewHolder,

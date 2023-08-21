@@ -1,4 +1,4 @@
-package com.highcom.comicmemo.ui.edit
+package com.highcom.comicmemo.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,6 +11,7 @@ import android.view.View.OnTouchListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.ui.edit.ComicListAdapter
 import java.util.*
 
 /**
@@ -348,7 +349,7 @@ abstract class SimpleCallbackHelper(
         private val text: String,
         private val imageResId: Int,
         private val color: Int,
-        private val viewHolder: ComicListAdapter.ComicViewHolder,
+        private val viewHolder: RecyclerView.ViewHolder,
         private val clickListener: (Any, Any) -> Unit
     ) {
         private var pos = 0

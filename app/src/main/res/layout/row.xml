@@ -10,8 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
         android:weightSum="1">
 
         <Button
@@ -42,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:layout_margin="4dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="4dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -122,8 +121,7 @@
             android:textColor="@color/blue"
             android:background="@drawable/original_button"
             android:focusableInTouchMode="false"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:focusable="false"
             android:text="╋" />
 
