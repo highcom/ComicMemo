@@ -163,6 +163,7 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
 
     override fun onContentsClicked(view: View) {
         view.post {
+            binding.authorEditFab.visibility = View.INVISIBLE
             // Viewにフォーカスを当ててソフトキーボードを表示する
             view.isFocusable = true
             view.isFocusableInTouchMode = true
@@ -189,5 +190,6 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
                 viewModel.update(it)
             }
         }
+        binding.authorEditFab.visibility = View.VISIBLE
     }
 }

@@ -12,10 +12,11 @@
         android:textSize="14sp"
         android:textAlignment="center"
         android:padding="4dp"
-        android:height="45dp"
+        android:minHeight="45dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:imeOptions="flagNoExtractUi"
+        android:inputType="text"
+        android:imeOptions="flagNoExtractUi|actionDone"
         android:background="#00000000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
