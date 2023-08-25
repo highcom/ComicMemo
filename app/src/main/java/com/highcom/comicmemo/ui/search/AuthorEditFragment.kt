@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentAuthorEditBinding
@@ -118,6 +119,8 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
 
         authorEditAdapter = AuthorEditAdapter(this)
         binding.authorEditView.adapter = authorEditAdapter
+        // 並べ替えや追加時に画面がチラつかないようにする
+        (binding.authorEditView.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
         viewModel.authors.observe(viewLifecycleOwner) {
             authorList = it
             authorEditAdapter.submitList(it)
