@@ -1,7 +1,7 @@
 package com.highcom.comicmemo.viewmodel
 
 import androidx.lifecycle.*
-import com.highcom.comicmemo.ComicMemoConstants
+import com.highcom.comicmemo.datamodel.Author
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.network.Item
@@ -9,7 +9,10 @@ import com.highcom.comicmemo.network.ItemEntity
 import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
@@ -57,18 +60,27 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      * 楽天書籍検索ViewModelを利用するための初期設定処理
      *
      * @param appId 楽天APIアプリID
-     * @param bookMode 書籍検索モード
      * @param genreId 検索ジャンルID
      */
-    fun initialize(appId: String, bookMode: Int, genreId: String) {
+    fun initialize(appId: String, genreId: String) {
         this.appId = appId
         this.genreId = genreId
-        if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
-            // TODO:検索する著作者名を別途もらうようにする
-            searchAuthorList(listOf("尾田栄一郎", "原泰久", "鳴見なる", "芥見下々", "金城宗幸", "川上泰樹"))
-        } else {
-            getSalesList()
+    }
+
+    /**
+     * 著作者名一覧取得処理
+     * DBからのデータ取得をrunBlockingするので注意
+     *
+     * @return 著作者名
+     */
+    fun getAuthorListSync(): List<Author> {
+        var authors: List<Author>
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                authors = repository.getAuthorListSync()
+            }
         }
+        return authors
     }
 
     /**
@@ -174,9 +186,11 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      *
      * @param authors 著作者名一覧
      */
-    fun searchAuthorList(authors: List<String>) {
+    fun searchAuthorList(authors: List<Author>) {
         val timer = Timer()
         val authorItr = authors.iterator()
+        // 新刊検索の場合は一度リストをクリアする
+        _bookList.value = null
         viewModelScope.launch {
             // 楽天API呼び出し制限のために遅延呼び出しする
             timer.scheduleAtFixedRate(API_DELAY_TIME, API_PERIOD_TIME) {
@@ -192,10 +206,10 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      *
      * @param authorItr 著作者名リストのイテレータ
      */
-    private fun serachAuthor(authorItr: Iterator<String>) {
+    private fun serachAuthor(authorItr: Iterator<Author>) {
         // 著作者名リストを全て取得したら終了
         if (!authorItr.hasNext()) return
-        val author = authorItr.next()
+        val author = authorItr.next().author
         val currentDate = LocalDate.now()
         rakutenApiService.searchAuthorListItems(author, appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
             override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {

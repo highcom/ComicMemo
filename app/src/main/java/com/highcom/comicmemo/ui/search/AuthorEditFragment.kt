@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -135,7 +136,13 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
 
         // 著作者名の追加FABを押下で新規データを追加
         binding.authorEditFab.setOnClickListener {
-            viewModel.insert(Author(0, ""))
+            authorList?.let {
+                if (it.size >= 10) {
+                    Toast.makeText(context, getString(R.string.registration_limit), Toast.LENGTH_LONG).show()
+                } else {
+                    viewModel.insert(Author(0, ""))
+                }
+            }
         }
 
         // 項目スワイプ時の操作を実装する

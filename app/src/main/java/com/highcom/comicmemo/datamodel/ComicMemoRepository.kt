@@ -19,6 +19,10 @@ class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao, pr
     val completeComics: Flow<List<Comic>> = comicDao.getComicByStatus(STATE_COMPLETE)
     val authors: Flow<List<Author>> = authorDao.getAuthorList()
 
+    fun getAuthorListSync(): List<Author> {
+        return authorDao.getAuthorListSync()
+    }
+
     @WorkerThread
     suspend fun insert(comic: Comic) {
         comicDao.insert(comic)

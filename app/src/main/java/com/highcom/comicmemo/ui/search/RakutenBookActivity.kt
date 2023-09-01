@@ -12,9 +12,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -72,7 +70,7 @@ class RakutenBookActivity : AppCompatActivity() {
         // アクションバーの戻るボタンを表示
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // ViewModelの初期設定
-        viewModel.initialize(getString(R.string.rakuten_app_id), bookMode, currentGenreSelect)
+        viewModel.initialize(getString(R.string.rakuten_app_id), currentGenreSelect)
         // 広告のロード
         binding.adViewBookListFrame.post { loadBanner() }
     }

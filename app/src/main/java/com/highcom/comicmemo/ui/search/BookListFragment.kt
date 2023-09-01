@@ -1,13 +1,12 @@
 package com.highcom.comicmemo.ui.search
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -53,9 +52,13 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         // 検索モードによって1行に表示するアイテムの数を変更する
         if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
             (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 1
+            // 著作者名一覧で新刊書籍検索
+            viewModel.searchAuthorList(viewModel.getAuthorListSync())
         } else {
             (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 3
             binding.bookItemGridView.addOnScrollListener(InfiniteScrollListener())
+            // 人気書籍の検索
+            viewModel.getSalesList()
         }
 
         // 楽天APIの呼び出し状況に応じてプログレスサークルの表示

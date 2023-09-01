@@ -11,6 +11,9 @@ interface AuthorDao {
     @Query("SELECT * FROM authorlist ORDER BY id ASC")
     fun getAuthorList(): Flow<List<Author>>
 
+    @Query("SELECT * FROM authorlist ORDER BY id ASC")
+    fun getAuthorListSync(): List<Author>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAuthor(author: Author)
 
