@@ -204,6 +204,8 @@ class RakutenBookActivity : AppCompatActivity() {
                 return super.onOptionsItemSelected(item)
             }
             R.id.action_edit -> {
+                // 著作者名編集に行く時は検索途中でもキャンセルする
+                viewModel.timer.cancel()
                 findNavController(R.id.rakuten_book_container).navigate(R.id.action_bookListFragment_to_authorEditFragment, null)
                 title = getString(R.string.edit_author)
                 item.setVisible(false)

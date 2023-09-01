@@ -37,6 +37,8 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     var liveDataKind = LiveDataKind.SALES
     /** 表示ページ数 */
     var page = 0
+    /** 著作者名検索時のタイマー */
+    var timer: Timer = Timer()
 
     /** 検索ワードを保持する内部変数 */
     private val _searchWord = MutableLiveData<String?>()
@@ -187,7 +189,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      * @param authors 著作者名一覧
      */
     fun searchAuthorList(authors: List<Author>) {
-        val timer = Timer()
+        timer = Timer()
         val authorItr = authors.iterator()
         // 新刊検索の場合は一度リストをクリアする
         _bookList.value = null
