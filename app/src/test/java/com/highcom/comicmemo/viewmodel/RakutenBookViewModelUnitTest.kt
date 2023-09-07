@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.room.Room
-import com.highcom.comicmemo.datamodel.ComicDao
-import com.highcom.comicmemo.datamodel.ComicMemoRepository
-import com.highcom.comicmemo.datamodel.ComicMemoRoomDatabase
+import com.highcom.comicmemo.datamodel.*
 import com.highcom.comicmemo.network.*
 import io.mockk.spyk
 import io.mockk.verify
@@ -46,6 +44,7 @@ class RakutenBookViewModelUnitTest {
     private lateinit var context: Context
 
     private lateinit var comicDao: ComicDao
+    private lateinit var authorDao: AuthorDao
     private lateinit var db: ComicMemoRoomDatabase
 
     private lateinit var behavior: NetworkBehavior
@@ -61,6 +60,7 @@ class RakutenBookViewModelUnitTest {
         // テスト用のRoomDatabaseを作成
         db = Room.inMemoryDatabaseBuilder(context, ComicMemoRoomDatabase::class.java).build()
         comicDao = db.comicDao()
+        authorDao = db.authorDao()
 
         // Retrofitのモックライブラリを作成
         val httpLogging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -100,7 +100,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -141,6 +141,7 @@ class RakutenBookViewModelUnitTest {
             )
         ))
 
+        target.getSalesList()
         // LiveDataの値の変更が通知されるまで待つ
         Thread.sleep(1000)
         // 変化通知が呼び出されている事を確認
@@ -166,7 +167,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_NOVEL)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -207,6 +208,7 @@ class RakutenBookViewModelUnitTest {
             )
         ))
 
+        target.getSalesList()
         // LiveDataの値の変更が通知されるまで待つ
         Thread.sleep(1000)
         // 変化通知が呼び出されている事を確認
@@ -232,8 +234,9 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -261,8 +264,9 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -286,8 +290,9 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -316,8 +321,9 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_NOVEL)
+        target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -346,8 +352,9 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -377,8 +384,9 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
         target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
         // LiveDataの値の変更が通知されるまで待つ
@@ -392,5 +400,84 @@ class RakutenBookViewModelUnitTest {
         assertEquals(1, target.page)
         assertEquals(RakutenApiStatus.ERROR, target.status.value)
         assertEquals(null, target.bookList.value )
+    }
+
+    /**
+     * 引数で指定された著作者名一覧での新刊検索処理呼び出し結果あり成功テスト
+     *
+     */
+    @Test
+    fun searchAuthorList_success() {
+        behavior.apply {
+            setDelay(0, TimeUnit.MILLISECONDS) // 即座に結果が返ってくるようにする
+            setVariancePercent(0)
+            setFailurePercent(0)
+            setErrorPercent(0)
+        }
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.searchAuthorList(listOf(Author(1, "知念 実希人"), Author(2, "村上 春樹"), Author(3, "尾田 栄一郎")))
+        val mockObserver = spyk<Observer<List<Item>?>>()
+        target.bookList.observeForever(mockObserver)
+        // LiveDataの値の変更が通知されるまで待つ
+        Thread.sleep(5000)
+
+        assertEquals("知念 実希人", target.bookList.value?.get(0)?.Item?.author)
+        assertEquals(RakutenBookViewModel.TYPE_HEADER_ITEM, target.bookList.value?.get(0)?.Item?.size)
+        assertEquals("機械仕掛けの太陽", target.bookList.value?.get(1)?.Item?.title)
+        assertEquals("村上 春樹", target.bookList.value?.get(2)?.Item?.author)
+        assertEquals(RakutenBookViewModel.TYPE_HEADER_ITEM, target.bookList.value?.get(2)?.Item?.size)
+        assertEquals("街とその不確かな壁", target.bookList.value?.get(3)?.Item?.title)
+        assertEquals("尾田 栄一郎", target.bookList.value?.get(4)?.Item?.author)
+        assertEquals(RakutenBookViewModel.TYPE_HEADER_ITEM, target.bookList.value?.get(4)?.Item?.size)
+        assertEquals("ONE PIECE 105", target.bookList.value?.get(5)?.Item?.title)
+    }
+
+    /**
+     * 引数で指定された著作者名一覧での新刊検索処理呼び出し結果なし成功テスト
+     *
+     */
+    @Test
+    fun searchAuthorList_success_zero() {
+        behavior.apply {
+            setDelay(0, TimeUnit.MILLISECONDS) // 即座に結果が返ってくるようにする
+            setVariancePercent(0)
+            setFailurePercent(0)
+            setErrorPercent(0)
+        }
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.searchAuthorList(listOf(Author(1, "芥見 下々")))
+        val mockObserver = spyk<Observer<List<Item>?>>()
+        target.bookList.observeForever(mockObserver)
+        // LiveDataの値の変更が通知されるまで待つ
+        Thread.sleep(3000)
+
+        assertEquals(1, target.bookList.value?.size)
+        assertEquals("芥見 下々", target.bookList.value?.get(0)?.Item?.author)
+        assertEquals(RakutenBookViewModel.TYPE_HEADER_ITEM, target.bookList.value?.get(0)?.Item?.size)
+    }
+
+    /**
+     * 引数で指定された著作者名一覧での新刊検索処理呼び出し失敗テスト
+     *
+     */
+    @Test
+    fun searchAuthorList_failure() {
+        behavior.apply {
+            setDelay(0, TimeUnit.MILLISECONDS) // 即座に結果が返ってくるようにする
+            setVariancePercent(0)
+            setFailurePercent(100) // 100%失敗させる
+            setErrorPercent(0)
+        }
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.searchAuthorList(listOf(Author(1, "芥見 下々")))
+        val mockObserver = spyk<Observer<List<Item>?>>()
+        target.bookList.observeForever(mockObserver)
+        // LiveDataの値の変更が通知されるまで待つ
+        Thread.sleep(3000)
+
+        assertEquals(null, target.bookList.value?.size)
     }
 }
