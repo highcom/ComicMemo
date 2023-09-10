@@ -121,6 +121,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
      * 書籍詳細画面への遷移処理
      */
     override fun bookItemSelected(item: Item) {
+        (activity as RakutenBookActivity).setActionEditVisiblity(false)
         findNavController().navigate(R.id.action_bookListFragment_to_bookDetailFragment, bundleOf("BUNDLE_ITEM_DATA" to item))
     }
 }

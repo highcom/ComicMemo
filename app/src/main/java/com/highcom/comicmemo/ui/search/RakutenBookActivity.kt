@@ -152,6 +152,7 @@ class RakutenBookActivity : AppCompatActivity() {
         if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
             menuInflater.inflate(R.menu.menu_edit, menu)
             title = getString(R.string.new_book)
+            mMenu = menu
             return super.onCreateOptionsMenu(menu)
         }
 
@@ -256,6 +257,15 @@ class RakutenBookActivity : AppCompatActivity() {
             R.string.select_menu_icon
         ))
         item?.title = selectMenuTitle
+    }
+
+    /**
+     * 著作者名一覧編集画面遷移ボタンの表示処理
+     *
+     * @param visible 表示状態
+     */
+    fun setActionEditVisiblity(visible: Boolean) {
+        mMenu?.findItem(R.id.action_edit)?.setVisible(visible)
     }
 
     /**
