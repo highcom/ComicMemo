@@ -52,6 +52,11 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         // 検索モードによって1行に表示するアイテムの数を変更する
         if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
             (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 1
+            // 著作者名が登録されていない場合はプログレスサークルを表示しない
+            if (viewModel.getAuthorListSync().isEmpty()) {
+                nowLoading = false
+                handler.post { binding.progressBar.visibility = View.INVISIBLE }
+            }
             // 著作者名一覧で新刊書籍検索
             viewModel.searchAuthorList(viewModel.getAuthorListSync())
         } else {
