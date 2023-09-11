@@ -44,6 +44,8 @@ class RakutenBookActivity : AppCompatActivity() {
     private var currentMenuSelect: Int = R.id.search_mode_comic
     /** AdMob広告 */
     private var mAdView: AdView? = null
+    /** 画面の更新が必要かどうか */
+    var isNeedUpdate = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,6 +207,8 @@ class RakutenBookActivity : AppCompatActivity() {
                 return super.onOptionsItemSelected(item)
             }
             R.id.action_edit -> {
+                // 著作者名編集で編集しない場合には更新不要なので一旦不要とする
+                isNeedUpdate = false
                 // 著作者名編集に行く時は検索途中でもキャンセルする
                 viewModel.timer.cancel()
                 findNavController(R.id.rakuten_book_container).navigate(R.id.action_bookListFragment_to_authorEditFragment, null)

@@ -71,6 +71,8 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
         ) {
+            // 編集した場合には更新が必要
+            (activity as RakutenBookActivity).isNeedUpdate = true
             // 入れ替え完了後に最後に一度DBの更新をする
             val authorList = rearrangeAuthorList(fromPos, toPos)
             viewModel.update(authorList)
@@ -191,11 +193,15 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
         author?.let {
             // 内容が空白の場合には削除する
             if (contents == "") {
+                // 編集した場合には更新が必要
+                (activity as RakutenBookActivity).isNeedUpdate = true
                 viewModel.delete(it.id)
                 return
             }
             // 著作者名が変更されていたらデータを更新する
             if (it.author != contents) {
+                // 編集した場合には更新が必要
+                (activity as RakutenBookActivity).isNeedUpdate = true
                 it.author = contents
                 viewModel.update(it)
             }

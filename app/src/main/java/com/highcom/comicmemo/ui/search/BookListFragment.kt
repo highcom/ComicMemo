@@ -58,13 +58,14 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                 handler.post { binding.progressBar.visibility = View.INVISIBLE }
             }
             // 著作者名一覧で新刊書籍検索
-            viewModel.searchAuthorList(viewModel.getAuthorListSync())
+            if ((activity as RakutenBookActivity).isNeedUpdate) viewModel.searchAuthorList(viewModel.getAuthorListSync())
         } else {
             (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 3
             binding.bookItemGridView.addOnScrollListener(InfiniteScrollListener())
             // 人気書籍の検索
-            viewModel.getSalesList()
+            if ((activity as RakutenBookActivity).isNeedUpdate) viewModel.getSalesList()
         }
+        (activity as RakutenBookActivity).isNeedUpdate = true
 
         // 楽天APIの呼び出し状況に応じてプログレスサークルの表示
         viewModel.status.observe(viewLifecycleOwner) { apiStatus ->
@@ -126,6 +127,8 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
      * 書籍詳細画面への遷移処理
      */
     override fun bookItemSelected(item: Item) {
+        // 詳細画面から戻ってくる場合には更新は不要
+        (activity as RakutenBookActivity).isNeedUpdate = false
         (activity as RakutenBookActivity).setActionEditVisiblity(false)
         findNavController().navigate(R.id.action_bookListFragment_to_bookDetailFragment, bundleOf("BUNDLE_ITEM_DATA" to item))
     }
