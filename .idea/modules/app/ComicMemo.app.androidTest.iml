@@ -173,7 +173,7 @@
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/36cbbe72e22c375263ad99edc29be03b/transformed/jetified-annotations-4.8.0.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/ed3d294d2a5348fb6ba14f756789ec4e/transformed/jetified-dagger-lint-aar-2.45-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/36fbc1a4e64796a1205512df0b5493ef/transformed/jetified-okio-1.14.0.jar</arg>
-                <arg>$USER_HOME$/Library/Android/sdk/platforms/android-33/android.jar</arg>
+                <arg>$USER_HOME$/Library/Android/sdk/platforms/android-34/android.jar</arg>
                 <arg>$USER_HOME$/Library/Android/sdk/build-tools/30.0.3/core-lambda-stubs.jar</arg>
               </args>
             </stringArg>
@@ -237,7 +237,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../app/src/androidTest/java" isTestSource="true" />
     </content>
     <content url="file://$MODULE_DIR$/../../../app/src/androidTestDebug" />
-    <orderEntry type="jdk" jdkName="Android API 33 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 34, extension level 7 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ComicMemo.app.main" scope="TEST" />
     <orderEntry type="module-library" scope="TEST">
