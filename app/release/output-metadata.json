@@ -1,18 +1,20 @@
 {
-  "version": 2,
+  "version": 3,
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
   },
   "applicationId": "com.highcom.comicmemo",
-  "variantName": "processReleaseResources",
+  "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 23,
-      "versionName": "3.8.0",
+      "attributes": [],
+      "versionCode": 24,
+      "versionName": "3.8.1",
       "outputFile": "ComicMemo.apk"
     }
-  ]
+  ],
+  "elementType": "File"
 }
