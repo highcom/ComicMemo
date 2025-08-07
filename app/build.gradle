@@ -6,12 +6,12 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.dagger.hilt.android'
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     defaultConfig {
         applicationId "com.highcom.comicmemo"
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 24
         versionName "3.8.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
