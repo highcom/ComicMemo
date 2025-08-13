@@ -18,6 +18,8 @@ class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao, pr
     val continueComics: Flow<List<Comic>> = comicDao.getComicByStatus(STATE_CONTINUE)
     val completeComics: Flow<List<Comic>> = comicDao.getComicByStatus(STATE_COMPLETE)
     val authors: Flow<List<Author>> = authorDao.getAuthorList()
+    val sumContinueNumber: Flow<Long> = comicDao.sumNumber(STATE_CONTINUE)
+    val sumCompleteNumber: Flow<Long> = comicDao.sumNumber(STATE_COMPLETE)
 
     fun getAuthorListSync(): List<Author> {
         return authorDao.getAuthorListSync()

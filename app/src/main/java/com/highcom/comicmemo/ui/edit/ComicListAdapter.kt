@@ -12,11 +12,18 @@ import android.view.WindowManager
 import android.view.View.OnLongClickListener
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.datamodel.ComicMemoRepository
+import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 
 object ComicListPersistent {
     /**
@@ -43,12 +50,21 @@ object ComicListPersistent {
  */
 class ComicListAdapter (
     context: Context?,
+    index: Int,
+    viewModel: ComicPagerViewModel,
+    lifecycleOwner: LifecycleOwner,
     listener: AdapterListener
-) : ListAdapter<Comic, ComicListAdapter.ComicViewHolder>(COMIC_COMPARATOR) {
+) : ListAdapter<Comic, ViewHolder>(COMIC_COMPARATOR) {
     /** レイアウト */
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     /** 編集が有効かどうか */
     var editEnable = false
+    /** 続刊/完結のインデックス */
+    private val state:Int = index
+    /** 巻数データ一覧の操作用ViewModel */
+    private val pageViewModel: ComicPagerViewModel = viewModel
+    /** 巻数データ一覧のライフサイクルオーナー */
+    private val pageLifecycleOwner: LifecycleOwner = lifecycleOwner
     /** アダプタの操作イベントリスナー */
     private val adapterListener: AdapterListener = listener
     /** ポップアップメニュー */
@@ -73,7 +89,7 @@ class ComicListAdapter (
      * @param itemView 巻数データのアイテム
      */
     @SuppressLint("InflateParams")
-    inner class ComicViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ComicViewHolder(itemView: View) : ViewHolder(itemView) {
         /** バインドしている巻数データ */
         var comic: Comic? = null
         /** 巻数データID */
@@ -101,6 +117,11 @@ class ComicListAdapter (
         /** ポップアップメニュー完結 */
         var popupComplete: ToggleButton? = null
 
+        /**
+         * データバインド処理
+         *
+         * @param comic 巻数データ
+         */
         fun bind(comic: Comic) {
             this.comic = comic
             id = comic.id
@@ -262,6 +283,39 @@ class ComicListAdapter (
         }
     }
 
+    /**
+     * 巻数データフッターのホルダークラス
+     *
+     * @property viewModel 巻数データ一覧の操作用ViewModel
+     * @param itemView 巻数データのアイテム
+     */
+    inner class FooterViewHolder(itemView: View, private val viewModel: ComicPagerViewModel) : ViewHolder(itemView) {
+        /** 巻数合計 */
+        private var sumNumber = itemView.findViewById<View>(R.id.sumNumber) as? TextView
+
+        /**
+         * データバインド処理
+         *
+         */
+        @SuppressLint("SetTextI18n")
+        fun bind() {
+            sumNumber?.let {
+                // 続刊巻数合計の表示
+                if (state.toLong() == ComicMemoRepository.STATE_CONTINUE) {
+                    viewModel.sumContinueNumber.observe(pageLifecycleOwner) { sum ->
+                        it.text = itemView.context.getString(R.string.sum_number) + sum.toString()
+                    }
+                }
+                // 完結巻数合計の表示
+                if (state.toLong() == ComicMemoRepository.STATE_COMPLETE) {
+                    viewModel.sumCompleteNumber.observe(pageLifecycleOwner) { sum ->
+                        it.text = itemView.context.getString(R.string.sum_number) + sum.toString()
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         private const val TYPE_ITEM = 1
         private const val TYPE_FOOTER = 2
@@ -285,10 +339,10 @@ class ComicListAdapter (
      * @param viewType アダプタに設定するViewの種別
      * @return
      */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComicViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
             TYPE_ITEM -> ComicViewHolder(inflater.inflate(R.layout.row, parent, false))
-            TYPE_FOOTER -> ComicViewHolder(inflater.inflate(R.layout.row_footer, parent, false))
+            TYPE_FOOTER -> FooterViewHolder(inflater.inflate(R.layout.row_footer, parent, false), pageViewModel)
             else -> ComicViewHolder(inflater.inflate(R.layout.row_footer, parent, false))
         }
     }
@@ -299,12 +353,17 @@ class ComicListAdapter (
      * @param holder ViewHolderのデータ
      * @param position 一覧データの位置
      */
-    override fun onBindViewHolder(holder: ComicViewHolder, position: Int) {
-        // フッターにはデータをバインドしない
-        // getItemCountとgetItemをプロパティアクセスすると動作に問題が発生するのでsuperで明示的にメソッドアクセスする
-        if (holder.bindingAdapterPosition >= super.getItemCount()) return
-        val current = super.getItem(holder.bindingAdapterPosition)
-        holder.bind(current)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        when (holder) {
+            is ComicViewHolder -> {
+                // getItemCountとgetItemをプロパティアクセスすると動作に問題が発生するのでsuperで明示的にメソッドアクセスする
+                val current = super.getItem(holder.bindingAdapterPosition)
+                holder.bind(current)
+            }
+            is FooterViewHolder -> {
+                holder.bind()
+            }
+        }
     }
 
     /**
@@ -316,7 +375,7 @@ class ComicListAdapter (
         return if (super.getItemCount() > 0) {
             super.getItemCount() + 1
         } else {
-            1
+            0
         }
     }
 

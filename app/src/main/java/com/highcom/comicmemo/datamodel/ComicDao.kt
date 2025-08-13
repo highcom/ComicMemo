@@ -11,6 +11,9 @@ interface ComicDao {
     @Query("SELECT * FROM comicdata WHERE status = :status ORDER BY id ASC")
     fun getComicByStatus(status: Long): Flow<List<Comic>>
 
+    @Query("SELECT SUM(number) FROM comicdata WHERE status = :status")
+    fun sumNumber(status: Long): Flow<Long>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(comic: Comic)
 

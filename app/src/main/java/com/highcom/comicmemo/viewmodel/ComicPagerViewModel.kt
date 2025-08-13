@@ -14,8 +14,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ComicPagerViewModel @Inject constructor(private val repository: ComicMemoRepository) : ViewModel() {
+    /** 続刊の巻数データ一覧 */
     val continueComics: LiveData<List<Comic>> = repository.continueComics.asLiveData()
+    /** 完結の巻数データ一覧 */
     val completeComics: LiveData<List<Comic>> = repository.completeComics.asLiveData()
+
+    /** 続刊の総巻数 */
+    val sumContinueNumber: LiveData<Long> = repository.sumContinueNumber.asLiveData()
+    /** 完結の総巻数 */
+    val sumCompleteNumber: LiveData<Long> = repository.sumCompleteNumber.asLiveData()
 
     /**
      * 作成した巻数データの登録処理
