@@ -143,7 +143,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = ComicListAdapter(context, index, pageViewModel, viewLifecycleOwner, this)
+        adapter = ComicListAdapter(index, pageViewModel, viewLifecycleOwner, this)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT
         recyclerView = binding.comicListView
         recyclerView!!.layoutManager = LinearLayoutManager(context)

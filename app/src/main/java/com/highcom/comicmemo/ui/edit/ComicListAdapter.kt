@@ -21,6 +21,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.databinding.PopupmenuBinding
+import com.highcom.comicmemo.databinding.RowBinding
+import com.highcom.comicmemo.databinding.RowFooterBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
@@ -45,18 +48,17 @@ object ComicListPersistent {
  * 巻数データ一覧表示用リストアダプタ
  * 続刊用・完結用とそれぞれでインスタンス化される
  *
- * @param context コンテキスト
+ * @param index 続刊/完結のインデックス
+ * @param viewModel 巻数データ一覧の操作用ViewModel
+ * @param lifecycleOwner 巻数データ一覧のライフサイクルオーナー
  * @param listener アダプタ操作用イベントリスナー
  */
 class ComicListAdapter (
-    context: Context?,
     index: Int,
     viewModel: ComicPagerViewModel,
     lifecycleOwner: LifecycleOwner,
     listener: AdapterListener
 ) : ListAdapter<Comic, ViewHolder>(COMIC_COMPARATOR) {
-    /** レイアウト */
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
     /** 編集が有効かどうか */
     var editEnable = false
     /** 続刊/完結のインデックス */
@@ -86,36 +88,20 @@ class ComicListAdapter (
     /**
      * 巻数データのホルダークラス
      *
-     * @param itemView 巻数データのアイテム
+     * @property binding 巻数データのバインディング
      */
     @SuppressLint("InflateParams")
-    inner class ComicViewHolder(itemView: View) : ViewHolder(itemView) {
+    inner class ComicViewHolder(private val binding: RowBinding) : ViewHolder(binding.root) {
         /** バインドしている巻数データ */
         var comic: Comic? = null
         /** 巻数データID */
         var id: Long? = null
-        /** タイトル名 */
-        var title: TextView? = itemView.findViewById<View>(R.id.title) as? TextView
-        /** 著者名 */
-        var author: TextView? = itemView.findViewById<View>(R.id.author) as? TextView
-        /** 巻数 */
-        var number: TextView? = itemView.findViewById<View>(R.id.number) as? TextView
-        /** メモ */
-        var memo: TextView? = itemView.findViewById<View>(R.id.memo) as? TextView
-        /** 入力日付 */
-        var inputdate: TextView? = itemView.findViewById<View>(R.id.inputdate) as? TextView
         /** 続刊・完結 */
         var status: Long? = null
-        /** 巻数追加ボタン */
-        var addbtn: Button? = itemView.findViewById<View>(R.id.addbutton) as? Button
-        /** 削除ボタン */
-        var deletebtn: Button?
-        /** 並べ替えボタン */
-        var rearrangebtn: ImageButton?
         /** ポップアップメニュー続刊 */
-        var popupContinue: ToggleButton? = null
+        private var popupContinue: ToggleButton? = null
         /** ポップアップメニュー完結 */
-        var popupComplete: ToggleButton? = null
+        private var popupComplete: ToggleButton? = null
 
         /**
          * データバインド処理
@@ -125,16 +111,16 @@ class ComicListAdapter (
         fun bind(comic: Comic) {
             this.comic = comic
             id = comic.id
-            title?.let { it.text = comic.title }
-            author?.let { it.text = comic.author }
-            number?.let { it.text = comic.number }
-            memo?.let { it.text = comic.memo }
-            inputdate?.let { it.text = comic.inputdate }
+            binding.title.text = comic.title
+            binding.author.text = comic.author
+            binding.number.text = comic.number
+            binding.memo.text = comic.memo
+            binding.inputdate.text = comic.inputdate
 
             if (id!! == ComicListPersistent.lastUpdateId) {
-                number?.setTextColor(Color.RED)
+                binding.number.setTextColor(Color.RED)
             } else {
-                number?.setTextColor(Color.BLACK)
+                binding.number.setTextColor(Color.BLACK)
             }
             status = comic.status
             itemView.tag = comic
@@ -146,9 +132,9 @@ class ComicListAdapter (
             itemView.setOnLongClickListener(OnLongClickListener { view ->
                 if (editEnable) return@OnLongClickListener true
                 // 選択されたViewに合わせて高さを調節
-                popupWindow!!.height = view.height
+                popupWindow?.height = view.height
                 // PopupWindowの実装をする　続刊と完結を選択できるようにする
-                popupWindow!!.showAsDropDown(view, view.width, -view.height)
+                popupWindow?.showAsDropDown(view, view.width, -view.height)
                 // PopupWindowで選択したViewに対して更新できるようにViewを保持する
                 popupView = view
                 true
@@ -165,11 +151,10 @@ class ComicListAdapter (
             popupWindow = PopupWindow(context)
 
             // PopupWindowに表示するViewを生成
-            val contentView =
-                LayoutInflater.from(context).inflate(R.layout.popupmenu, null)
-            popupWindow!!.contentView = contentView
-            popupContinue = contentView.findViewById<View>(R.id.popupContinue) as? ToggleButton
-            popupComplete = contentView.findViewById<View>(R.id.popupComplete) as? ToggleButton
+            val popupBinding = PopupmenuBinding.inflate(LayoutInflater.from(context))
+            popupWindow?.contentView = popupBinding.root
+            popupContinue = popupBinding.popupContinue
+            popupComplete = popupBinding.popupComplete
             popupContinue?.setOnCheckedChangeListener { buttonView, _ ->
                 setEnableLayoutContinue(buttonView.context)
                 adapterListener.onAdapterStatusSelected(popupView, 0)
@@ -187,16 +172,16 @@ class ComicListAdapter (
                 200f,
                 context.resources.displayMetrics
             )
-            popupWindow!!.height = WindowManager.LayoutParams.WRAP_CONTENT
-            popupWindow!!.width = width.toInt()
-            // PopupWindow!!の外をタッチしたらPopupWindow!!が閉じるように設定
-            popupWindow!!.isOutsideTouchable = true
-            // PopupWindow!!外のUIのタッチイベントが走らないようにフォーカスを持っておく
-            popupWindow!!.isFocusable = true
-            // PopupWindow!!内のクリックを可能にしておく
-            popupWindow!!.isTouchable = true
+            popupWindow?.height = WindowManager.LayoutParams.WRAP_CONTENT
+            popupWindow?.width = width.toInt()
+            // PopupWindow?の外をタッチしたらPopupWindow?が閉じるように設定
+            popupWindow?.isOutsideTouchable = true
+            // PopupWindow?外のUIのタッチイベントが走らないようにフォーカスを持っておく
+            popupWindow?.isFocusable = true
+            // PopupWindow?内のクリックを可能にしておく
+            popupWindow?.isTouchable = true
             // レイアウトファイルで設定した背景のさらに背景(黒とか)が生成される為、ここで好みの背景を設定しておく
-            popupWindow!!.setBackgroundDrawable(
+            popupWindow?.setBackgroundDrawable(
                 ColorDrawable(
                     ContextCompat.getColor(
                         context,
@@ -217,6 +202,7 @@ class ComicListAdapter (
          *
          * @param context コンテキスト
          */
+        @Suppress("DEPRECATION")
         private fun setEnableLayoutContinue(context: Context?) {
             popupContinue?.setTextColor(ContextCompat.getColor(context!!, R.color.white))
             popupContinue?.setBackgroundDrawable(
@@ -243,6 +229,7 @@ class ComicListAdapter (
          *
          * @param context コンテキスト
          */
+        @Suppress("DEPRECATION")
         private fun setEnableLayoutComplete(context: Context?) {
             popupContinue?.setTextColor(ContextCompat.getColor(context!!, R.color.appcolor))
             popupContinue?.setBackgroundDrawable(
@@ -266,19 +253,17 @@ class ComicListAdapter (
 
         init {
             // カウント追加ボタン処理
-            addbtn?.setOnClickListener { adapterListener.onAdapterAddBtnClicked(itemView) }
+            binding.addbutton.setOnClickListener { adapterListener.onAdapterAddBtnClicked(itemView) }
 
             // 削除ボタン処理
-            deletebtn = itemView.findViewById<View>(R.id.deletebutton) as? Button
-            rearrangebtn = itemView.findViewById<View>(R.id.rearrangebutton) as? ImageButton
             if (editEnable) {
-                deletebtn?.visibility = View.VISIBLE
-                rearrangebtn?.visibility = View.VISIBLE
+                binding.deletebutton.visibility = View.VISIBLE
+                binding.rearrangebutton.visibility = View.VISIBLE
                 // 削除ボタンを押下された行を削除する
-                deletebtn?.setOnClickListener { adapterListener.onAdapterDelBtnClicked(itemView) }
+                binding.deletebutton.setOnClickListener { adapterListener.onAdapterDelBtnClicked(itemView) }
             } else {
-                deletebtn?.visibility = View.GONE
-                rearrangebtn?.visibility = View.GONE
+                binding.deletebutton.visibility = View.GONE
+                binding.rearrangebutton.visibility = View.GONE
             }
         }
     }
@@ -287,11 +272,9 @@ class ComicListAdapter (
      * 巻数データフッターのホルダークラス
      *
      * @property viewModel 巻数データ一覧の操作用ViewModel
-     * @param itemView 巻数データのアイテム
+     * @property binding 巻数データフッターのバインディング
      */
-    inner class FooterViewHolder(itemView: View, private val viewModel: ComicPagerViewModel) : ViewHolder(itemView) {
-        /** 巻数合計 */
-        private var sumNumber = itemView.findViewById<View>(R.id.sumNumber) as? TextView
+    inner class FooterViewHolder(private val binding: RowFooterBinding, private val viewModel: ComicPagerViewModel) : ViewHolder(binding.root) {
 
         /**
          * データバインド処理
@@ -299,18 +282,17 @@ class ComicListAdapter (
          */
         @SuppressLint("SetTextI18n")
         fun bind() {
-            sumNumber?.let {
-                // 続刊巻数合計の表示
-                if (state.toLong() == ComicMemoRepository.STATE_CONTINUE) {
-                    viewModel.sumContinueNumber.observe(pageLifecycleOwner) { sum ->
-                        it.text = itemView.context.getString(R.string.sum_number) + sum.toString()
-                    }
+            if (state.toLong() == ComicMemoRepository.STATE_CONTINUE) {
+                viewModel.sumContinueNumber.observe(pageLifecycleOwner) {
+                    val sum = it ?: 0L
+                    binding.sumNumber.text = itemView.context.getString(R.string.sum_number) + sum.toString()
                 }
-                // 完結巻数合計の表示
-                if (state.toLong() == ComicMemoRepository.STATE_COMPLETE) {
-                    viewModel.sumCompleteNumber.observe(pageLifecycleOwner) { sum ->
-                        it.text = itemView.context.getString(R.string.sum_number) + sum.toString()
-                    }
+            }
+            // 完結巻数合計の表示
+            if (state.toLong() == ComicMemoRepository.STATE_COMPLETE) {
+                viewModel.sumCompleteNumber.observe(pageLifecycleOwner) {
+                    val sum = it ?: 0L
+                    binding.sumNumber.text = itemView.context.getString(R.string.sum_number) + sum.toString()
                 }
             }
         }
@@ -341,9 +323,9 @@ class ComicListAdapter (
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            TYPE_ITEM -> ComicViewHolder(inflater.inflate(R.layout.row, parent, false))
-            TYPE_FOOTER -> FooterViewHolder(inflater.inflate(R.layout.row_footer, parent, false), pageViewModel)
-            else -> ComicViewHolder(inflater.inflate(R.layout.row_footer, parent, false))
+            TYPE_ITEM -> ComicViewHolder(RowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            TYPE_FOOTER -> FooterViewHolder(RowFooterBinding.inflate(LayoutInflater.from(parent.context), parent, false), pageViewModel)
+            else -> ComicViewHolder(RowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
@@ -375,7 +357,8 @@ class ComicListAdapter (
         return if (super.getItemCount() > 0) {
             super.getItemCount() + 1
         } else {
-            0
+            // 常に総巻数を表示するため、フッター行を表示する
+            1
         }
     }
 
