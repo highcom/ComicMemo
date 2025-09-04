@@ -8,13 +8,14 @@ import android.text.format.DateFormat
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
-import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
+import com.highcom.comicmemo.databinding.FragmentPlaceholderBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.ui.SimpleCallbackHelper
@@ -31,9 +32,9 @@ import java.util.*
  */
 @AndroidEntryPoint
 class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
-    private lateinit var binding: FragmentComicMemoBinding
+    private lateinit var binding: FragmentPlaceholderBinding
     /** 巻数一覧を制御するためのViewModel */
-    private val pageViewModel: ComicPagerViewModel by viewModels()
+    private val pageViewModel: ComicPagerViewModel by activityViewModels()
     /** 巻数データ一覧を格納するためのView */
     private var recyclerView: RecyclerView? = null
     /** 巻数データを表示するためのadapter */
@@ -138,7 +139,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentComicMemoBinding.inflate(layoutInflater)
+        binding = FragmentPlaceholderBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -202,7 +203,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                     // 最後に更新した項目IDをクリアする
                     ComicListPersistent.lastUpdateId = 0L
                     // 入力画面を生成
-                    val intent = Intent(context, InputMemoActivity::class.java)
+                    val intent = Intent(context, InputMemoFragment::class.java)
                     // 選択アイテムを設定
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
                     intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
@@ -326,7 +327,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
         }
         ComicListPersistent.lastUpdateId = 0L
         // 入力画面を生成
-        val intent = Intent(context, InputMemoActivity::class.java)
+        val intent = Intent(context, InputMemoFragment::class.java)
         // 選択アイテムを設定
         val comic = view.tag as Comic
         intent.putExtra(ComicMemoConstants.ARG_EDIT, true)

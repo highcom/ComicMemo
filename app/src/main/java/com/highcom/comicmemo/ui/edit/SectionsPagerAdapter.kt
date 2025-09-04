@@ -15,7 +15,7 @@ import com.highcom.comicmemo.R
  *
  * @param fm フラグメントマネージャ
  */
-class SectionsPagerAdapter(private val mContext: Context, private val activity: ComicMemoActivity, fm: FragmentManager?) :
+class SectionsPagerAdapter(private val mContext: Context, private val activity: ComicMemoFragment, fm: FragmentManager?) :
     FragmentPagerAdapter(
         fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
     ) {

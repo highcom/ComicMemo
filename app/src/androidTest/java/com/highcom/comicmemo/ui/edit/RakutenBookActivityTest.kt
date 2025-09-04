@@ -30,7 +30,7 @@ class RakutenBookActivityTest {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityTestRule(ComicMemoActivity::class.java)
+    var mActivityTestRule = ActivityTestRule(ComicMemoFragment::class.java)
 
     @Test
     fun rakutenBookActivityTest() {

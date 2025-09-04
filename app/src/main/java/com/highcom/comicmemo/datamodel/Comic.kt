@@ -1,8 +1,10 @@
 package com.highcom.comicmemo.datamodel
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 /**
@@ -16,6 +18,7 @@ import java.io.Serializable
  * @property inputdate 入力日付
  * @property status 続刊・完結の状態
  */
+@Parcelize
 @Entity(tableName = "comicdata")
 data class Comic(
     @PrimaryKey(autoGenerate = true)
@@ -26,4 +29,4 @@ data class Comic(
     @ColumnInfo(name = "memo", defaultValue = "") var memo: String,
     @ColumnInfo(name = "inputdate", defaultValue = "") var inputdate: String,
     @ColumnInfo(name = "status", defaultValue = "0") var status: Long,
-) : Serializable
+) : Parcelable

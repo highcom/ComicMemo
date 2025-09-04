@@ -23,11 +23,11 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class ComicMemoActivityTest {
+class ComicMemoFragmentTest {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityTestRule(ComicMemoActivity::class.java)
+    var mActivityTestRule = ActivityTestRule(ComicMemoFragment::class.java)
 
     @Test
     fun comicMemoActivityTest() {

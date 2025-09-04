@@ -11,7 +11,7 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.highcom.comicmemo.ComicMemoConstants
-import com.highcom.comicmemo.ui.edit.InputMemoActivity
+import com.highcom.comicmemo.ui.edit.InputMemoFragment
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
 import com.highcom.comicmemo.datamodel.Comic
@@ -67,13 +67,14 @@ class BookDetailFragment : Fragment() {
         }
         // 選択した書籍の情報から巻数メモデータを新規作成する
         binding.detailNewButton.setOnClickListener {
-            // 入力画面を生成
-            val intent = Intent(context, InputMemoActivity::class.java)
-            // 選択した書籍からデータを作成
-            val comic = Comic(0, item.Item.title, item.Item.author, "", "", "", 0)
-            intent.putExtra(ComicMemoConstants.ARG_EDIT, false)
-            intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
-            startActivityForResult(intent, 1001)
+            // TODO:Navigationで遷移するようにする
+//            // 入力画面を生成
+//            val intent = Intent(context, InputMemoActivity::class.java)
+//            // 選択した書籍からデータを作成
+//            val comic = Comic(0, item.Item.title, item.Item.author, "", "", "", 0)
+//            intent.putExtra(ComicMemoConstants.ARG_EDIT, false)
+//            intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
+//            startActivityForResult(intent, 1001)
         }
     }
 }
