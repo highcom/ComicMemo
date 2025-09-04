@@ -175,9 +175,7 @@ class ComicMemoFragment : Fragment(), SectionsPagerAdapter.SectionPagerAdapterLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // 各セクションページに表示する一覧データの設定
-//        sectionsPagerAdapter = SectionsPagerAdapter(applicationContext, this, supportFragmentManager)
-        // TODO:parentFragmentManagerで合っているのか？
-        sectionsPagerAdapter = SectionsPagerAdapter(requireContext(), this, parentFragmentManager)
+        sectionsPagerAdapter = SectionsPagerAdapter(requireContext(), this, childFragmentManager)
         binding.viewPager.adapter = sectionsPagerAdapter
         binding.itemtabs.setupWithViewPager(binding.viewPager)
 
