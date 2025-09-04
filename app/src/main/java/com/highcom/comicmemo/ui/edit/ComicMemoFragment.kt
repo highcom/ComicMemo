@@ -11,8 +11,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.*
@@ -52,6 +54,8 @@ class ComicMemoFragment : Fragment(), SectionsPagerAdapter.SectionPagerAdapterLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // TODO:Depricatedなのでやめる
+//        setHasOptionsMenu(true)
 //        setTheme(R.style.AppTheme)
 //        binding = FragmentComicMemoBinding.inflate(layoutInflater)
 //        setContentView(binding.root)
@@ -179,6 +183,92 @@ class ComicMemoFragment : Fragment(), SectionsPagerAdapter.SectionPagerAdapterLi
         binding.viewPager.adapter = sectionsPagerAdapter
         binding.itemtabs.setupWithViewPager(binding.viewPager)
 
+        // Fragment のライフサイクルに紐付けて MenuProvider を登録
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_comic_memo, menu)
+                mMenu = menu
+                setInitialMenuTitle()
+                // 文字列検索の処理を設定
+                val searchMenuView = menu.findItem(R.id.menu_search_view)
+                val searchActionView = searchMenuView?.actionView as SearchView
+                searchActionView.queryHint = getString(R.string.query_hint)
+                searchActionView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        mSearchWord = newText ?: ""
+                        val fragments = sectionsPagerAdapter!!.allFragment
+                        for (fragment in fragments) {
+                            (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
+                        }
+                        return false
+                    }
+                })
+                searchActionView.setOnCloseListener(SearchView.OnCloseListener {
+                    // 検索終了時もスクロールを先頭の初期位置に戻す
+                    val fragments = sectionsPagerAdapter!!.allFragment
+                    for (fragment in fragments) {
+                        (fragment as PlaceholderFragment).setSmoothScrollPosition(0)
+                    }
+
+                    return@OnCloseListener false
+                })
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                val fragment = sectionsPagerAdapter!!.currentFragment as PlaceholderFragment
+                when (menuItem.itemId) {
+                    R.id.edit_mode -> {
+                        // 編集状態
+                        fragment.sortData(ComicListPersistent.SortType.ID)
+                        if (fragment.getEditEnable()) {
+                            setCurrentSelectMenuTitle(mMenu?.findItem(R.id.sort_default), R.id.sort_default)
+                        } else {
+                            setCurrentSelectMenuTitle(menuItem, R.id.edit_mode)
+                        }
+                        fragment.changeEditEnable()
+                    }
+                    R.id.sort_default -> {
+                        // idでのソート
+                        setCurrentSelectMenuTitle(menuItem, R.id.sort_default)
+                        fragment.sortData(ComicListPersistent.SortType.ID)
+                        fragment.setEditEnable(false)
+                    }
+                    R.id.sort_title -> {
+                        // タイトル名でのソート
+                        setCurrentSelectMenuTitle(menuItem, R.id.sort_title)
+                        fragment.sortData(ComicListPersistent.SortType.TITLE)
+                        fragment.setEditEnable(false)
+                    }
+                    R.id.sort_author -> {
+                        // 著者名でのソート
+                        setCurrentSelectMenuTitle(menuItem, R.id.sort_author)
+                        fragment.sortData(ComicListPersistent.SortType.AUTHOR)
+                        fragment.setEditEnable(false)
+                    }
+                    R.id.search_book -> {
+                        // 人気書籍検索
+                        // TODO:Navigationに置き換え
+//                        val intent = Intent(this@ComicMemoFragment, RakutenBookActivity::class.java)
+//                        intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_SEARCH)
+//                        startActivity(intent)
+                    }
+                    R.id.new_book -> {
+                        // 新刊検索
+                        // TODO:Navigationに置き換え
+//                        val intent = Intent(this@ComicMemoFragment, RakutenBookActivity::class.java)
+//                        intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_NEW)
+//                        startActivity(intent)
+                    }
+                    else -> { return false }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         // 追加ボタン処理
         binding.fabNewEdit.setOnClickListener {
             var index = 0L
@@ -189,48 +279,49 @@ class ComicMemoFragment : Fragment(), SectionsPagerAdapter.SectionPagerAdapterLi
                 isEdit = true, status = index, comic = Comic(0, "", "", "", "", "", index)))
         }
     }
-    /**
-     * アクションバーのメニュー生成処理
-     *
-     * @param menu アクションバーメニュー
-     * @return
-     */
-    @Deprecated("Deprecated in Java")
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_comic_memo, menu)
-        mMenu = menu
-        setInitialMenuTitle()
-        // 文字列検索の処理を設定
-        val searchMenuView = menu?.findItem(R.id.menu_search_view)
-        val searchActionView = searchMenuView?.actionView as SearchView
-        searchActionView.queryHint = getString(R.string.query_hint)
-        searchActionView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                mSearchWord = newText ?: ""
-                val fragments = sectionsPagerAdapter!!.allFragment
-                for (fragment in fragments) {
-                    (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
-                }
-                return false
-            }
-        })
-        searchActionView.setOnCloseListener(SearchView.OnCloseListener {
-            // 検索終了時もスクロールを先頭の初期位置に戻す
-            val fragments = sectionsPagerAdapter!!.allFragment
-            for (fragment in fragments) {
-                (fragment as PlaceholderFragment).setSmoothScrollPosition(0)
-            }
-
-            return@OnCloseListener false
-        })
-
-        // TODO:多分不要
-//        return super.onCreateOptionsMenu(menu)
-    }
+//    /**
+//     * アクションバーのメニュー生成処理
+//     *
+//     * @param menu アクションバーメニュー
+//     * @return
+//     */
+//    @Deprecated("Deprecated in Java")
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.menu_comic_memo, menu)
+//        mMenu = menu
+//        setInitialMenuTitle()
+//        // 文字列検索の処理を設定
+//        val searchMenuView = menu?.findItem(R.id.menu_search_view)
+//        val searchActionView = searchMenuView?.actionView as SearchView
+//        searchActionView.queryHint = getString(R.string.query_hint)
+//        searchActionView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String?): Boolean {
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                mSearchWord = newText ?: ""
+//                val fragments = sectionsPagerAdapter!!.allFragment
+//                for (fragment in fragments) {
+//                    (fragment as PlaceholderFragment).setSearchWordFilter(mSearchWord)
+//                }
+//                return false
+//            }
+//        })
+//        searchActionView.setOnCloseListener(SearchView.OnCloseListener {
+//            // 検索終了時もスクロールを先頭の初期位置に戻す
+//            val fragments = sectionsPagerAdapter!!.allFragment
+//            for (fragment in fragments) {
+//                (fragment as PlaceholderFragment).setSmoothScrollPosition(0)
+//            }
+//
+//            return@OnCloseListener false
+//        })
+//
+//        // TODO:多分不要
+////        return super.onCreateOptionsMenu(menu)
+//    }
 
     /**
      * 現在表示されているFragmentの変更通知
@@ -271,61 +362,62 @@ class ComicMemoFragment : Fragment(), SectionsPagerAdapter.SectionPagerAdapterLi
         mMenu?.findItem(currentMenuSelect)?.title = selectMenuTitle
     }
 
-    /**
-     * アクションバーのメニュー選択処理
-     *
-     * @param item 選択項目
-     * @return
-     */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val fragment = sectionsPagerAdapter!!.currentFragment as PlaceholderFragment
-        when (item.itemId) {
-            R.id.edit_mode -> {
-                // 編集状態
-                fragment.sortData(ComicListPersistent.SortType.ID)
-                if (fragment.getEditEnable()) {
-                    setCurrentSelectMenuTitle(mMenu?.findItem(R.id.sort_default), R.id.sort_default)
-                } else {
-                    setCurrentSelectMenuTitle(item, R.id.edit_mode)
-                }
-                fragment.changeEditEnable()
-            }
-            R.id.sort_default -> {
-                // idでのソート
-                setCurrentSelectMenuTitle(item, R.id.sort_default)
-                fragment.sortData(ComicListPersistent.SortType.ID)
-                fragment.setEditEnable(false)
-            }
-            R.id.sort_title -> {
-                // タイトル名でのソート
-                setCurrentSelectMenuTitle(item, R.id.sort_title)
-                fragment.sortData(ComicListPersistent.SortType.TITLE)
-                fragment.setEditEnable(false)
-            }
-            R.id.sort_author -> {
-                // 著者名でのソート
-                setCurrentSelectMenuTitle(item, R.id.sort_author)
-                fragment.sortData(ComicListPersistent.SortType.AUTHOR)
-                fragment.setEditEnable(false)
-            }
-            R.id.search_book -> {
-                // 人気書籍検索
-                // TODO:Navigationに置き換え
-//                val intent = Intent(this@ComicMemoFragment, RakutenBookActivity::class.java)
-//                intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_SEARCH)
-//                startActivity(intent)
-            }
-            R.id.new_book -> {
-                // 新刊検索
-                // TODO:Navigationに置き換え
-//                val intent = Intent(this@ComicMemoFragment, RakutenBookActivity::class.java)
-//                intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_NEW)
-//                startActivity(intent)
-            }
-            else -> {}
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    /**
+//     * アクションバーのメニュー選択処理
+//     *
+//     * @param item 選択項目
+//     * @return
+//     */
+//    @Deprecated("Deprecated in Java")
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        val fragment = sectionsPagerAdapter!!.currentFragment as PlaceholderFragment
+//        when (item.itemId) {
+//            R.id.edit_mode -> {
+//                // 編集状態
+//                fragment.sortData(ComicListPersistent.SortType.ID)
+//                if (fragment.getEditEnable()) {
+//                    setCurrentSelectMenuTitle(mMenu?.findItem(R.id.sort_default), R.id.sort_default)
+//                } else {
+//                    setCurrentSelectMenuTitle(item, R.id.edit_mode)
+//                }
+//                fragment.changeEditEnable()
+//            }
+//            R.id.sort_default -> {
+//                // idでのソート
+//                setCurrentSelectMenuTitle(item, R.id.sort_default)
+//                fragment.sortData(ComicListPersistent.SortType.ID)
+//                fragment.setEditEnable(false)
+//            }
+//            R.id.sort_title -> {
+//                // タイトル名でのソート
+//                setCurrentSelectMenuTitle(item, R.id.sort_title)
+//                fragment.sortData(ComicListPersistent.SortType.TITLE)
+//                fragment.setEditEnable(false)
+//            }
+//            R.id.sort_author -> {
+//                // 著者名でのソート
+//                setCurrentSelectMenuTitle(item, R.id.sort_author)
+//                fragment.sortData(ComicListPersistent.SortType.AUTHOR)
+//                fragment.setEditEnable(false)
+//            }
+//            R.id.search_book -> {
+//                // 人気書籍検索
+//                // TODO:Navigationに置き換え
+////                val intent = Intent(this@ComicMemoFragment, RakutenBookActivity::class.java)
+////                intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_SEARCH)
+////                startActivity(intent)
+//            }
+//            R.id.new_book -> {
+//                // 新刊検索
+//                // TODO:Navigationに置き換え
+////                val intent = Intent(this@ComicMemoFragment, RakutenBookActivity::class.java)
+////                intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_NEW)
+////                startActivity(intent)
+//            }
+//            else -> {}
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     /**
      * 選択メニュータイトル変更処理
