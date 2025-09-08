@@ -9,7 +9,7 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -202,14 +202,11 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 ) { holder, _ ->
                     // 最後に更新した項目IDをクリアする
                     ComicListPersistent.lastUpdateId = 0L
-                    // 入力画面を生成
-                    val intent = Intent(context, InputMemoFragment::class.java)
                     // 選択アイテムを設定
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
-                    intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
-                    intent.putExtra(ComicMemoConstants.ARG_STATUS, comic?.status ?:0L)
-                    intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
-                    startActivityForResult(intent, 1001)
+                    val status = comic?.status ?:0L
+                    findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(
+                        isEdit = false, status = status, comic ?: Comic(0, "", "", "", "", "", status)))
                 })
             }
         }

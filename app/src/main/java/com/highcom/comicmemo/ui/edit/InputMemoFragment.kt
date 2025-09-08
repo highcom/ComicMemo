@@ -1,26 +1,26 @@
 package com.highcom.comicmemo.ui.edit
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentInputMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.ui.search.RakutenBookActivity
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 import java.util.*
 
 /**
- * 巻数メモ入力Activity
+ * 巻数メモ入力画面
  */
 class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     /** バインディング */
@@ -40,13 +40,6 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     /** トグルボタン（完結） */
     private var tbComplete: ToggleButton? = null
 
-    @Suppress("DEPRECATION")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Fragmentのメニューを有効にする
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,15 +49,7 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        binding = ActivityInputMemoBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-
-        // 渡されたデータを取得する
-//        val intent = intent
-//        isEdit = intent.getBooleanExtra(ComicMemoConstants.ARG_EDIT, false)
-//        status = intent.getLongExtra(ComicMemoConstants.ARG_STATUS, 0L)
-//        comic = intent.getSerializableExtra(ComicMemoConstants.ARG_COMIC) as? Comic ?: Comic(0, "", "", "", "", "", status)
+        super.onViewCreated(view, savedInstanceState)
         isEdit = args.isEdit
         status = args.status
         comic = args.comic
@@ -115,68 +100,45 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             getString(R.string.input_new)
         }
 
-        // アクションバーの戻るボタンを表示
-        // TODO:戻るボタンはActivityに委ねる
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    /**
-     * アクションバーのメニュー生成処理
-     *
-     * @param menu アクションバーメニュー
-     * @param inflater インフレーター
-     * @return
-     */
-    @Deprecated("Deprecated in Java", ReplaceWith(
-        "inflater.inflate(R.menu.menu_done, menu)",
-        "com.highcom.comicmemo.R"
-    )
-    )
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_done, menu)
-    }
-
-    /**
-     * アクションバーのメニュー選択処理
-     *
-     * @param item 選択項目
-     * @return
-     */
-    @Deprecated("Deprecated in Java")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                // TODO:comic_memo_containerの場合も考慮
-                requireActivity().findNavController(R.id.rakuten_book_container).run {
-                    popBackStack()
-                }
+        // メニューの戻るボタンを表示
+        val activity = requireActivity()
+        if (activity is ComicMemoActivity) activity.setDisplayHomeAsUpEnabled(true)
+        // Fragment のライフサイクルに紐付けて MenuProvider を登録
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_done, menu)
             }
-            R.id.action_done -> {
-                var chgNumber = 0
-                if (binding.editNumber.text.toString() != "") {
-                    chgNumber = binding.editNumber.text.toString().toInt()
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    android.R.id.home -> {
+                        finishInputMemo()
+                    }
+                    R.id.action_done -> {
+                        var chgNumber = 0
+                        if (binding.editNumber.text.toString() != "") {
+                            chgNumber = binding.editNumber.text.toString().toInt()
+                        }
+                        comic.title = binding.editTitle.text.toString()
+                        comic.author = binding.editAuthor.text.toString()
+                        comic.number = chgNumber.toString()
+                        comic.memo = binding.editMemo.text.toString()
+                        comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()
+                        comic.status = java.lang.Long.valueOf(status)
+                        // 入力データを更新
+                        if (isEdit) {
+                            pageViewModel.update(comic)
+                        } else {
+                            pageViewModel.insert(comic)
+                        }
+                        // 入力画面を終了する
+                        finishInputMemo()
+                    }
+                    else -> { return false }
                 }
-                comic.title = binding.editTitle.text.toString()
-                comic.author = binding.editAuthor.text.toString()
-                comic.number = chgNumber.toString()
-                comic.memo = binding.editMemo.text.toString()
-                comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()
-                comic.status = java.lang.Long.valueOf(status)
-                // TODO:Navigatonで戻るときにデータを渡す
-//                val intent = Intent()
-//                intent.putExtra(ComicMemoConstants.ARG_COMIC, comic)
-//                setResult(Activity.RESULT_OK, intent)
-//                // 詳細画面を終了
-//                finish()
-                // TODO:isEditも考慮してupdateにする
-                pageViewModel.insert(comic)
-                // TODO:rakuten_book_containerの場合も考慮
-                requireActivity().findNavController(R.id.comic_memo_container).run {
-                    popBackStack()
-                }
+                return true
             }
-        }
-        return super.onOptionsItemSelected(item)
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     /**
@@ -215,6 +177,23 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         )
         // 続刊のステータスに設定
         status = 0
+    }
+
+    /**
+     * 巻数メモ入力画面終了処理
+     *
+     */
+    private fun finishInputMemo() {
+        val homeActivity = requireActivity()
+        if (homeActivity is ComicMemoActivity) {
+            requireActivity().findNavController(R.id.comic_memo_container).run {
+                popBackStack()
+            }
+        } else if (homeActivity is RakutenBookActivity) {
+            requireActivity().findNavController(R.id.rakuten_book_container).run {
+                popBackStack()
+            }
+        }
     }
 
     /**

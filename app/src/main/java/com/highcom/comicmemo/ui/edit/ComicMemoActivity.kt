@@ -3,7 +3,6 @@ package com.highcom.comicmemo.ui.edit
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -39,14 +38,6 @@ class ComicMemoActivity : AppCompatActivity() {
             RequestConfiguration.Builder()
                 .setTestDeviceIds(listOf("874848BA4D9A6B9B0A256F7862A47A31", "A02A04D245766C519D07D09F0E258E1E")).build()
         )
-        // Fragmentナビゲーションの設定
-        // TODO:この処理は無くて大丈夫
-//        val navController = findNavController(R.id.comic_memo_container)
-//        val navGraph = navController.navInflater.inflate(R.navigation.comic_memo_navigation)
-//        val bundle = Bundle()
-//        bundle.putInt(ComicMemoConstants.KEY_BOOK_MODE, bookMode)
-        // TODO:bundleはいらない
-//        navController.setGraph(navGraph, bundle)
         // 広告のロード
         binding.adViewFrame.post { loadBanner() }
         // レビュー評価依頼のダイアログに表示する内容を設定
@@ -127,4 +118,18 @@ class ComicMemoActivity : AppCompatActivity() {
             val adWidth = (adWidthPixels / density).toInt()
             return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
         }
+
+    /**
+     * ActionBarの戻るボタンの有効/無効設定
+     *
+     * @param enabled 有効にする場合はtrue
+     */
+    fun setDisplayHomeAsUpEnabled(enabled: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(enabled)
+    }
+
+    public override fun onDestroy() {
+        mAdView?.destroy()
+        super.onDestroy()
+    }
 }
