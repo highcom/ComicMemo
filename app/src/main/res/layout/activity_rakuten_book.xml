@@ -14,8 +14,7 @@
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/adViewBookListFrame"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/rakuten_book_navigation" />
+        app:defaultNavHost="true" />
 
     <FrameLayout
         android:id="@+id/adViewBookListFrame"

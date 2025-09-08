@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -64,7 +65,8 @@ class RakutenBookActivity : AppCompatActivity() {
             setTitle(currentGenreSelect)
         }
         // Fragmentナビゲーションの設定
-        val navController = findNavController(R.id.rakuten_book_container)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.rakuten_book_container) as NavHostFragment
+        val navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.rakuten_book_navigation)
         val bundle = Bundle()
         bundle.putInt(ComicMemoConstants.KEY_BOOK_MODE, bookMode)
