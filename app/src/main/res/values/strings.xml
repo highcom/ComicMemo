@@ -38,7 +38,7 @@
     <string name="search_light_novel">○ ライトノベル</string>
     <string name="search_paperback">○ 文庫</string>
     <string name="search_new_book">○ 新書</string>
-    <string name="register_book">登録しました：</string>
+    <string name="register_book">登録しました</string>
     <string name="chooser_title">選択</string>
     <string name="registration_limit">登録上限に達しています</string>
     <string name="detail_new_button">この書籍で\n巻数メモを作成</string>

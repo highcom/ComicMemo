@@ -159,6 +159,7 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
      * 続刊を選択時の処理
      *
      */
+    @Suppress("DEPRECATION")
     private fun setEnableToggleContinue() {
         // 表示を続刊を選択された状態に設定
         tbContinue?.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
@@ -185,6 +186,7 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
      */
     private fun finishInputMemo() {
         val homeActivity = requireActivity()
+        // Activityに紐づくNavigationに応じて戻る
         if (homeActivity is ComicMemoActivity) {
             requireActivity().findNavController(R.id.comic_memo_container).run {
                 popBackStack()
@@ -200,6 +202,7 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
      * 完結を選択時の処理
      *
      */
+    @Suppress("DEPRECATION")
     private fun setEnableToggleComplete() {
         // 表示を完結を選択された状態に設定
         tbContinue?.setTextColor(ContextCompat.getColor(requireContext(), R.color.appcolor))

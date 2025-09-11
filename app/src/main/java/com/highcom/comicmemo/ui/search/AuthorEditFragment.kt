@@ -4,14 +4,21 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentAuthorEditBinding
 import com.highcom.comicmemo.datamodel.Author
@@ -136,11 +143,40 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
             }
         }
 
+        requireActivity().addMenuProvider(object : MenuProvider {
+            /**
+             * アクションバーのメニュー生成
+             *
+             * @param menu メニュー
+             * @param menuInflater インフレーター
+             */
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Fragmentのメニューを有効にする
+                setHasOptionsMenu(true)
+            }
+
+            /**
+             * アクションバーのメニュー選択処理
+             *
+             * @param menuItem メニューアイテム
+             * @return 選択処理を行った場合はtrue
+             */
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    android.R.id.home -> {
+                        findNavController().popBackStack()
+                        return true
+                    }
+                }
+                return false
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         // 著作者名の追加FABを押下で新規データを追加
         binding.authorEditFab.setOnClickListener {
             authorList?.let {
                 if (it.size >= 10) {
-                    Toast.makeText(context, getString(R.string.registration_limit), Toast.LENGTH_LONG).show()
+                    Snackbar.make(view, getString(R.string.registration_limit), Snackbar.LENGTH_LONG).setAction("Action", null).show()
                 } else {
                     viewModel.insert(Author(0, ""))
                 }

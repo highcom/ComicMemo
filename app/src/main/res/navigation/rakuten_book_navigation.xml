@@ -21,7 +21,38 @@
         android:id="@+id/bookDetailFragment"
         android:name="com.highcom.comicmemo.ui.search.BookDetailFragment"
         android:label="fragment_book_detail"
-        tools:layout="@layout/fragment_book_detail" />
+        tools:layout="@layout/fragment_book_detail" >
+        <action
+            android:id="@+id/action_bookDetailFragment_to_inputMemoFragment"
+            app:destination="@id/inputMemoFragment" >
+            <argument
+                android:name="isEdit"
+                app:argType="boolean" />
+            <argument
+                android:name="status"
+                app:argType="long" />
+            <argument
+                android:name="comic"
+                app:argType="com.highcom.comicmemo.datamodel.Comic" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/inputMemoFragment"
+        android:name="com.highcom.comicmemo.ui.edit.InputMemoFragment"
+        android:label="fragment_input_memo"
+        tools:layout="@layout/fragment_input_memo" >
+        <argument
+            android:name="isEdit"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="status"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="comic"
+            app:argType="com.highcom.comicmemo.datamodel.Comic" />
+    </fragment>
     <fragment
         android:id="@+id/authorEditFragment"
         android:name="com.highcom.comicmemo.ui.search.AuthorEditFragment"
