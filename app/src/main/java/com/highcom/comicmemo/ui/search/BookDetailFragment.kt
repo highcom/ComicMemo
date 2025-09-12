@@ -10,10 +10,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -24,8 +22,6 @@ import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.Item
-import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
-import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 
 /**
  * 選択した書籍の詳細情報を表示する
@@ -33,31 +29,9 @@ import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
  */
 class BookDetailFragment : Fragment() {
     private lateinit var binding: FragmentBookDetailBinding
-    /** 巻数一覧を制御するためのViewModel */
-    private val pageViewModel: ComicPagerViewModel by activityViewModels()
     /** 楽天ブックデータ */
     private lateinit var item: Item
 
-//    // TODO:これで不要なメニューは消せるが、ComicMemoFragmentと合わせると複雑になる
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        // Fragmentのメニューを有効にする
-//        setHasOptionsMenu(true)
-//    }
-//
-//    @Deprecated("Deprecated in Java")
-//    override fun onPrepareOptionsMenu(menu: Menu) {
-//        super.onPrepareOptionsMenu(menu)
-//        // 特定のメニューを非表示にする
-//        menu.findItem(R.id.action_edit)?.isVisible = false
-//        menu.findItem(R.id.menu_rakuten_book_search_view)?.isVisible = false
-//        menu.findItem(R.id.search_mode_comic)?.isVisible = false
-//        menu.findItem(R.id.search_mode_novel)?.isVisible = false
-//        menu.findItem(R.id.search_mode_light_novel)?.isVisible = false
-//        menu.findItem(R.id.search_mode_paperback)?.isVisible = false
-//        menu.findItem(R.id.search_mode_new_book)?.isVisible = false
-//    }
-//
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,17 +43,12 @@ class BookDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO:画面遷移時に常にイベントが発生してしまう
-        pageViewModel.continueComics.observe(viewLifecycleOwner) { continueComics ->
-            continueComics.let {
-                Snackbar.make(view, getString(R.string.register_book), Snackbar.LENGTH_LONG).setAction("Action", null).show()
-            }
+        // 追加登録された時だけSnackbarを表示する
+        val navBackStackEntry = findNavController().currentBackStackEntry
+        navBackStackEntry?.savedStateHandle?.getLiveData<String>("comic_title")?.observe(viewLifecycleOwner) { title ->
+            Snackbar.make(view, getString(R.string.register_book) + title, Snackbar.LENGTH_LONG).setAction("Action", null).show()
         }
-        pageViewModel.completeComics.observe(viewLifecycleOwner) { completeComics ->
-            completeComics.let {
-                Snackbar.make(view, getString(R.string.register_book), Snackbar.LENGTH_LONG).setAction("Action", null).show()
-            }
-        }
+
         // 選択されたアイテムデータを取得する
         requireArguments().let { arguments ->
             item = arguments.getSerializable(ComicMemoConstants.BUNDLE_ITEM_DATA) as Item

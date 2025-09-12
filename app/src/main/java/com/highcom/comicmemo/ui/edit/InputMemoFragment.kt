@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
@@ -105,10 +106,22 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         if (activity is ComicMemoActivity) activity.setDisplayHomeAsUpEnabled(true)
         // Fragment のライフサイクルに紐付けて MenuProvider を登録
         requireActivity().addMenuProvider(object : MenuProvider {
+            /**
+             * アクションバーのメニュー生成
+             *
+             * @param menu メニュー
+             * @param menuInflater インフレーター
+             */
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_done, menu)
             }
 
+            /**
+             * アクションバーのメニュー選択処理
+             *
+             * @param menuItem メニューアイテム
+             * @return 選択処理を行った場合はtrue
+             */
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     android.R.id.home -> {
@@ -131,6 +144,7 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
                         } else {
                             pageViewModel.insert(comic)
                         }
+                        findNavController().previousBackStackEntry?.savedStateHandle?.set("comic_title", comic.title)
                         // 入力画面を終了する
                         finishInputMemo()
                     }

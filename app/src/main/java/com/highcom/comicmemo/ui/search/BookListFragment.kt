@@ -1,7 +1,6 @@
 package com.highcom.comicmemo.ui.search
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -17,7 +16,6 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,8 +24,6 @@ import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
 import com.highcom.comicmemo.network.Item
-import com.highcom.comicmemo.ui.edit.ComicListPersistent
-import com.highcom.comicmemo.ui.edit.PlaceholderFragment
 import com.highcom.comicmemo.viewmodel.RakutenApiStatus
 import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 
@@ -146,14 +142,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     android.R.id.home -> {
-                        // TODO:ここはActivityを終わらせるだけでいいはず
                         requireActivity().finish()
-//                        findNavController(R.id.rakuten_book_container).run {
-//                            when (currentDestination?.id) {
-//                                R.id.bookListFragment -> finish()
-//                                else -> popBackStack()
-//                            }
-//                        }
                         return true
                     }
                     R.id.action_edit -> {
@@ -183,7 +172,6 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                     }
                 }
                 // 前回選択したメニューの状態を戻して今回選択されたメニューを選択状態にする
-//                setCurrentSelectMenuTitle(menuItem, currentMenuSelect)
                 // 現在選択されているメニューの選択アイコンを戻す
                 val currentMenuTitle: String = mMenu?.findItem(currentMenuSelect)?.title.toString()
                     .replace(getString(R.string.select_menu_icon), getString(R.string.no_select_menu_icon))

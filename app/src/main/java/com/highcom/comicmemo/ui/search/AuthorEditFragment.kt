@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -54,6 +53,7 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
          * @param target 移動後の位置のデータ
          * @return 移動したかどうか
          */
+        @Suppress("DEPRECATION")
         override fun onSimpleCallbackMove(
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
@@ -136,7 +136,7 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
             authorEditAdapter.submitList(it)
             // 新規作成時は対象のセルにフォーカスされるようにスクロールする
             for (pos in it.indices) {
-                if (it.get(pos).author == "") {
+                if (it[pos].author == "") {
                     binding.authorEditView.smoothScrollToPosition(pos)
                     break
                 }
@@ -150,6 +150,7 @@ class AuthorEditFragment : Fragment(), AuthorEditViewHolder.AuthorEditViewHolder
              * @param menu メニュー
              * @param menuInflater インフレーター
              */
+            @Suppress("DEPRECATION")
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Fragmentのメニューを有効にする
                 setHasOptionsMenu(true)
