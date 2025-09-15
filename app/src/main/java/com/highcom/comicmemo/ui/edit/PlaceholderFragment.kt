@@ -1,6 +1,5 @@
 package com.highcom.comicmemo.ui.edit
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,6 +8,7 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +23,6 @@ import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
 import com.highcom.comicmemo.ui.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.Serializable
 import java.util.*
 
 /**
@@ -89,6 +88,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
          * @param target 移動後の位置のデータ
          * @return 移動したかどうか
          */
+        @Suppress("DEPRECATION")
         override fun onSimpleCallbackMove(
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
@@ -323,14 +323,11 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             return
         }
         ComicListPersistent.lastUpdateId = 0L
-        // 入力画面を生成
-        val intent = Intent(context, InputMemoFragment::class.java)
         // 選択アイテムを設定
         val comic = view.tag as Comic
-        intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
-        intent.putExtra(ComicMemoConstants.ARG_STATUS, comic.status)
-        intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
-        startActivityForResult(intent, 1001)
+        // 入力画面を生成
+        val navController = Navigation.findNavController(requireParentFragment().requireView())
+        navController.navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(true, comic.status, comic))
     }
 
     /**
@@ -411,6 +408,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 return oReturn
             }
 
+            @Suppress("UNCHECKED_CAST")
             override fun publishResults(
                 constraint: CharSequence?,
                 results: FilterResults
