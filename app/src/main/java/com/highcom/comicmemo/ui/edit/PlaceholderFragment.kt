@@ -206,7 +206,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
                     val status = comic?.status ?:0L
                     findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(
-                        isEdit = false, status = status, comic ?: Comic(0, "", "", "", "", "", status)))
+                        isEdit = true, status = status, comic ?: Comic(0, "", "", "", "", "", status)))
                 })
             }
         }
