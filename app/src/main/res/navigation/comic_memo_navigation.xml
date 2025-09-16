@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_comic_memo" >
         <action
             android:id="@+id/action_comicMemoFragment_to_inputMemoFragment"
-            app:destination="@id/inputMemoFragment" >
+            app:destination="@id/inputMemoFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" >
             <argument
                 android:name="isEdit"
                 app:argType="boolean" />

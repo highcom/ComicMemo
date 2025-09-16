@@ -12,10 +12,20 @@
         tools:layout="@layout/fragment_book_list" >
         <action
             android:id="@+id/action_bookListFragment_to_bookDetailFragment"
-            app:destination="@id/bookDetailFragment" />
+            app:destination="@id/bookDetailFragment"
+            app:popUpToSaveState="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_bookListFragment_to_authorEditFragment"
-            app:destination="@id/authorEditFragment" />
+            app:destination="@id/authorEditFragment"
+            app:popUpToSaveState="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/bookDetailFragment"
@@ -24,7 +34,11 @@
         tools:layout="@layout/fragment_book_detail" >
         <action
             android:id="@+id/action_bookDetailFragment_to_inputMemoFragment"
-            app:destination="@id/inputMemoFragment" >
+            app:destination="@id/inputMemoFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" >
             <argument
                 android:name="isEdit"
                 app:argType="boolean" />
