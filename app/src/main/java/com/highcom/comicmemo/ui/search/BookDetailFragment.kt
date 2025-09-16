@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -22,6 +23,7 @@ import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.Item
+import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 
 /**
  * 選択した書籍の詳細情報を表示する
@@ -29,6 +31,8 @@ import com.highcom.comicmemo.network.Item
  */
 class BookDetailFragment : Fragment() {
     private lateinit var binding: FragmentBookDetailBinding
+    /** Activityで生成されたViewModelを利用する */
+    private val viewModel: RakutenBookViewModel by activityViewModels()
     /** 楽天ブックデータ */
     private lateinit var item: Item
 
@@ -43,6 +47,8 @@ class BookDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // タイトルを設定
+        requireActivity().title = viewModel.title
         // 追加登録された時だけSnackbarを表示する
         val navBackStackEntry = findNavController().currentBackStackEntry
         navBackStackEntry?.savedStateHandle?.getLiveData<String>("comic_title")?.observe(viewLifecycleOwner) { title ->

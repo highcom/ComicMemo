@@ -33,6 +33,8 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     lateinit var appId: String
     /** 検索ジャンルID1 */
     lateinit var genreId: String
+    /** タイトル */
+    var title: String = ""
     /** LiveDataに設定しているデータ種別 */
     var liveDataKind = LiveDataKind.SALES
     /** 表示ページ数 */

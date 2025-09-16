@@ -85,6 +85,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
             }
             setTitle(currentGenreSelect)
         }
+        viewModel.title = requireActivity().title.toString()
         // ViewModelの初期設定
         viewModel.initialize(getString(R.string.rakuten_app_id), currentGenreSelect)
 
@@ -100,6 +101,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                 if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
                     menuInflater.inflate(R.menu.menu_edit, menu)
                     requireActivity().title = getString(R.string.new_book)
+                    viewModel.title = requireActivity().title.toString()
                     mMenu = menu
                     return
                 }
@@ -185,6 +187,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                 currentMenuSelect =menuItem.itemId
                 viewModel.getSalesList(currentGenreSelect)
                 setTitle(currentGenreSelect)
+                viewModel.title = requireActivity().title.toString()
                 // 次回起動時のために選択したジャンルを保存する
                 sharedPreferences.edit().putString(ComicMemoConstants.SELECT_GENRE, currentGenreSelect).apply()
 
