@@ -412,11 +412,12 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 results: FilterResults
             ) {
                 val resultList = sortComicList(sortType, results.values as MutableList<Comic>?)
-                adapter.submitList(resultList)
-                // 初期表示の時は先頭位置にする
-                if (!isInitPositionSet) {
-                    recyclerView?.scrollToPosition(0)
-                    isInitPositionSet = true
+                adapter.submitList(resultList) {
+                    // 初期表示の時は先頭位置にする
+                    if (!isInitPositionSet) {
+                        recyclerView?.scrollToPosition(0)
+                        isInitPositionSet = true
+                    }
                 }
             }
         }
