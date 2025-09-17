@@ -48,8 +48,6 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
     private var currentGenreSelect = RakutenBookViewModel.GENRE_ID_COMIC
     /** 現在選択中のメニュー */
     private var currentMenuSelect: Int = R.id.search_mode_comic
-    /** 画面の更新が必要かどうか */
-    var isNeedUpdate = true
     /** Activityで生成されたViewModelを利用する */
     private val viewModel: RakutenBookViewModel by activityViewModels()
 
@@ -155,7 +153,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                     }
                     R.id.action_edit -> {
                         // 著作者名編集で編集しない場合には更新不要なので一旦不要とする
-                        isNeedUpdate = false
+                        (activity as RakutenBookActivity).isNeedUpdate = false
                         // 著作者名編集に行く時は検索途中でもキャンセルする
                         viewModel.timer.cancel()
                         findNavController().navigate(BookListFragmentDirections.actionBookListFragmentToAuthorEditFragment(), null)
@@ -210,14 +208,14 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                 handler.post { binding.progressBar.visibility = View.INVISIBLE }
             }
             // 著作者名一覧で新刊書籍検索
-            if (isNeedUpdate) viewModel.searchAuthorList(viewModel.getAuthorListSync())
+            if ((activity as RakutenBookActivity).isNeedUpdate) viewModel.searchAuthorList(viewModel.getAuthorListSync())
         } else {
             (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 3
             binding.bookItemGridView.addOnScrollListener(InfiniteScrollListener())
             // 人気書籍の検索
-            if (isNeedUpdate) viewModel.getSalesList()
+            if ((activity as RakutenBookActivity).isNeedUpdate) viewModel.getSalesList()
         }
-        isNeedUpdate = true
+        (activity as RakutenBookActivity).isNeedUpdate = true
 
         // 楽天APIの呼び出し状況に応じてプログレスサークルの表示
         viewModel.status.observe(viewLifecycleOwner) { apiStatus ->
@@ -296,7 +294,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
      */
     override fun bookItemSelected(item: Item) {
         // 詳細画面から戻ってくる場合には更新は不要
-        isNeedUpdate = false
+        (activity as RakutenBookActivity).isNeedUpdate = false
         mMenu?.findItem(R.id.action_edit)?.isVisible = false
         findNavController().navigate(R.id.action_bookListFragment_to_bookDetailFragment, bundleOf("BUNDLE_ITEM_DATA" to item))
     }
