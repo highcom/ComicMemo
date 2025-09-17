@@ -1,8 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".ui.edit.ComicMemoActivity">
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".ui.edit.ComicMemoFragment">
     <item
         android:id="@+id/menu_search_view"
+        android:icon="@drawable/ic_baseline_search_24"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"
         android:visible="true"

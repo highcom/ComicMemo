@@ -1,6 +1,5 @@
 package com.highcom.comicmemo.ui.edit
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
@@ -8,13 +7,14 @@ import android.text.format.DateFormat
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
-import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
+import com.highcom.comicmemo.databinding.FragmentPlaceholderBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.ui.SimpleCallbackHelper
@@ -22,7 +22,6 @@ import com.highcom.comicmemo.ui.edit.ComicListAdapter.AdapterListener
 import com.highcom.comicmemo.ui.SimpleCallbackHelper.SimpleCallbackListener
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.Serializable
 import java.util.*
 
 /**
@@ -31,9 +30,9 @@ import java.util.*
  */
 @AndroidEntryPoint
 class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
-    private lateinit var binding: FragmentComicMemoBinding
+    private lateinit var binding: FragmentPlaceholderBinding
     /** 巻数一覧を制御するためのViewModel */
-    private val pageViewModel: ComicPagerViewModel by viewModels()
+    private val pageViewModel: ComicPagerViewModel by activityViewModels()
     /** 巻数データ一覧を格納するためのView */
     private var recyclerView: RecyclerView? = null
     /** 巻数データを表示するためのadapter */
@@ -88,6 +87,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
          * @param target 移動後の位置のデータ
          * @return 移動したかどうか
          */
+        @Suppress("DEPRECATION")
         override fun onSimpleCallbackMove(
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
@@ -128,7 +128,6 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isInitPositionSet = false
         if (arguments != null) {
             index = requireArguments().getInt(ComicMemoConstants.ARG_SECTION_NUMBER)
         }
@@ -138,11 +137,12 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentComicMemoBinding.inflate(layoutInflater)
+        binding = FragmentPlaceholderBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        isInitPositionSet = false
         adapter = ComicListAdapter(index, pageViewModel, viewLifecycleOwner, this)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT
         recyclerView = binding.comicListView
@@ -201,14 +201,11 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 ) { holder, _ ->
                     // 最後に更新した項目IDをクリアする
                     ComicListPersistent.lastUpdateId = 0L
-                    // 入力画面を生成
-                    val intent = Intent(context, InputMemoActivity::class.java)
                     // 選択アイテムを設定
                     val comic = (holder as ComicListAdapter.ComicViewHolder).comic
-                    intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
-                    intent.putExtra(ComicMemoConstants.ARG_STATUS, comic?.status ?:0L)
-                    intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
-                    startActivityForResult(intent, 1001)
+                    val status = comic?.status ?:0L
+                    findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(
+                        isEdit = true, status = status, comic ?: Comic(0, "", "", "", "", "", status)))
                 })
             }
         }
@@ -325,14 +322,10 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             return
         }
         ComicListPersistent.lastUpdateId = 0L
-        // 入力画面を生成
-        val intent = Intent(context, InputMemoActivity::class.java)
         // 選択アイテムを設定
         val comic = view.tag as Comic
-        intent.putExtra(ComicMemoConstants.ARG_EDIT, true)
-        intent.putExtra(ComicMemoConstants.ARG_STATUS, comic.status)
-        intent.putExtra(ComicMemoConstants.ARG_COMIC, comic as Serializable)
-        startActivityForResult(intent, 1001)
+        // 入力画面を生成
+        findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(true, comic.status, comic))
     }
 
     /**
@@ -413,16 +406,18 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 return oReturn
             }
 
+            @Suppress("UNCHECKED_CAST")
             override fun publishResults(
                 constraint: CharSequence?,
                 results: FilterResults
             ) {
                 val resultList = sortComicList(sortType, results.values as MutableList<Comic>?)
-                adapter.submitList(resultList)
-                // 初期表示の時は先頭位置にする
-                if (!isInitPositionSet) {
-                    recyclerView?.scrollToPosition(0)
-                    isInitPositionSet = true
+                adapter.submitList(resultList) {
+                    // 初期表示の時は先頭位置にする
+                    if (!isInitPositionSet) {
+                        recyclerView?.scrollToPosition(0)
+                        isInitPositionSet = true
+                    }
                 }
             }
         }

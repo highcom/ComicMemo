@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/comicmemo_navigation"
+    app:startDestination="@id/comicMemoFragment">
+
+    <fragment
+        android:id="@+id/comicMemoFragment"
+        android:name="com.highcom.comicmemo.ui.edit.ComicMemoFragment"
+        android:label="fragment_comic_memo"
+        tools:layout="@layout/fragment_comic_memo" >
+        <action
+            android:id="@+id/action_comicMemoFragment_to_inputMemoFragment"
+            app:destination="@id/inputMemoFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" >
+            <argument
+                android:name="isEdit"
+                app:argType="boolean" />
+            <argument
+                android:name="status"
+                app:argType="long" />
+            <argument
+                android:name="comic"
+                app:argType="com.highcom.comicmemo.datamodel.Comic" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/inputMemoFragment"
+        android:name="com.highcom.comicmemo.ui.edit.InputMemoFragment"
+        android:label="fragment_input_memo"
+        tools:layout="@layout/fragment_input_memo" >
+        <argument
+            android:name="isEdit"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="status"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="comic"
+            app:argType="com.highcom.comicmemo.datamodel.Comic" />
+    </fragment>
+</navigation>
