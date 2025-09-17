@@ -77,6 +77,8 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                 menuInflater.inflate(R.menu.menu_comic_memo, menu)
                 mMenu = menu
                 setInitialMenuTitle()
+                mSearchWord = ""
+                forEachPlaceholder { it.setSearchWordFilter(mSearchWord) }
 
                 // SearchView 設定
                 val searchView = menu.findItem(R.id.menu_search_view)?.actionView as SearchView
