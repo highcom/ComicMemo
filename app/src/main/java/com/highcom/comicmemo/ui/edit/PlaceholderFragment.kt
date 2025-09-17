@@ -8,7 +8,6 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -129,7 +128,6 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isInitPositionSet = false
         if (arguments != null) {
             index = requireArguments().getInt(ComicMemoConstants.ARG_SECTION_NUMBER)
         }
@@ -144,6 +142,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        isInitPositionSet = false
         adapter = ComicListAdapter(index, pageViewModel, viewLifecycleOwner, this)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT
         recyclerView = binding.comicListView
@@ -326,8 +325,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
         // 選択アイテムを設定
         val comic = view.tag as Comic
         // 入力画面を生成
-        val navController = Navigation.findNavController(requireParentFragment().requireView())
-        navController.navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(true, comic.status, comic))
+        findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(true, comic.status, comic))
     }
 
     /**
