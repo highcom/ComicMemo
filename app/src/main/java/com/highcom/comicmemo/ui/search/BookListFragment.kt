@@ -127,6 +127,12 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                         return false
                     }
                 })
+                // 戻ってきた時に入力文字を復元
+                viewModel.searchWord.value?.let { savedQuery ->
+                    if (savedQuery.isNotEmpty()) {
+                        searchActionView.setQuery(savedQuery, false)
+                    }
+                }
                 // バツボタンが押下されて検索を終了する場合
                 searchActionView.setOnCloseListener {
                     viewModel.clearSerachWord()
