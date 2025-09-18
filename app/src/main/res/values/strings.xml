@@ -13,6 +13,7 @@
     <string name="query_hint">検索文字を入力</string>
     <string name="swipe_delete">削除</string>
     <string name="swipe_edit">編集</string>
+    <string name="reference_title">参照</string>
     <string name="input_edit">編集</string>
     <string name="input_new">新規作成</string>
     <string name="sum_number">総巻数：</string>

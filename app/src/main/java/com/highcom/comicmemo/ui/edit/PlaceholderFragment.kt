@@ -317,15 +317,17 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
      * @param view 選択した巻数データView
      */
     override fun onAdapterClicked(view: View) {
-        // 編集状態でない場合は入力画面に遷移しない
-        if (!adapter.editEnable) {
-            return
-        }
         ComicListPersistent.lastUpdateId = 0L
         // 選択アイテムを設定
         val comic = view.tag as Comic
-        // 入力画面を生成
-        findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(true, comic.status, comic))
+        // 編集モードに応じて遷移先を変更
+        if (adapter.editEnable) {
+            // 入力画面を生成
+            findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(true, comic.status, comic))
+        } else {
+            // 参照画面を生成
+            findNavController().navigate(ComicMemoFragmentDirections.actionComicMemoFragmentToReferenceMemoFragment(true, comic.status, comic))
+        }
     }
 
     /**

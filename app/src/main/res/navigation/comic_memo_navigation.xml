@@ -27,6 +27,59 @@
                 android:name="comic"
                 app:argType="com.highcom.comicmemo.datamodel.Comic" />
         </action>
+        <action
+            android:id="@+id/action_comicMemoFragment_to_referenceMemoFragment"
+            app:destination="@id/referenceMemoFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" >
+            <argument
+                android:name="isEdit"
+                app:argType="boolean" />
+            <argument
+                android:name="status"
+                app:argType="long" />
+            <argument
+                android:name="comic"
+                app:argType="com.highcom.comicmemo.datamodel.Comic" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/referenceMemoFragment"
+        android:name="com.highcom.comicmemo.ui.edit.ReferenceMemoFragment"
+        android:label="fragment_reference_memo"
+        tools:layout="@layout/fragment_reference_memo" >
+        <argument
+            android:name="isEdit"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="status"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="comic"
+            app:argType="com.highcom.comicmemo.datamodel.Comic" />
+        <action
+            android:id="@+id/action_referenceMemoFragment_to_inputMemoFragment"
+            app:destination="@id/inputMemoFragment"
+            app:popUpTo="@id/referenceMemoFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" >
+            <argument
+                android:name="isEdit"
+                app:argType="boolean" />
+            <argument
+                android:name="status"
+                app:argType="long" />
+            <argument
+                android:name="comic"
+                app:argType="com.highcom.comicmemo.datamodel.Comic" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/inputMemoFragment"
