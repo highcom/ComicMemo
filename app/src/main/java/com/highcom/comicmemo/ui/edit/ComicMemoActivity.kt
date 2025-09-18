@@ -36,7 +36,7 @@ class ComicMemoActivity : AppCompatActivity() {
         MobileAds.initialize(this)
         MobileAds.setRequestConfiguration(
             RequestConfiguration.Builder()
-                .setTestDeviceIds(listOf("874848BA4D9A6B9B0A256F7862A47A31", "A02A04D245766C519D07D09F0E258E1E")).build()
+                .setTestDeviceIds(listOf("874848BA4D9A6B9B0A256F7862A47A31", "D56EB6B2294B414233D8BCBE5E39758B")).build()
         )
         // 広告のロード
         binding.adViewFrame.post { loadBanner() }
