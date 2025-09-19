@@ -39,4 +39,14 @@ interface RakutenApiService {
      */
     @GET("BooksBook/Search/20170404?format=json&sort=-releaseDate&hits=30")
     fun searchAuthorListItems(@Query("author") author: String, @Query("applicationId") appId: String): retrofit2.Call<RakutenBookData>
+
+    /**
+     * ISBN検索
+     *
+     * @param isbn ISBN番号
+     * @param appId アプリID
+     * @return 検索結果リスト
+     */
+    @GET("BooksBook/Search/20170404?format=json&sort=-releaseDate&hits=30")
+    fun searchIsbnItems(@Query("isbn") isbn: String, @Query("applicationId") appId: String): retrofit2.Call<RakutenBookData>
 }

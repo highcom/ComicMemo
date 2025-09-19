@@ -16,6 +16,7 @@ import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentInputMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.ui.search.BarcodeSearchActivity
 import com.highcom.comicmemo.ui.search.RakutenBookActivity
 import com.highcom.comicmemo.viewmodel.ComicPagerViewModel
 import java.util.*
@@ -210,6 +211,10 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             }
         } else if (homeActivity is RakutenBookActivity) {
             requireActivity().findNavController(R.id.rakuten_book_container).run {
+                popBackStack()
+            }
+        } else if (homeActivity is BarcodeSearchActivity) {
+            requireActivity().findNavController(R.id.barcode_search_container).run {
                 popBackStack()
             }
         }

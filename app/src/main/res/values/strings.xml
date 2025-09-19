@@ -27,6 +27,7 @@
     <string name="search_bar_title">○ Search Bar</string>
     <string name="search_book">人気書籍検索</string>
     <string name="new_book">新刊検索</string>
+    <string name="barcode_search">バーコード検索</string>
     <string name="edit_author">著作者名編集</string>
     <string name="trend_book">人気書籍</string>
     <string name="header_comic">（漫画(ｺﾐｯｸ)）</string>
@@ -52,4 +53,6 @@
     <string name="detail_isbn">ISBN番号</string>
     <string name="detail_sales">発売日</string>
     <string name="detail_url">楽天で詳細を見る</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -14,6 +14,7 @@ import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.ui.search.BarcodeSearchActivity
 import com.highcom.comicmemo.ui.search.RakutenBookActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -149,6 +150,11 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                         // 新刊検索
                         val intent = Intent(requireActivity(), RakutenBookActivity::class.java)
                         intent.putExtra(ComicMemoConstants.KEY_BOOK_MODE, ComicMemoConstants.BOOK_MODE_NEW)
+                        startActivity(intent)
+                    }
+                    R.id.barcode_search -> {
+                        // バーコード検索
+                        val intent = Intent(requireActivity(), BarcodeSearchActivity::class.java)
                         startActivity(intent)
                     }
                     else -> return false

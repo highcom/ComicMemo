@@ -33,4 +33,7 @@
     <item
         android:id="@+id/new_book"
         android:title="@string/new_book" />
+    <item
+        android:id="@+id/barcode_search"
+        android:title="@string/barcode_search" />
 </menu>

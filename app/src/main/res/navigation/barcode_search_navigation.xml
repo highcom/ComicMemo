@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/barcode_search_navigation"
+    app:startDestination="@id/barcodeSearchFragment">
+
+    <fragment
+        android:id="@+id/barcodeSearchFragment"
+        android:name="com.highcom.comicmemo.ui.search.BarcodeSearchFragment"
+        android:label="barcode_search_fragment"
+        tools:layout="@layout/fragment_barcode_search" >
+        <action
+            android:id="@+id/action_barcode_search_fragment_to_book_detail_fragment"
+            app:destination="@id/bookDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookDetailFragment"
+        android:name="com.highcom.comicmemo.ui.search.BookDetailFragment"
+        android:label="book_detail_fragment"
+        tools:layout="@layout/fragment_book_detail" >
+        <action
+            android:id="@+id/action_bookDetailFragment_to_inputMemoFragment"
+            app:destination="@id/inputMemoFragment"
+            app:popUpTo="@id/bookDetailFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" >
+            <argument
+                android:name="isEdit"
+                app:argType="boolean" />
+            <argument
+                android:name="status"
+                app:argType="long" />
+            <argument
+                android:name="comic"
+                app:argType="com.highcom.comicmemo.datamodel.Comic" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/inputMemoFragment"
+        android:name="com.highcom.comicmemo.ui.edit.InputMemoFragment"
+        android:label="fragment_input_memo"
+        tools:layout="@layout/fragment_input_memo" >
+        <argument
+            android:name="isEdit"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="status"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="comic"
+            app:argType="com.highcom.comicmemo.datamodel.Comic" />
+    </fragment>
+</navigation>

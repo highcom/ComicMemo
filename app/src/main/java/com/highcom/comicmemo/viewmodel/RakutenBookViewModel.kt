@@ -186,6 +186,33 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     }
 
     /**
+     * 引数で指定されたISBN番号での書籍検索
+     *
+     * @param isbn ISBN番号
+     */
+    fun searchIsbn(isbn: String) {
+        liveDataKind = LiveDataKind.SEARCH
+        _bookList.value = null
+        viewModelScope.launch {
+            _status.value = RakutenApiStatus.LOADING
+            rakutenApiService.searchIsbnItems(isbn, appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+                override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+                    _status.value = RakutenApiStatus.ERROR
+                }
+
+                override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            _status.value = RakutenApiStatus.DONE
+                            setBookList(it)
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    /**
      * 引数で指定された著作者名一覧に対する新刊検索処理
      *
      * @param authors 著作者名一覧
@@ -200,7 +227,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
             timer.scheduleAtFixedRate(API_DELAY_TIME, API_PERIOD_TIME) {
                 // 著作者名リストを全て取得したらタイマーを終了
                 if (!authorItr.hasNext()) timer.cancel()
-                serachAuthor(authorItr)
+                searchAuthor(authorItr)
             }
         }
     }
@@ -210,7 +237,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      *
      * @param authorItr 著作者名リストのイテレータ
      */
-    private fun serachAuthor(authorItr: Iterator<Author>) {
+    private fun searchAuthor(authorItr: Iterator<Author>) {
         // 著作者名リストを全て取得したら終了
         if (!authorItr.hasNext()) return
         val author = authorItr.next().author
