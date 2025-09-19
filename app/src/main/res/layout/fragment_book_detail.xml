@@ -88,6 +88,31 @@
                         android:textSize="12sp"
                         android:textColor="@android:color/black"
                         android:textStyle="bold"
+                        android:text="@string/detail_title_kana"
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/detail_title_kana_view"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:text="@string/detail_none"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
                         android:text="@string/detail_subtitle"
                         android:layout_weight="3"
                         android:layout_width="match_parent"
@@ -142,6 +167,30 @@
 
                     <TextView
                         android:id="@+id/detail_publisher_view"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:text="@string/detail_none"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        android:layout_weight="3"
+                        android:text="@string/detail_isbn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/detail_isbn_view"
                         android:textSize="16sp"
                         android:textColor="@android:color/black"
                         android:layout_weight="1"

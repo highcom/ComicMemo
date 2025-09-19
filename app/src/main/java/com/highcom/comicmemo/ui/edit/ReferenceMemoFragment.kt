@@ -52,7 +52,10 @@ class ReferenceMemoFragment : Fragment() {
         status = args.status
         comic = args.comic
         binding.editTitle.setText(comic.title)
+        binding.editKana.setText(comic.title_kana)
         binding.editAuthor.setText(comic.author)
+        binding.editPublisher.setText(comic.publisher)
+        binding.editIsbn.setText(comic.isbn)
         binding.editNumber.setText(comic.number)
         binding.editMemo.setText(comic.memo)
         tbContinue = binding.toggleContinue

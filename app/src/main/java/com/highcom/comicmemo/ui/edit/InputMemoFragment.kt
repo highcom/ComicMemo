@@ -55,7 +55,10 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         status = args.status
         comic = args.comic
         binding.editTitle.setText(comic.title)
+        binding.editKana.setText(comic.title_kana)
         binding.editAuthor.setText(comic.author)
+        binding.editPublisher.setText(comic.publisher)
+        binding.editIsbn.setText(comic.isbn)
         binding.editNumber.setText(comic.number)
         binding.editAddbutton.setOnClickListener {
             var strNumber = binding.editNumber.text.toString()

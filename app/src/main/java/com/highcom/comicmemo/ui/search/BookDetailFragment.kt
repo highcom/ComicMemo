@@ -100,9 +100,11 @@ class BookDetailFragment : Fragment() {
             .into(binding.detailImageView)
         // それぞれのテキストエリアに情報を設定
         if (item.Item.title.isNotEmpty()) binding.detailTitleView.text = item.Item.title
+        if (item.Item.titleKana.isNotEmpty()) binding.detailTitleKanaView.text = item.Item.titleKana
         if (item.Item.subTitle.isNotEmpty()) binding.detailSubtitleView.text = item.Item.subTitle
         if (item.Item.author.isNotEmpty()) binding.detailAuthorView.text = item.Item.author
         if (item.Item.publisherName.isNotEmpty()) binding.detailPublisherView.text = item.Item.publisherName
+        if (item.Item.isbn.isNotEmpty()) binding.detailIsbnView.text = item.Item.isbn
         if (item.Item.salesDate.isNotEmpty()) binding.detailSalesView.text = item.Item.salesDate
         binding.detailCaptionView.text = item.Item.itemCaption
         // 楽天の商品URLに飛ぶ
@@ -115,7 +117,7 @@ class BookDetailFragment : Fragment() {
         // 選択した書籍の情報から巻数メモデータを新規作成する
         binding.detailNewButton.setOnClickListener {
             // 入力画面を生成
-            val comic = Comic(0, item.Item.title, item.Item.author, "", "", "", 0)
+            val comic = Comic(0, item.Item.title, item.Item.titleKana, item.Item.author, item.Item.publisherName, item.Item.isbn, "", "", "", 0)
             val status = comic.status
             findNavController().navigate(
                 BookDetailFragmentDirections.actionBookDetailFragmentToInputMemoFragment(isEdit = false, status = status, comic))

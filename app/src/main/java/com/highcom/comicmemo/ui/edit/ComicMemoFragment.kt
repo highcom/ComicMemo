@@ -162,7 +162,7 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
             val index = currentPlaceholder()?.index?.toLong() ?: 0L
             findNavController().navigate(
                 ComicMemoFragmentDirections.actionComicMemoFragmentToInputMemoFragment(
-                    isEdit = false, status = index, comic = Comic(0, "", "", "", "", "", index)))
+                    isEdit = false, status = index, comic = Comic(0, "", "", "", "", "", "", "", "", index)))
         }
     }
 
