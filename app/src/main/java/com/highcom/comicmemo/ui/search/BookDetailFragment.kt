@@ -14,6 +14,7 @@ import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -23,6 +24,7 @@ import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.Item
+import com.highcom.comicmemo.ui.edit.ComicMemoActivity
 import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 
 /**
@@ -81,7 +83,17 @@ class BookDetailFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     android.R.id.home -> {
-                        findNavController().popBackStack()
+                        val homeActivity = requireActivity()
+                        // Activityに紐づくNavigationに応じて戻る
+                        if (homeActivity is RakutenBookActivity) {
+                            requireActivity().findNavController(R.id.rakuten_book_container).run {
+                                popBackStack()
+                            }
+                        } else if (homeActivity is BarcodeSearchActivity) {
+                            requireActivity().findNavController(R.id.barcode_search_container).run {
+                                popBackStack()
+                            }
+                        }
                         return true
                     }
                 }

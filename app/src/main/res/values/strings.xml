@@ -43,6 +43,8 @@
     <string name="register_book">登録しました：</string>
     <string name="chooser_title">選択</string>
     <string name="registration_limit">登録上限に達しています</string>
+    <string name="input_failure">番号を入力してください</string>
+    <string name="read_failure">読み取りに失敗しました</string>
     <string name="detail_new_button">この書籍で\n巻数メモを作成</string>
     <string name="detail_title">タイトル</string>
     <string name="detail_title_kana">タイトルカナ</string>
@@ -53,6 +55,4 @@
     <string name="detail_isbn">ISBN番号</string>
     <string name="detail_sales">発売日</string>
     <string name="detail_url">楽天で詳細を見る</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

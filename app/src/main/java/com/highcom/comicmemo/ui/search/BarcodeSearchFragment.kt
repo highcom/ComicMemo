@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -26,7 +25,9 @@ import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -35,6 +36,7 @@ import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBarcodeSearchBinding
 import com.highcom.comicmemo.viewmodel.RakutenApiStatus
 import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
+import kotlinx.coroutines.cancel
 
 /**
  * カメラプレビューを表示し、ML Kit を利用してリアルタイムにバーコードを読み取る Fragment。
@@ -51,6 +53,8 @@ class BarcodeSearchFragment : Fragment() {
     private val viewModel: RakutenBookViewModel by activityViewModels()
     @Suppress("DEPRECATION")
     private val handler = Handler()
+    /** 検出したバーコードの値 */
+    private var barcodeValue = ""
     /**
      * ML Kit のバーコードスキャナ。
      * QRコード、Code128、EAN-13 を検出対象として設定しています。
@@ -104,9 +108,16 @@ class BarcodeSearchFragment : Fragment() {
         }
 
         // 楽天書籍データを監視
-        viewModel.bookList.observe(viewLifecycleOwner) {
-            if (it.isNullOrEmpty()) return@observe
-            findNavController().navigate(R.id.action_barcode_search_fragment_to_book_detail_fragment, bundleOf("BUNDLE_ITEM_DATA" to it.first()))
+        lifecycleScope.launchWhenStarted {
+            viewModel.isbnBookList.collect {
+                if (it.isNullOrEmpty()) {
+                    binding.barcodeResult.text = barcodeValue
+                } else {
+                    // 該当データがあれば詳細画面へ遷移して監視を終了
+                    findNavController().navigate(R.id.action_barcode_search_fragment_to_book_detail_fragment, bundleOf("BUNDLE_ITEM_DATA" to it.first()))
+                    cancel()
+                }
+            }
         }
 
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -134,6 +145,16 @@ class BarcodeSearchFragment : Fragment() {
                 return false
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        // バーコードが読み取れない時の手入力番号の検索
+        binding.searchButton.setOnClickListener {
+            val code = binding.manualInput.text.toString()
+            if (code.isNotBlank()) {
+                viewModel.searchIsbn(code)
+            } else {
+                Snackbar.make(requireView(), getString(R.string.input_failure) + it, Snackbar.LENGTH_LONG).setAction("Action", null).show()
+            }
+        }
     }
 
 
@@ -182,15 +203,13 @@ class BarcodeSearchFragment : Fragment() {
             scanner.process(input)
                 .addOnSuccessListener { barcodes ->
                     if (barcodes.isNotEmpty()) {
-                        val value = barcodes.first().rawValue ?: ""
-                        // TODO:ここら辺のログの処理は不要
-                        Log.d("BarcodeSearchFragment", "barcode: $value")
-                        // 読み取ったら遷移。重複防止で一度だけ
-                        // TODO:何度も呼び出してしまうので呼び出しをステータスで管理したほうが良さげ
-                        viewModel.searchIsbn(value)
+                        barcodeValue = barcodes.first().rawValue ?: ""
+                        viewModel.searchIsbn(barcodeValue)
                     }
                 }
-                .addOnFailureListener { Log.e("BarcodeSearchFragment", "scan failed", it) }
+                .addOnFailureListener {
+                    Snackbar.make(requireView(), getString(R.string.read_failure) + it, Snackbar.LENGTH_LONG).setAction("Action", null).show()
+                }
                 .addOnCompleteListener { imageProxy.close() }
         } else imageProxy.close()
     }

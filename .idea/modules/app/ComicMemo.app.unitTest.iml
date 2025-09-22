@@ -85,10 +85,12 @@
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/3c5efc37fa9fd399210d9311f39c9fee/transformed/jetified-kotlin-stdlib-jdk8-1.6.21.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/9e25318d71c5f08d9e9b281ee9780abd/transformed/jetified-kotlin-parcelize-runtime-1.6.21.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/c319edc5553ce1b407f3f1e0f04c5680/transformed/jetified-core-ktx-1.9.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/07b18c92ded8dae4ec2499f98a45dd19/transformed/jetified-camera-camera2-1.1.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/23d77fa4977dc9a2377622664b6c7598/transformed/jetified-camera-lifecycle-1.1.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/0179e416c2aab8d8c39c49e0c5a24dcd/transformed/jetified-camera-view-1.1.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/7d96526c992fff4e8184ae62981a5d80/transformed/jetified-camera-core-1.1.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/f4b9bc096d2468a47e8efc5da80d95a0/transformed/jetified-core-1.5.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/9402e650f405ad8e0fa46c7d92763651/transformed/recyclerview-1.2.1-api.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/transforms-3/07b18c92ded8dae4ec2499f98a45dd19/transformed/jetified-camera-camera2-1.1.0-api.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/transforms-3/0179e416c2aab8d8c39c49e0c5a24dcd/transformed/jetified-camera-view-1.1.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/1db704ec5a3e9fa2c53c823d9aab847d/transformed/core-testing-2.2.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/1ff7e1407b0c353a9e7c2a40a56a6db0/transformed/jetified-firebase-components-17.1.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/0b0cf013bbf189bc9d0c21b9f94ffaa4/transformed/jetified-transport-backend-cct-3.1.8-api.jar</arg>
@@ -122,8 +124,6 @@
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/7f5ca886176280aa730c42b3944c23b6/transformed/jetified-lifecycle-process-2.4.1-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/de220b814f43c82e6ef88a84111ae5ab/transformed/jetified-lifecycle-service-2.2.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/4b23804206c95f9034dead038c27fd12/transformed/lifecycle-runtime-2.5.1-api.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/transforms-3/23d77fa4977dc9a2377622664b6c7598/transformed/jetified-camera-lifecycle-1.1.0-api.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/transforms-3/7d96526c992fff4e8184ae62981a5d80/transformed/jetified-camera-core-1.1.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/ea40fcfd9013ea2103ce8876a20dec77/transformed/work-runtime-2.7.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/e0ca10c3eaebb1ba32f4c67fd27a8be0/transformed/lifecycle-livedata-2.5.1-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/24cc18eed21496a9782a3d61e9a75df5/transformed/core-runtime-2.2.0-api.jar</arg>
@@ -374,8 +374,8 @@
     <orderEntry type="library" scope="TEST" name="Gradle: com.github.bumptech.glide:gifdecoder:4.8.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.google.dagger:hilt-android:2.45@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.google.dagger:dagger-lint-aar:2.45@aar" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: androidx.camera:camera-camera2:1.1.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.camera:camera-core:1.1.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.camera:camera-camera2:1.1.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.camera:camera-lifecycle:1.1.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.camera:camera-view:1.1.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.google.mlkit:barcode-scanning:17.3.0@aar" level="project" />

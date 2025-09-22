@@ -10,6 +10,9 @@ import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -59,6 +62,12 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     /** 楽天APIのレスポンスデータ */
     val bookList: LiveData<List<Item>?>
         get() = _bookList
+
+    /** 楽天APIのレスポンスデータを保持する内部変数(ISBN検索用) */
+    private val _isbnBookList = MutableSharedFlow<List<Item>?>(extraBufferCapacity = 1)
+    /** 楽天APIのレスポンスデータ */
+    val isbnBookList: SharedFlow<List<Item>?>
+        get() = _isbnBookList.asSharedFlow()
 
     /**
      * 楽天書籍検索ViewModelを利用するための初期設定処理
@@ -204,7 +213,9 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
                     if (response.isSuccessful) {
                         response.body()?.let {
                             _status.value = RakutenApiStatus.DONE
-                            setBookList(it)
+                            viewModelScope.launch {
+                                setIsbnBookList(it)
+                            }
                         }
                     }
                 }
@@ -317,6 +328,15 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         }
 
         _bookList.value = items
+    }
+
+    /**
+     * 楽天APIレスポンスデータから書籍データリストに設定する処理(ISBN検索用)
+     *
+     * @param data レスポンスデータ
+     */
+    private suspend fun setIsbnBookList(data: RakutenBookData) {
+        _isbnBookList.emit(data.Items)
     }
 
     companion object {
