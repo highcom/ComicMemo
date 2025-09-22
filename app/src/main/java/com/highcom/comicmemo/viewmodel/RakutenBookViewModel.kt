@@ -10,9 +10,12 @@ import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -33,9 +36,9 @@ enum class LiveDataKind { SALES, SEARCH }
 @HiltViewModel
 class RakutenBookViewModel @Inject constructor(private val repository: ComicMemoRepository, private val rakutenApiService: RakutenApiService) : ViewModel() {
     /** 楽天APIアプリケーションID */
-    lateinit var appId: String
+    private lateinit var appId: String
     /** 検索ジャンルID1 */
-    lateinit var genreId: String
+    private lateinit var genreId: String
     /** タイトル */
     var title: String = ""
     /** LiveDataに設定しているデータ種別 */
@@ -63,11 +66,43 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     val bookList: LiveData<List<Item>?>
         get() = _bookList
 
+    private val _isbnInput = MutableSharedFlow<String>(extraBufferCapacity = 1)
     /** 楽天APIのレスポンスデータを保持する内部変数(ISBN検索用) */
     private val _isbnBookList = MutableSharedFlow<List<Item>?>(extraBufferCapacity = 1)
     /** 楽天APIのレスポンスデータ */
     val isbnBookList: SharedFlow<List<Item>?>
         get() = _isbnBookList.asSharedFlow()
+
+
+    /**
+     * 指定された時間内の最初のイベントのみを通過させるFlow拡張関数
+     *
+     * @param T Flowの型
+     * @param windowMillis 時間(ミリ秒)
+     * @return Flow<T>
+     */
+    private fun <T> Flow<T>.throttleFirst(windowMillis: Long): Flow<T> = flow {
+        var lastTime = 0L
+        collect { value ->
+            val now = System.currentTimeMillis()
+            if (now - lastTime >= windowMillis) {
+                lastTime = now
+                emit(value)
+            }
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            _isbnInput
+                .throttleFirst(API_PERIOD_TIME)   // 1.5秒以内の連続イベントをまとめる
+                .distinctUntilChanged() // 同じ値の連続イベントをまとめる
+                .collect { isbn ->
+                    // ここで初めて API を呼び出す
+                    searchIsbnInternal(isbn)
+                }
+        }
+    }
 
     /**
      * 楽天書籍検索ViewModelを利用するための初期設定処理
@@ -200,6 +235,9 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      * @param isbn ISBN番号
      */
     fun searchIsbn(isbn: String) {
+        _isbnInput.tryEmit(isbn)
+    }
+    private suspend fun searchIsbnInternal(isbn: String) {
         liveDataKind = LiveDataKind.SEARCH
         _bookList.value = null
         viewModelScope.launch {
