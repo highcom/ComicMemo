@@ -33,7 +33,7 @@ object ComicListPersistent {
      * ソート種別
      */
     enum class SortType {
-        ID, TITLE, AUTHOR
+        ID, TITLE, TITLE_KANA, AUTHOR, PUBLISHER
     }
 
     /**

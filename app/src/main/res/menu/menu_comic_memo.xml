@@ -22,8 +22,14 @@
                     android:id="@+id/sort_title"
                     android:title="@string/sort_title_text" />
                 <item
+                    android:id="@+id/sort_title_kana"
+                    android:title="@string/sort_title_kana_text" />
+                <item
                     android:id="@+id/sort_author"
                     android:title="@string/sort_author_text" />
+                <item
+                    android:id="@+id/sort_publisher"
+                    android:title="@string/sort_publisher_text" />
             </menu>
         </item>
     </group>

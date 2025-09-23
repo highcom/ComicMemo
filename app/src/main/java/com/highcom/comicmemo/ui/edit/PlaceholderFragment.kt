@@ -437,7 +437,9 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             var result = when(sortType) {
                 ComicListPersistent.SortType.ID -> t1.id.compareTo(t2.id)
                 ComicListPersistent.SortType.TITLE -> t1.title.compareTo(t2.title)
+                ComicListPersistent.SortType.TITLE_KANA -> t1.title_kana.compareTo(t2.title_kana)
                 ComicListPersistent.SortType.AUTHOR -> t1.author.compareTo(t2.author)
+                ComicListPersistent.SortType.PUBLISHER -> t1.publisher.compareTo(t2.publisher)
             }
 
             // ソート順が決まらない場合には、idで比較する

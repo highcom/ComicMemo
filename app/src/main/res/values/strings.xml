@@ -23,7 +23,9 @@
     <string name="sort_operation_text">並べ替え</string>
     <string name="sort_default_text">○ 並べ替え(指定順)</string>
     <string name="sort_title_text">○ 並べ替え(タイトル)</string>
+    <string name="sort_title_kana_text">○ 並べ替え(フリガナ)</string>
     <string name="sort_author_text">○ 並べ替え(著作者)</string>
+    <string name="sort_publisher_text">○ 並べ替え(出版社)</string>
     <string name="search_bar_title">○ Search Bar</string>
     <string name="search_book">人気書籍検索</string>
     <string name="new_book">新刊検索</string>

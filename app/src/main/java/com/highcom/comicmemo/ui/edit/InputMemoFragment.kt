@@ -137,7 +137,10 @@ class InputMemoFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
                             chgNumber = binding.editNumber.text.toString().toInt()
                         }
                         comic.title = binding.editTitle.text.toString()
+                        comic.title_kana = binding.editKana.text.toString()
                         comic.author = binding.editAuthor.text.toString()
+                        comic.publisher = binding.editPublisher.text.toString()
+                        comic.isbn = binding.editIsbn.text.toString()
                         comic.number = chgNumber.toString()
                         comic.memo = binding.editMemo.text.toString()
                         comic.inputdate = DateFormat.format("yyyy/MM/dd", Date()).toString()

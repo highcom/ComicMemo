@@ -134,10 +134,22 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                         fragment.sortData(ComicListPersistent.SortType.TITLE)
                         fragment.setEditEnable(false)
                     }
+                    R.id.sort_title_kana -> {
+                        // タイトル名でソート
+                        setCurrentSelectMenuTitle(menuItem, R.id.sort_title_kana)
+                        fragment.sortData(ComicListPersistent.SortType.TITLE_KANA)
+                        fragment.setEditEnable(false)
+                    }
                     R.id.sort_author -> {
                         // 著者名でソート
                         setCurrentSelectMenuTitle(menuItem, R.id.sort_author)
                         fragment.sortData(ComicListPersistent.SortType.AUTHOR)
+                        fragment.setEditEnable(false)
+                    }
+                    R.id.sort_publisher -> {
+                        // 著者名でソート
+                        setCurrentSelectMenuTitle(menuItem, R.id.sort_publisher)
+                        fragment.sortData(ComicListPersistent.SortType.PUBLISHER)
                         fragment.setEditEnable(false)
                     }
                     R.id.search_book -> {
@@ -210,7 +222,9 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
         currentMenuSelect = when (fragment?.getSortType()) {
             ComicListPersistent.SortType.ID -> R.id.sort_default
             ComicListPersistent.SortType.TITLE -> R.id.sort_title
+            ComicListPersistent.SortType.TITLE_KANA -> R.id.sort_title_kana
             ComicListPersistent.SortType.AUTHOR -> R.id.sort_author
+            ComicListPersistent.SortType.PUBLISHER -> R.id.sort_publisher
             else -> R.id.sort_default
         }
         if (fragment?.getEditEnable() == true) currentMenuSelect = R.id.edit_mode
