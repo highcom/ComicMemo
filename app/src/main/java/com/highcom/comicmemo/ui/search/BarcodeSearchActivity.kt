@@ -37,8 +37,7 @@ class BarcodeSearchActivity : AppCompatActivity() {
     private fun loadBanner() {
         // 広告リクエストの生成
         mAdView = AdView(this)
-        // TODO: 広告ユニットを別途作成する
-        mAdView?.adUnitId = getString(R.string.admob_book_list_id)
+        mAdView?.adUnitId = getString(R.string.admob_barcode_search_id)
         binding.adViewBarcodeSearchFrame.removeAllViews()
         binding.adViewBarcodeSearchFrame.addView(mAdView)
         mAdView?.setAdSize(adSize)
