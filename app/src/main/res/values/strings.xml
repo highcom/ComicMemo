@@ -43,6 +43,10 @@
     <string name="register_book">登録しました：</string>
     <string name="chooser_title">選択</string>
     <string name="registration_limit">登録上限に達しています</string>
+    <string name="barcode_result">読取結果</string>
+    <string name="barcode_result_failure">検索結果無し：</string>
+    <string name="barcode_input_isbn">ISBN番号を手入力検索</string>
+    <string name="barcode_search_isbn">ISBN検索</string>
     <string name="input_failure">番号を入力してください</string>
     <string name="read_failure">読み取りに失敗しました</string>
     <string name="detail_new_button">この書籍で\n巻数メモを作成</string>

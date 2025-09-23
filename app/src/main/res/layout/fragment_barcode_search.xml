@@ -11,7 +11,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
         <!-- カメラプレビュー -->
         <androidx.camera.view.PreviewView
@@ -60,23 +60,28 @@
                 android:id="@+id/barcode_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="読取結果："
+                android:text="@string/barcode_result"
+                android:gravity="center"
                 android:textSize="16sp"
                 android:paddingBottom="12dp" />
 
             <EditText
                 android:id="@+id/manual_input"
+                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="ISBN番号を手入力"
+                android:hint="@string/barcode_input_isbn"
                 android:inputType="number"
-                android:padding="8dp" />
+                android:padding="8dp"
+                android:importantForAutofill="no" />
 
             <Button
                 android:id="@+id/search_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="検索"
+                android:background="@drawable/round_button"
+                android:textColor="@color/white"
+                android:text="@string/barcode_search_isbn"
                 android:layout_marginTop="12dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

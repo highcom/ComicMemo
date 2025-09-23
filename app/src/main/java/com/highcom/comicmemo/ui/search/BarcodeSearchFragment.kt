@@ -88,6 +88,7 @@ class BarcodeSearchFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -111,7 +112,7 @@ class BarcodeSearchFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.isbnBookList.collect {
                 if (it.isNullOrEmpty()) {
-                    binding.barcodeResult.text = barcodeValue
+                    binding.barcodeResult.text = getString(R.string.barcode_result_failure) + barcodeValue
                 } else {
                     // 該当データがあれば詳細画面へ遷移して監視を終了
                     findNavController().navigate(R.id.action_barcode_search_fragment_to_book_detail_fragment, bundleOf("BUNDLE_ITEM_DATA" to it.first()))
