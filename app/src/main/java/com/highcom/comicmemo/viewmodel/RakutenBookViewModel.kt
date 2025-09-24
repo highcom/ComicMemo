@@ -66,6 +66,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     val bookList: LiveData<List<Item>?>
         get() = _bookList
 
+    /** ISBN入力用の内部変数 */
     private val _isbnInput = MutableSharedFlow<String>(extraBufferCapacity = 1)
     /** 楽天APIのレスポンスデータを保持する内部変数(ISBN検索用) */
     private val _isbnBookList = MutableSharedFlow<List<Item>?>(extraBufferCapacity = 1)
@@ -237,6 +238,12 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     fun searchIsbn(isbn: String) {
         _isbnInput.tryEmit(isbn)
     }
+
+    /**
+     * 引数で指定されたISBN番号での書籍検索内部処理
+     *
+     * @param isbn ISBN番号
+     */
     private suspend fun searchIsbnInternal(isbn: String) {
         liveDataKind = LiveDataKind.SEARCH
         _bookList.value = null
