@@ -54,7 +54,7 @@ class BarcodeSearchFragment : Fragment() {
     @Suppress("DEPRECATION")
     private val handler = Handler()
     /** 検出したバーコードの値 */
-    private var barcodeValue = ""
+    private var codeValue = ""
     /**
      * ML Kit のバーコードスキャナ。
      * QRコード、Code128、EAN-13 を検出対象として設定しています。
@@ -112,7 +112,7 @@ class BarcodeSearchFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.isbnBookList.collect {
                 if (it.isNullOrEmpty()) {
-                    binding.barcodeResult.text = getString(R.string.barcode_result_failure) + barcodeValue
+                    binding.barcodeResult.text = getString(R.string.barcode_result_failure) + codeValue
                 } else {
                     // 該当データがあれば詳細画面へ遷移して監視を終了
                     findNavController().navigate(R.id.action_barcode_search_fragment_to_book_detail_fragment, bundleOf("BUNDLE_ITEM_DATA" to it.first()))
@@ -151,9 +151,10 @@ class BarcodeSearchFragment : Fragment() {
         binding.searchButton.setOnClickListener {
             val code = binding.manualInput.text.toString()
             if (code.isNotBlank()) {
-                viewModel.searchIsbn(code)
+                codeValue = code
+                viewModel.searchIsbn(codeValue)
             } else {
-                Snackbar.make(requireView(), getString(R.string.input_failure) + it, Snackbar.LENGTH_LONG).setAction("Action", null).show()
+                Snackbar.make(requireView(), getString(R.string.input_failure), Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }
         }
     }
@@ -204,12 +205,12 @@ class BarcodeSearchFragment : Fragment() {
             scanner.process(input)
                 .addOnSuccessListener { barcodes ->
                     if (barcodes.isNotEmpty()) {
-                        barcodeValue = barcodes.first().rawValue ?: ""
-                        viewModel.searchIsbn(barcodeValue)
+                        codeValue = barcodes.first().rawValue ?: ""
+                        viewModel.searchIsbn(codeValue)
                     }
                 }
                 .addOnFailureListener {
-                    Snackbar.make(requireView(), getString(R.string.read_failure) + it, Snackbar.LENGTH_LONG).setAction("Action", null).show()
+                    Snackbar.make(requireView(), getString(R.string.read_failure), Snackbar.LENGTH_LONG).setAction("Action", null).show()
                 }
                 .addOnCompleteListener { imageProxy.close() }
         } else imageProxy.close()
