@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Response
 import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
@@ -178,11 +180,14 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
             rakutenApiService.salesItems(genreId, page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
-                override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+                override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                     _status.value = RakutenApiStatus.ERROR
                 }
 
-                override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+                override fun onResponse(
+                    call: Call<RakutenBookData>,
+                    response: Response<RakutenBookData>
+                ) {
                     if (response.isSuccessful) {
                         response.body()?.let {
                             _status.value = RakutenApiStatus.DONE
@@ -214,11 +219,14 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
             rakutenApiService.searchItems(genreId, _searchWord.value ?: "", page.toString(), appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
-                override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+                override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                     _status.value = RakutenApiStatus.ERROR
                 }
 
-                override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+                override fun onResponse(
+                    call: Call<RakutenBookData>,
+                    response: Response<RakutenBookData>
+                ) {
                     if (response.isSuccessful) {
                         response.body()?.let {
                             _status.value = RakutenApiStatus.DONE
@@ -250,11 +258,14 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
             rakutenApiService.searchIsbnItems(isbn, appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
-                override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+                override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                     _status.value = RakutenApiStatus.ERROR
                 }
 
-                override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+                override fun onResponse(
+                    call: Call<RakutenBookData>,
+                    response: Response<RakutenBookData>
+                ) {
                     if (response.isSuccessful) {
                         response.body()?.let {
                             _status.value = RakutenApiStatus.DONE
@@ -299,13 +310,16 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         val author = authorItr.next().author
         val currentDate = LocalDate.now()
         rakutenApiService.searchAuthorListItems(author, appId).enqueue(object : retrofit2.Callback<RakutenBookData> {
-            override fun onFailure(call: retrofit2.Call<RakutenBookData>?, t: Throwable?) {
+            override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                 _status.value = RakutenApiStatus.ERROR
             }
 
-            override fun onResponse(call: retrofit2.Call<RakutenBookData>?, response: retrofit2.Response<RakutenBookData>) {
+            override fun onResponse(
+                call: Call<RakutenBookData>,
+                response: Response<RakutenBookData>
+            ) {
                 if (response.isSuccessful) {
-                    response.body()?.let {
+                    response.body()?.let { it ->
                         _status.value = RakutenApiStatus.DONE
                         // 現在の日付より過去に発売されているものは削除する
                         it.Items.removeIf {

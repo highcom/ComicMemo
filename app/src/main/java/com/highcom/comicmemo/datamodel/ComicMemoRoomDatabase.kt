@@ -9,11 +9,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  * SQLiteからRoomへのマイグレーション操作
  */
 val MIGRATION_2_3 = object : Migration(2, 3) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.beginTransaction()
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.beginTransaction()
         try {
             // 新しいテーブルを一時テーブルとして構築
-            database.execSQL("""
+            db.execSQL("""
                 CREATE TABLE comicdata_tmp(
                     id INTEGER PRIMARY KEY NOT NULL,
                     title TEXT NOT NULL DEFAULT '',
@@ -26,19 +26,19 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
                 """.trimIndent()
             )
             // 旧テーブルのデータを全て一時テーブルに追加
-            database.execSQL("""
+            db.execSQL("""
                 INSERT INTO comicdata_tmp (id,title,author,number,memo,inputdate,status)
                 SELECT id,title,author,number,memo,inputdate,status FROM comicdata
                 """.trimIndent()
             )
             // 旧テーブルを削除
-            database.execSQL("DROP TABLE comicdata")
+            db.execSQL("DROP TABLE comicdata")
             // 新テーブルをリネーム
-            database.execSQL("ALTER TABLE comicdata_tmp RENAME TO comicdata")
+            db.execSQL("ALTER TABLE comicdata_tmp RENAME TO comicdata")
 
-            database.setTransactionSuccessful()
+            db.setTransactionSuccessful()
         } finally {
-            database.endTransaction()
+            db.endTransaction()
         }
     }
 }
@@ -47,11 +47,11 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
  * 新刊検索機能追加に伴うマイグレーション操作
  */
 val MIGRATION_3_4 = object : Migration(3, 4) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.beginTransaction()
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.beginTransaction()
         try {
             // 著作者名の新しいテーブルを構築
-            database.execSQL("""
+            db.execSQL("""
                 CREATE TABLE authorlist(
                     id INTEGER PRIMARY KEY NOT NULL,
                     author TEXT NOT NULL DEFAULT ''
@@ -59,9 +59,9 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
                 """.trimIndent()
             )
 
-            database.setTransactionSuccessful()
+            db.setTransactionSuccessful()
         } finally {
-            database.endTransaction()
+            db.endTransaction()
         }
     }
 }
@@ -70,11 +70,11 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
  * フリガナ・出版社・ISBNカラム追加によるマイグレーション
  */
 val MIGRATION_4_5 = object : Migration(4, 5) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.beginTransaction()
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.beginTransaction()
         try {
             // 新しいテーブルを一時テーブルとして構築
-            database.execSQL("""
+            db.execSQL("""
                 CREATE TABLE comicdata_tmp(
                     id INTEGER PRIMARY KEY NOT NULL,
                     title TEXT NOT NULL DEFAULT '',
@@ -90,19 +90,19 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
                 """.trimIndent()
             )
             // 旧テーブルのデータを全て一時テーブルに追加
-            database.execSQL("""
+            db.execSQL("""
                 INSERT INTO comicdata_tmp (id,title,author,number,memo,inputdate,status)
                 SELECT id,title,author,number,memo,inputdate,status FROM comicdata
                 """.trimIndent()
             )
             // 旧テーブルを削除
-            database.execSQL("DROP TABLE comicdata")
+            db.execSQL("DROP TABLE comicdata")
             // 新テーブルをリネーム
-            database.execSQL("ALTER TABLE comicdata_tmp RENAME TO comicdata")
+            db.execSQL("ALTER TABLE comicdata_tmp RENAME TO comicdata")
 
-            database.setTransactionSuccessful()
+            db.setTransactionSuccessful()
         } finally {
-            database.endTransaction()
+            db.endTransaction()
         }
     }
 }
