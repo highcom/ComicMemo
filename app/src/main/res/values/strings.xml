@@ -61,4 +61,11 @@
     <string name="detail_isbn">ISBN番号</string>
     <string name="detail_sales">発売日</string>
     <string name="detail_url">楽天で詳細を見る</string>
+    <string name="barcode_search_premium">バーコード検索（有料）</string>
+    <string name="subscription_title">有料会員に登録</string>
+    <string name="subscription_description">有料会員になると、広告が非表示になり、バーコード検索機能がご利用いただけます。</string>
+    <string name="subscribe">購入する</string>
+    <string name="already_subscribed">既に有料会員です</string>
+    <string name="subscription_error">購入処理でエラーが発生しました</string>
+    <string name="subscription_cancelled">購入がキャンセルされました</string>
 </resources>

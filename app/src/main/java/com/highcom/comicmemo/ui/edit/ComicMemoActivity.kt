@@ -10,6 +10,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
@@ -38,8 +39,12 @@ class ComicMemoActivity : AppCompatActivity() {
             RequestConfiguration.Builder()
                 .setTestDeviceIds(listOf("874848BA4D9A6B9B0A256F7862A47A31", "D56EB6B2294B414233D8BCBE5E39758B")).build()
         )
-        // 広告のロード
-        binding.adViewFrame.post { loadBanner() }
+        // 広告のロード（有料会員でない場合のみ）
+        if (!SubscriptionManager.isPremium(this)) {
+            binding.adViewFrame.post { loadBanner() }
+        } else {
+            binding.adViewFrame.visibility = android.view.View.GONE
+        }
         // レビュー評価依頼のダイアログに表示する内容を設定
         val options = RmpAppirater.Options(
             getString(R.string.review_dialog_title),

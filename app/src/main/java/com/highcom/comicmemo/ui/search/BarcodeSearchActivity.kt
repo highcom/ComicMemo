@@ -9,6 +9,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.ActivityBarcodeSearchBinding
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,8 +28,12 @@ class BarcodeSearchActivity : AppCompatActivity() {
         setContentView(binding.root)
         // アクションバーの戻るボタンを表示
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        // 広告のロード
-        binding.adViewBarcodeSearchFrame.post { loadBanner() }
+        // 広告のロード（有料会員でない場合のみ）
+        if (!SubscriptionManager.isPremium(this)) {
+            binding.adViewBarcodeSearchFrame.post { loadBanner() }
+        } else {
+            binding.adViewBarcodeSearchFrame.visibility = android.view.View.GONE
+        }
     }
 
     /**
