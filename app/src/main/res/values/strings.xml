@@ -68,4 +68,14 @@
     <string name="already_subscribed">既に有料会員です</string>
     <string name="subscription_error">購入処理でエラーが発生しました</string>
     <string name="subscription_cancelled">購入がキャンセルされました</string>
+    <string name="settings">設定</string>
+    <string name="premium_features_title">有料会員特典</string>
+    <string name="premium_features_description">有料会員になると以下の機能が利用できます：</string>
+    <string name="premium_feature_ads">• 広告の削除</string>
+    <string name="premium_feature_barcode">• バーコード検索機能</string>
+    <string name="current_status">現在のステータス：</string>
+    <string name="free_member">無料会員</string>
+    <string name="premium_member">有料会員</string>
+    <string name="become_premium">有料会員になる</string>
+    <string name="loading">読み込み中…</string>
 </resources>

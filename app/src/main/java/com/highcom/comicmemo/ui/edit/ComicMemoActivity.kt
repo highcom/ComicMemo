@@ -2,6 +2,7 @@ package com.highcom.comicmemo.ui.edit
 
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -43,7 +44,7 @@ class ComicMemoActivity : AppCompatActivity() {
         if (!SubscriptionManager.isPremium(this)) {
             binding.adViewFrame.post { loadBanner() }
         } else {
-            binding.adViewFrame.visibility = android.view.View.GONE
+            binding.adViewFrame.visibility = View.GONE
         }
         // レビュー評価依頼のダイアログに表示する内容を設定
         val options = RmpAppirater.Options(

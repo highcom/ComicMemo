@@ -3,6 +3,7 @@ package com.highcom.comicmemo.ui.search
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -32,7 +33,7 @@ class BarcodeSearchActivity : AppCompatActivity() {
         if (!SubscriptionManager.isPremium(this)) {
             binding.adViewBarcodeSearchFrame.post { loadBanner() }
         } else {
-            binding.adViewBarcodeSearchFrame.visibility = android.view.View.GONE
+            binding.adViewBarcodeSearchFrame.visibility = View.GONE
         }
     }
 

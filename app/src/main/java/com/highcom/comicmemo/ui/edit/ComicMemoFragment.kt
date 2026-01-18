@@ -184,6 +184,11 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                         }
                         // 無料会員の場合は何もしない（メニューがグレーアウトされているため通常は呼ばれない）
                     }
+                    R.id.settings -> {
+                        // 設定画面へ遷移
+                        val action = ComicMemoFragmentDirections.actionComicMemoFragmentToSettingFragment()
+                        findNavController().navigate(action)
+                    }
                     else -> return false
                 }
                 return true

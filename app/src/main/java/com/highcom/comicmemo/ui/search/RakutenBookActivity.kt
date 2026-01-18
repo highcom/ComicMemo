@@ -3,12 +3,14 @@ package com.highcom.comicmemo.ui.search
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,7 +43,11 @@ class RakutenBookActivity : AppCompatActivity() {
         // アクションバーの戻るボタンを表示
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // 広告のロード
-        binding.adViewBookListFrame.post { loadBanner() }
+        if (!SubscriptionManager.isPremium(this)) {
+            binding.adViewBookListFrame.post { loadBanner() }
+        } else {
+            binding.adViewBookListFrame.visibility = View.GONE
+        }
     }
 
     /**
