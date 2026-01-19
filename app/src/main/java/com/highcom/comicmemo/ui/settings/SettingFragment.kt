@@ -114,6 +114,10 @@ class SettingFragment : Fragment() {
         }
     }
 
+    /**
+     * 有料会員状態表示変更処理
+     *
+     */
     private fun updateMembershipStatus() {
         val isPremium = SubscriptionManager.isPremium(requireContext())
 
@@ -128,17 +132,15 @@ class SettingFragment : Fragment() {
         }
     }
 
+    /**
+     * 有料会員状態更新処理
+     *
+     * @param state
+     */
     private fun handlePurchaseState(state: PurchaseState) {
         when (state) {
             is PurchaseState.Purchased -> {
                 updateMembershipStatus()
-                Toast.makeText(
-                    requireContext(),
-                    "有料会員になりました！",
-                    Toast.LENGTH_LONG
-                ).show()
-                binding.subscribeButton.isEnabled = true
-                binding.subscribeButton.text = getString(R.string.already_subscribed)
             }
             is PurchaseState.Cancelled -> {
                 Toast.makeText(
@@ -162,12 +164,6 @@ class SettingFragment : Fragment() {
                 // NotPurchased などの他の状態では何もしない
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // 設定画面では現在のSubscriptionManagerの状態を表示するだけ
-        // 購入状態の再確認は購入時のみ行う
     }
 
     override fun onDestroyView() {
