@@ -4,15 +4,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.BillingManager
 import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * 楽天書籍APIを利用した書籍画面のActivity
@@ -25,6 +30,8 @@ class RakutenBookActivity : AppCompatActivity() {
     private var bookMode: Int = 0
     /** AdMob広告 */
     private var mAdView: AdView? = null
+    /** BillingManager */
+    private lateinit var billingManager: BillingManager
     /** 画面の更新が必要かどうか */
     var isNeedUpdate = true
 
@@ -42,11 +49,39 @@ class RakutenBookActivity : AppCompatActivity() {
         navController.setGraph(navGraph, bundle)
         // アクションバーの戻るボタンを表示
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // BillingManagerの初期化
+        billingManager = BillingManager(this, getString(R.string.subscription_id))
+        lifecycle.addObserver(billingManager)
+
+        // 購入状態の監視
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                billingManager.purchaseState.collect { _ ->
+                    updateAdVisibility()
+                }
+            }
+        }
+
         // 広告のロード
-        if (!SubscriptionManager.isPremium(this)) {
-            binding.adViewBookListFrame.post { loadBanner() }
-        } else {
+        updateAdVisibility()
+    }
+
+    /**
+     * 広告の表示/非表示を更新
+     */
+    private fun updateAdVisibility() {
+        if (SubscriptionManager.isPremium(this)) {
+            // 有料会員の場合、広告を非表示にして破棄
             binding.adViewBookListFrame.visibility = View.GONE
+            mAdView?.destroy()
+            mAdView = null
+        } else {
+            // 無料会員の場合、広告を表示
+            binding.adViewBookListFrame.visibility = View.VISIBLE
+            if (mAdView == null) {
+                loadBanner()
+            }
         }
     }
 
@@ -88,6 +123,7 @@ class RakutenBookActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         mAdView?.destroy()
+        lifecycle.removeObserver(billingManager)
         super.onDestroy()
     }
 }

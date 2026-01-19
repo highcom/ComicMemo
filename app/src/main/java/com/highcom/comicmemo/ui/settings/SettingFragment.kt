@@ -166,8 +166,8 @@ class SettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // 購入状態を確認
-        billingManager.queryPurchases()
+        // 設定画面では現在のSubscriptionManagerの状態を表示するだけ
+        // 購入状態の再確認は購入時のみ行う
     }
 
     override fun onDestroyView() {

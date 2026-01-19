@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/sirahanairo"
-    android:padding="16dp"
+    android:padding="4dp"
     tools:context=".ui.settings.SettingFragment">
 
     <LinearLayout
@@ -13,81 +13,96 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- 有料会員特典セクション -->
-        <TextView
-            android:id="@+id/premium_features_title"
+        <!-- 定期購入関連のCardView -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/premium_features_title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/premium_features_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/premium_features_description"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="16dp" />
-
-        <!-- 特典リスト -->
-        <TextView
-            android:id="@+id/premium_feature_ads"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/premium_feature_ads"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="16dp" />
-
-        <TextView
-            android:id="@+id/premium_feature_barcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/premium_feature_barcode"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="24dp"
-            android:layout_marginStart="16dp" />
-
-        <!-- 現在のステータス -->
-        <TextView
-            android:id="@+id/current_status_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/current_status"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/membership_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/free_member"
-            android:textSize="16sp"
-            android:textColor="@color/appcolor"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
-
-        <!-- 購入ボタン -->
-        <Button
-            android:id="@+id/subscribe_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/become_premium"
-            android:textSize="18sp"
+            android:background="@color/geppaku"
             android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/membership_status"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:backgroundTint="@color/appcolor"
-            android:textColor="@android:color/white" />
+            app:cardCornerRadius="6dp"
+            app:contentPadding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- 有料会員特典セクション -->
+                <TextView
+                    android:id="@+id/premium_features_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/premium_features_title"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/premium_features_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/premium_features_description"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- 特典リスト -->
+                <TextView
+                    android:id="@+id/premium_feature_ads"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/premium_feature_ads"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="16dp" />
+
+                <TextView
+                    android:id="@+id/premium_feature_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/premium_feature_barcode"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginStart="16dp" />
+
+                <!-- 現在のステータス -->
+                <TextView
+                    android:id="@+id/current_status_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_status"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/membership_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/free_member"
+                    android:textSize="16sp"
+                    android:textColor="@color/appcolor"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="24dp" />
+
+                <!-- 購入ボタン -->
+                <Button
+                    android:id="@+id/subscribe_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/become_premium"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/round_button"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 </ScrollView>

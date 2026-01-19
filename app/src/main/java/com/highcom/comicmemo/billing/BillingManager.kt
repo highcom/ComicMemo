@@ -43,7 +43,7 @@ class BillingManager(
     /**
      * 購入状態を確認
      */
-    fun queryPurchases() {
+    private fun queryPurchases() {
         val client = billingClient ?: return
 
         if (!client.isReady) {

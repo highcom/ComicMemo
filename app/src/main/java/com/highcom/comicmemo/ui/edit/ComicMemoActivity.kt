@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -11,10 +14,12 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.BillingManager
 import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.ActivityComicMemoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.recruit_mp.android.rmp_appirater.RmpAppirater
+import kotlinx.coroutines.launch
 import java.util.Date
 
 @AndroidEntryPoint
@@ -25,6 +30,8 @@ class ComicMemoActivity : AppCompatActivity() {
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
     /** AdMob広告 */
     private var mAdView: AdView? = null
+    /** BillingManager */
+    private lateinit var billingManager: BillingManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +47,21 @@ class ComicMemoActivity : AppCompatActivity() {
             RequestConfiguration.Builder()
                 .setTestDeviceIds(listOf("874848BA4D9A6B9B0A256F7862A47A31", "D56EB6B2294B414233D8BCBE5E39758B")).build()
         )
-        // 広告のロード（有料会員でない場合のみ）
-        if (!SubscriptionManager.isPremium(this)) {
-            binding.adViewFrame.post { loadBanner() }
-        } else {
-            binding.adViewFrame.visibility = View.GONE
+        // BillingManagerの初期化
+        billingManager = BillingManager(this, getString(R.string.subscription_id))
+        lifecycle.addObserver(billingManager)
+
+        // 購入状態の監視
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                billingManager.purchaseState.collect { _ ->
+                    updateAdVisibility()
+                }
+            }
         }
+
+        // 広告のロード（有料会員でない場合のみ）
+        updateAdVisibility()
         // レビュー評価依頼のダイアログに表示する内容を設定
         val options = RmpAppirater.Options(
             getString(R.string.review_dialog_title),
@@ -87,6 +103,24 @@ class ComicMemoActivity : AppCompatActivity() {
                 true
             }, options
         )
+    }
+
+    /**
+     * 広告の表示/非表示を更新
+     */
+    private fun updateAdVisibility() {
+        if (SubscriptionManager.isPremium(this)) {
+            // 有料会員の場合、広告を非表示にして破棄
+            binding.adViewFrame.visibility = View.GONE
+            mAdView?.destroy()
+            mAdView = null
+        } else {
+            // 無料会員の場合、広告を表示
+            binding.adViewFrame.visibility = View.VISIBLE
+            if (mAdView == null) {
+                loadBanner()
+            }
+        }
     }
 
     /**
@@ -136,6 +170,7 @@ class ComicMemoActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         mAdView?.destroy()
+        lifecycle.removeObserver(billingManager)
         super.onDestroy()
     }
 }
