@@ -69,18 +69,20 @@
     <string name="subscription_error">購入処理でエラーが発生しました</string>
     <string name="subscription_cancelled">購入がキャンセルされました</string>
     <string name="settings">設定</string>
-    <string name="premium_features_title">有料会員特典</string>
+    <string name="premium_features_title">有料会員プラン</string>
     <string name="premium_features_description">有料会員になると以下の機能が利用できます：</string>
-    <string name="premium_feature_ads">• 広告の削除</string>
+    <string name="premium_feature_ads">• 広告の非表示</string>
     <string name="premium_feature_barcode">• バーコード検索機能</string>
     <string name="current_status">現在のステータス：</string>
     <string name="free_member">無料会員</string>
     <string name="premium_member">有料会員</string>
-    <string name="become_premium">有料会員になる</string>
+    <string name="become_premium">有料会員になる（￥170／月）</string>
     <string name="loading">読み込み中…</string>
     <string name="privacy_policy_title">プライバシーポリシーの表示</string>
     <string name="app_evaluation_title">巻数メモを評価</string>
     <string name="move_button">移動</string>
     <string name="privacy_policy_url">https://high-commu.amebaownd.com/pages/2891722/page_201905200001</string>
     <string name="app_store_url">https://play.google.com/store/apps/details?id=com.highcom.comicmemo</string>
+    <string name="barcode_feature_url">https://ameblo.jp/highcommunicate/entry-12933460327.html</string>
+    <string name="feature_description_link">機能について</string>
 </resources>

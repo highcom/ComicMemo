@@ -59,15 +59,38 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="16dp" />
 
-                <TextView
-                    android:id="@+id/premium_feature_barcode"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/premium_feature_barcode"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
+                    android:orientation="horizontal"
                     android:layout_marginBottom="24dp"
-                    android:layout_marginStart="16dp" />
+                    android:layout_marginStart="16dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/premium_feature_barcode"
+                        android:textSize="16sp"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/feature_description_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/feature_description_link"
+                        android:textSize="14sp"
+                        android:textColor="@color/appcolor"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginStart="8dp"
+                        android:drawablePadding="4dp"
+                        app:drawableTint="@color/appcolor"
+                        app:drawableRightCompat="@drawable/ic_baseline_open_in_browser_24" />
+
+                </LinearLayout>
 
                 <!-- 現在のステータス -->
                 <TextView

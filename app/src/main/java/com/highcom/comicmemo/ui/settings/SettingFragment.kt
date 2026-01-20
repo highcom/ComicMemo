@@ -126,6 +126,12 @@ class SettingFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_store_url)))
             startActivity(intent)
         }
+
+        // 機能説明リンクのクリックリスナー
+        binding.featureDescriptionLink.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.barcode_feature_url)))
+            startActivity(intent)
+        }
     }
 
     /**
