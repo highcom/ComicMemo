@@ -18,13 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/geppaku"
-            android:layout_marginBottom="16dp"
             app:cardCornerRadius="6dp"
-            app:contentPadding="16dp">
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="4dp"
                 android:orientation="vertical">
 
                 <!-- 有料会員特典セクション -->
@@ -99,6 +100,82 @@
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/round_button"
                     android:textColor="@android:color/white" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- プライバシーポリシーのCardView -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/geppaku"
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/privacy_policy_title"
+                    android:textSize="16sp"
+                    android:textColor="@color/black" />
+
+                <Button
+                    android:id="@+id/privacy_policy_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/move_button"
+                    android:textSize="14sp"
+                    android:background="@drawable/round_button"
+                    android:textColor="@android:color/white"
+                    android:layout_marginStart="16dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- アプリ評価のCardView -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/geppaku"
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/app_evaluation_title"
+                    android:textSize="16sp"
+                    android:textColor="@color/black" />
+
+                <Button
+                    android:id="@+id/app_evaluation_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/move_button"
+                    android:textSize="14sp"
+                    android:background="@drawable/round_button"
+                    android:textColor="@android:color/white"
+                    android:layout_marginStart="16dp" />
 
             </LinearLayout>
 

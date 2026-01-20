@@ -78,4 +78,9 @@
     <string name="premium_member">有料会員</string>
     <string name="become_premium">有料会員になる</string>
     <string name="loading">読み込み中…</string>
+    <string name="privacy_policy_title">プライバシーポリシーの表示</string>
+    <string name="app_evaluation_title">巻数メモを評価</string>
+    <string name="move_button">移動</string>
+    <string name="privacy_policy_url">https://high-commu.amebaownd.com/pages/2891722/page_201905200001</string>
+    <string name="app_store_url">https://play.google.com/store/apps/details?id=com.highcom.comicmemo</string>
 </resources>

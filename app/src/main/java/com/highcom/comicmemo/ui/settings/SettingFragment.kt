@@ -1,5 +1,7 @@
 package com.highcom.comicmemo.ui.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -111,6 +113,18 @@ class SettingFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        // プライバシーポリシーボタンのクリックリスナー
+        binding.privacyPolicyButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy_url)))
+            startActivity(intent)
+        }
+
+        // アプリ評価ボタンのクリックリスナー
+        binding.appEvaluationButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_store_url)))
+            startActivity(intent)
         }
     }
 
