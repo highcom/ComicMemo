@@ -14,6 +14,7 @@ import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentComicMemoBinding
 import com.highcom.comicmemo.datamodel.Comic
+import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.ui.search.BarcodeSearchActivity
 import com.highcom.comicmemo.ui.search.RakutenBookActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -100,6 +101,17 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                     forEachPlaceholder { it.setSmoothScrollPosition(0) }
                     false
                 }
+
+                // バーコード検索メニューの有料/無料状態を設定
+                val barcodeSearchItem = menu.findItem(R.id.barcode_search)
+                val isPremium = SubscriptionManager.isPremium(requireContext())
+                if (isPremium) {
+                    barcodeSearchItem.title = getString(R.string.barcode_search)
+                    barcodeSearchItem.isEnabled = true
+                } else {
+                    barcodeSearchItem.title = getString(R.string.barcode_search_premium)
+                    barcodeSearchItem.isEnabled = false
+                }
             }
 
             /**
@@ -165,9 +177,17 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                         startActivity(intent)
                     }
                     R.id.barcode_search -> {
-                        // バーコード検索
-                        val intent = Intent(requireActivity(), BarcodeSearchActivity::class.java)
-                        startActivity(intent)
+                        // バーコード検索（有料会員のみ）
+                        if (SubscriptionManager.isPremium(requireContext())) {
+                            val intent = Intent(requireActivity(), BarcodeSearchActivity::class.java)
+                            startActivity(intent)
+                        }
+                        // 無料会員の場合は何もしない（メニューがグレーアウトされているため通常は呼ばれない）
+                    }
+                    R.id.settings -> {
+                        // 設定画面へ遷移
+                        val action = ComicMemoFragmentDirections.actionComicMemoFragmentToSettingFragment()
+                        findNavController().navigate(action)
                     }
                     else -> return false
                 }

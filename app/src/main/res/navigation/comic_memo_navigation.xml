@@ -44,7 +44,19 @@
                 android:name="comic"
                 app:argType="com.highcom.comicmemo.datamodel.Comic" />
         </action>
+        <action
+            android:id="@+id/action_comicMemoFragment_to_settingFragment"
+            app:destination="@id/settingFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.highcom.comicmemo.ui.settings.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
     <fragment
         android:id="@+id/referenceMemoFragment"
         android:name="com.highcom.comicmemo.ui.edit.ReferenceMemoFragment"

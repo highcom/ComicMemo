@@ -88,6 +88,16 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_comicMemoFragment_to_referenceMemoFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_comicMemoFragment_to_settingFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -112,6 +122,27 @@
                           <Point>
                             <option name="x" value="244" />
                             <option name="y" value="13" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_referenceMemoFragment_to_inputMemoFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="settingFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="17" />
+                            <option name="y" value="356" />
                           </Point>
                         </option>
                       </LayoutPositions>

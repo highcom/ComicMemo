@@ -199,6 +199,10 @@
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.exifinterface:exifinterface:1.0.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.google.mlkit:common:18.11.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.google.mlkit:vision-interfaces:16.3.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.android.billingclient:billing-ktx:6.1.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.android.billingclient:billing:6.1.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.android.gms:play-services-location:19.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.android.gms:play-services-places-placereport:17.0.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.annotation:annotation-jvm:1.6.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.9.24" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains:annotations:23.0.0" level="project" />

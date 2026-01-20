@@ -42,4 +42,7 @@
     <item
         android:id="@+id/barcode_search"
         android:title="@string/barcode_search" />
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings" />
 </menu>

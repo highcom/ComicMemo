@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- サブスクリプションID（Google Play Consoleで設定したIDに置き換えてください） -->
+    <string name="subscription_id" translatable="false">premium_subscription</string>
+</resources>
