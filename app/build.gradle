@@ -41,6 +41,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    // Kotlin の jvmTarget を Java 17 に揃える設定を追加
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
     buildFeatures {
         viewBinding true
     }
