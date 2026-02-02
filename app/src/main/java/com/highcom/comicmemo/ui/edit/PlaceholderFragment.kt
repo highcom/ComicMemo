@@ -116,10 +116,33 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             viewHolder: RecyclerView.ViewHolder
         ) {
             ComicListPersistent.lastUpdateId = 0L
-            // 入れ替え完了後に最後に一度DBの更新をする
-            val rearrangeComicList = rearrangeComicList(fromPos, toPos)
-            pageViewModel.update(rearrangeComicList)
-            // 移動位置情報を初期化
+            if (fromPos == -1 || toPos == -1 || fromPos == toPos) {
+                // 移動がなかった場合 or 無効な場合はリセットして終了
+                fromPos = -1
+                toPos = -1
+                return
+            }
+
+            // --- データベースの更新 ---
+            // 1. DB永続化用に、IDを再採番したリストを作成
+            // この時点ではまだ origComicList は古い並び順
+            val listForDb = rearrangeComicList(fromPos, toPos)
+            pageViewModel.update(listForDb)
+
+            // --- UIの即時更新とちらつき防止 ---
+            // 2. UI表示用に、IDを変更せずに並び替えたリストを作成
+            val currentList = origComicList?.toMutableList() ?: mutableListOf()
+            val movedComic = currentList.removeAt(fromPos)
+            currentList.add(toPos, movedComic)
+            val newListForUi = currentList.toList()
+
+            // 3. LiveDataの更新が走ったときにUIが戻らないよう、Fragmentが持つリストも更新
+            origComicList = newListForUi
+
+            // 4. adapterに新しいリストを渡し、データの最終状態を通知する
+            adapter.submitList(newListForUi)
+
+            // 5. 移動位置情報を初期化
             fromPos = -1
             toPos = -1
         }
@@ -459,18 +482,17 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
      */
     private fun rearrangeComicList(fromPos: Int, toPos: Int): List<Comic> {
         val origComicIds = ArrayList<Long>()
-        val rearrangeComicList = ArrayList<Comic>()
-        // 元のIDの並びを保持と並べ替えができるリストに入れ替える
-        origComicList?.let {
-            for (comic in origComicList!!) {
-                origComicIds.add(comic.id)
-                rearrangeComicList.add(comic)
-            }
+        // 安全にコピーを操作するため、オリジナルのリストからIDのリストとComicのコピーリストを作成
+        origComicList?.forEach {
+            origComicIds.add(it.id)
         }
+        val rearrangeComicList = origComicList?.map { it.copy() }?.toMutableList()
+            ?: return emptyList()
+
         // 引数で渡された位置で並べ替え
-        val fromComic = rearrangeComicList[fromPos]
-        rearrangeComicList.removeAt(fromPos)
+        val fromComic = rearrangeComicList.removeAt(fromPos)
         rearrangeComicList.add(toPos, fromComic)
+
         // 再度IDを振り直す
         val itr = origComicIds.listIterator()
         for (comic in rearrangeComicList) {
