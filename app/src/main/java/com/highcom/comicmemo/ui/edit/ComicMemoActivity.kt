@@ -31,7 +31,8 @@ class ComicMemoActivity : AppCompatActivity() {
     /** AdMob広告 */
     private var mAdView: AdView? = null
     /** BillingManager */
-    private lateinit var billingManager: BillingManager
+    private lateinit var monthlyBillingManager: BillingManager
+    private lateinit var yearlyBillingManager: BillingManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +49,23 @@ class ComicMemoActivity : AppCompatActivity() {
                 .setTestDeviceIds(listOf("874848BA4D9A6B9B0A256F7862A47A31", "D56EB6B2294B414233D8BCBE5E39758B")).build()
         )
         // BillingManagerの初期化
-        billingManager = BillingManager(this, getString(R.string.subscription_id))
-        lifecycle.addObserver(billingManager)
+        monthlyBillingManager = BillingManager(this, getString(R.string.premium_subscription))
+        yearlyBillingManager = BillingManager(this, getString(R.string.premium_subscription_yearly))
+        lifecycle.addObserver(monthlyBillingManager)
+        lifecycle.addObserver(yearlyBillingManager)
 
         // 購入状態の監視
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                billingManager.purchaseState.collect { _ ->
-                    updateAdVisibility()
+                launch {
+                    monthlyBillingManager.purchaseState.collect { _ ->
+                        updateAdVisibility()
+                    }
+                }
+                launch {
+                    yearlyBillingManager.purchaseState.collect { _ ->
+                        updateAdVisibility()
+                    }
                 }
             }
         }
@@ -170,7 +180,8 @@ class ComicMemoActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         mAdView?.destroy()
-        lifecycle.removeObserver(billingManager)
+        lifecycle.removeObserver(monthlyBillingManager)
+        lifecycle.removeObserver(yearlyBillingManager)
         super.onDestroy()
     }
 }

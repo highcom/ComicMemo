@@ -75,8 +75,11 @@
     <string name="premium_feature_barcode">• バーコード検索機能</string>
     <string name="current_status">現在のステータス：</string>
     <string name="free_member">無料会員</string>
-    <string name="premium_member">有料会員</string>
-    <string name="become_premium">有料会員になる（￥170／月）</string>
+    <string name="premium_member_monthly">月額有料会員</string>
+    <string name="premium_member_yearly">年額有料会員</string>
+    <string name="become_premium_monthly">月額有料会員になる（￥170／月）</string>
+    <string name="become_premium_yearly">年額有料会員になる（￥1700／年）</string>
+    <string name="yearly_promotion">※年額有料会員は2ヶ月分お得</string>
     <string name="loading">読み込み中…</string>
     <string name="privacy_policy_title">プライバシーポリシーの表示</string>
     <string name="app_evaluation_title">巻数メモを評価</string>

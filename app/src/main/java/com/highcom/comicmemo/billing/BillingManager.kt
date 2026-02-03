@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.android.billingclient.api.*
+import com.highcom.comicmemo.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,7 +53,7 @@ class BillingManager(
         }
 
         val params = QueryPurchasesParams.newBuilder()
-            .setProductType(BillingClient.SkuType.SUBS)
+            .setProductType(BillingClient.ProductType.SUBS)
             .build()
 
         client.queryPurchasesAsync(params) { billingResult, purchases ->
@@ -111,7 +112,7 @@ class BillingManager(
         val productList = listOf(
             QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(subscriptionId)
-                .setProductType(BillingClient.SkuType.SUBS)
+                .setProductType(BillingClient.ProductType.SUBS)
                 .build()
         )
 
@@ -175,7 +176,12 @@ class BillingManager(
      * 購入状態を更新
      */
     private fun updatePurchaseState(isPurchased: Boolean) {
-        SubscriptionManager.setPremium(context, isPurchased)
+        if (subscriptionId == context.getString(R.string.premium_subscription)) {
+            SubscriptionManager.setPremiumMonthly(context, isPurchased)
+        } else if (subscriptionId == context.getString(R.string.premium_subscription_yearly)) {
+            SubscriptionManager.setPremiumYearly(context, isPurchased)
+        }
+
         _purchaseState.value = if (isPurchased) {
             PurchaseState.Purchased
         } else {

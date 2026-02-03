@@ -31,7 +31,8 @@ class RakutenBookActivity : AppCompatActivity() {
     /** AdMob広告 */
     private var mAdView: AdView? = null
     /** BillingManager */
-    private lateinit var billingManager: BillingManager
+    private lateinit var monthlyBillingManager: BillingManager
+    private lateinit var yearlyBillingManager: BillingManager
     /** 画面の更新が必要かどうか */
     var isNeedUpdate = true
 
@@ -51,14 +52,23 @@ class RakutenBookActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // BillingManagerの初期化
-        billingManager = BillingManager(this, getString(R.string.subscription_id))
-        lifecycle.addObserver(billingManager)
+        monthlyBillingManager = BillingManager(this, getString(R.string.premium_subscription))
+        yearlyBillingManager = BillingManager(this, getString(R.string.premium_subscription_yearly))
+        lifecycle.addObserver(monthlyBillingManager)
+        lifecycle.addObserver(yearlyBillingManager)
 
         // 購入状態の監視
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                billingManager.purchaseState.collect { _ ->
-                    updateAdVisibility()
+                launch {
+                    monthlyBillingManager.purchaseState.collect { _ ->
+                        updateAdVisibility()
+                    }
+                }
+                launch {
+                    yearlyBillingManager.purchaseState.collect { _ ->
+                        updateAdVisibility()
+                    }
                 }
             }
         }
@@ -123,7 +133,8 @@ class RakutenBookActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         mAdView?.destroy()
-        lifecycle.removeObserver(billingManager)
+        lifecycle.removeObserver(monthlyBillingManager)
+        lifecycle.removeObserver(yearlyBillingManager)
         super.onDestroy()
     }
 }

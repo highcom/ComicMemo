@@ -115,14 +115,34 @@
 
                 <!-- 購入ボタン -->
                 <Button
-                    android:id="@+id/subscribe_button"
+                    android:id="@+id/subscribe_button_monthly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/become_premium"
+                    android:text="@string/become_premium_monthly"
                     android:textSize="18sp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/round_button"
                     android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/subscribe_button_yearly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/become_premium_yearly"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/round_button"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/yearly_promotion_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yearly_promotion"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:gravity="end"
+                    android:layout_marginBottom="16dp"/>
 
             </LinearLayout>
 
