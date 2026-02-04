@@ -25,6 +25,7 @@ import com.highcom.comicmemo.databinding.FragmentSettingBinding
 import com.highcom.comicmemo.ui.edit.ComicMemoActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
@@ -111,7 +112,7 @@ class SettingFragment : Fragment() {
             if (!SubscriptionManager.isPremium(requireContext())) {
                 binding.hideAdsButton.isEnabled = false
                 binding.hideAdsButton.text = getString(R.string.loading)
-                billingManager.startPurchaseFlow(requireActivity(), "hide_ads_in_app")
+                billingManager.startPurchaseFlow(requireActivity(), getString(R.string.hide_ads_in_app))
             }
         }
 
@@ -122,19 +123,19 @@ class SettingFragment : Fragment() {
 
         // プライバシーポリシーボタンのクリックリスナー
         binding.privacyPolicyButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy_url)))
+            val intent = Intent(Intent.ACTION_VIEW, getString(R.string.privacy_policy_url).toUri())
             startActivity(intent)
         }
 
         // アプリ評価ボタンのクリックリスナー
         binding.appEvaluationButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_store_url)))
+            val intent = Intent(Intent.ACTION_VIEW, getString(R.string.app_store_url).toUri())
             startActivity(intent)
         }
 
         // 機能説明リンクのクリックリスナー
         binding.featureDescriptionLink.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.barcode_feature_url)))
+            val intent = Intent(Intent.ACTION_VIEW, getString(R.string.barcode_feature_url).toUri())
             startActivity(intent)
         }
     }
@@ -215,7 +216,7 @@ class SettingFragment : Fragment() {
                 binding.subscribeButtonYearly.isEnabled = true
                 binding.subscribeButtonYearly.text = getString(R.string.become_premium_yearly)
             }
-            "hide_ads_in_app" -> {
+            getString(R.string.hide_ads_in_app) -> {
                 binding.hideAdsButton.isEnabled = true
                 binding.hideAdsButton.text = getString(R.string.hide_ads_price)
             }

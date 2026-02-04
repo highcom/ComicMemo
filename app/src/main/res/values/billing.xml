@@ -3,4 +3,5 @@
     <!-- サブスクリプションID（Google Play Consoleで設定したIDに置き換えてください） -->
     <string name="premium_subscription" translatable="false">premium_subscription</string>
     <string name="premium_subscription_yearly" translatable="false">premium_subscription_yearly</string>
+    <string name="hide_ads_in_app" translatable="false">hide_ads_in_app</string>
 </resources>

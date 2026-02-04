@@ -79,7 +79,7 @@ class BillingManager(
             .build()
         client.queryPurchasesAsync(inAppParams) { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                val hideAdsId = "hide_ads_in_app"
+                val hideAdsId = context.getString(R.string.hide_ads_in_app)
                 val hasHideAds = purchases.any { it.products.contains(hideAdsId) }
                 SubscriptionManager.setHideAds(context, hasHideAds)
 
@@ -114,7 +114,7 @@ class BillingManager(
 
         pendingProductId = productId
 
-        val productType = if (productId == "hide_ads_in_app") {
+        val productType = if (productId == context.getString(R.string.hide_ads_in_app)) {
             BillingClient.ProductType.INAPP
         } else {
             BillingClient.ProductType.SUBS
