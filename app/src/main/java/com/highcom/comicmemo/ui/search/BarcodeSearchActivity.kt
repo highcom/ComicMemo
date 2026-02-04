@@ -7,16 +7,13 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.billing.BillingManager
 import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.ActivityBarcodeSearchBinding
-import com.highcom.comicmemo.databinding.ActivityRakutenBookBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,8 +26,7 @@ class BarcodeSearchActivity : AppCompatActivity() {
     /** AdMob広告 */
     private var mAdView: AdView? = null
     /** BillingManager */
-    private lateinit var monthlyBillingManager: BillingManager
-    private lateinit var yearlyBillingManager: BillingManager
+    private lateinit var billingManager: BillingManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,23 +36,14 @@ class BarcodeSearchActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // BillingManagerの初期化
-        monthlyBillingManager = BillingManager(this, getString(R.string.premium_subscription))
-        yearlyBillingManager = BillingManager(this, getString(R.string.premium_subscription_yearly))
-        lifecycle.addObserver(monthlyBillingManager)
-        lifecycle.addObserver(yearlyBillingManager)
+        billingManager = BillingManager(this)
+        lifecycle.addObserver(billingManager)
 
         // 購入状態の監視
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    monthlyBillingManager.purchaseState.collect { _ ->
-                        updateAdVisibility()
-                    }
-                }
-                launch {
-                    yearlyBillingManager.purchaseState.collect { _ ->
-                        updateAdVisibility()
-                    }
+                billingManager.purchaseState.collect { _ ->
+                    updateAdVisibility()
                 }
             }
         }
@@ -121,8 +108,7 @@ class BarcodeSearchActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         mAdView?.destroy()
-        lifecycle.removeObserver(monthlyBillingManager)
-        lifecycle.removeObserver(yearlyBillingManager)
+        lifecycle.removeObserver(billingManager)
         super.onDestroy()
     }
 }

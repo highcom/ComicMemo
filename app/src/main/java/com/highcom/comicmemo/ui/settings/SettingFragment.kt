@@ -32,8 +32,7 @@ class SettingFragment : Fragment() {
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var monthlyBillingManager: BillingManager
-    private lateinit var yearlyBillingManager: BillingManager
+    private lateinit var billingManager: BillingManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,8 +58,7 @@ class SettingFragment : Fragment() {
              * @param menu メニュー
              * @param menuInflater インフレーター
              */
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            }
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
 
             /**
              * アクションバーのメニュー選択処理
@@ -76,11 +74,9 @@ class SettingFragment : Fragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        // BillingManagerの初期化とライフサイクル管理
-        monthlyBillingManager = BillingManager(requireContext(), getString(R.string.premium_subscription))
-        yearlyBillingManager = BillingManager(requireContext(), getString(R.string.premium_subscription_yearly))
-        viewLifecycleOwner.lifecycle.addObserver(monthlyBillingManager)
-        viewLifecycleOwner.lifecycle.addObserver(yearlyBillingManager)
+        // BillingManagerの初期化とライフサイクル監視
+        billingManager = BillingManager(requireContext())
+        viewLifecycleOwner.lifecycle.addObserver(billingManager)
 
         // 現在のステータスを表示
         updateMembershipStatus()
@@ -88,44 +84,25 @@ class SettingFragment : Fragment() {
         // 購入状態の監視
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch { monthlyBillingManager.purchaseState.collect { state -> handlePurchaseState(state, getString(R.string.become_premium_monthly), binding.subscribeButtonMonthly) } }
-                launch { yearlyBillingManager.purchaseState.collect { state -> handlePurchaseState(state, getString(R.string.become_premium_yearly), binding.subscribeButtonYearly) } }
+                billingManager.purchaseState.collect { state -> handlePurchaseState(state) }
             }
         }
 
         // 月額購入ボタンのクリックリスナー
         binding.subscribeButtonMonthly.setOnClickListener {
             if (!SubscriptionManager.isPremium(requireContext())) {
-                // プロダクト詳細を取得してから購入フロー開始
                 binding.subscribeButtonMonthly.isEnabled = false
                 binding.subscribeButtonMonthly.text = getString(R.string.loading)
-                monthlyBillingManager.queryProductDetails { productDetails ->
-                    if (productDetails != null) {
-                        monthlyBillingManager.launchPurchaseFlow(requireActivity(), productDetails)
-                    } else {
-                        Toast.makeText(requireContext(), getString(R.string.subscription_error), Toast.LENGTH_LONG).show()
-                        binding.subscribeButtonMonthly.isEnabled = true
-                        binding.subscribeButtonMonthly.text = getString(R.string.become_premium_monthly)
-                    }
-                }
+                billingManager.startPurchaseFlow(requireActivity(), getString(R.string.premium_subscription))
             }
         }
 
         // 年額購入ボタンのクリックリスナー
         binding.subscribeButtonYearly.setOnClickListener {
             if (!SubscriptionManager.isPremium(requireContext())) {
-                // プロダクト詳細を取得してから購入フロー開始
                 binding.subscribeButtonYearly.isEnabled = false
                 binding.subscribeButtonYearly.text = getString(R.string.loading)
-                yearlyBillingManager.queryProductDetails { productDetails ->
-                    if (productDetails != null) {
-                        yearlyBillingManager.launchPurchaseFlow(requireActivity(), productDetails)
-                    } else {
-                        Toast.makeText(requireContext(), getString(R.string.subscription_error), Toast.LENGTH_LONG).show()
-                        binding.subscribeButtonYearly.isEnabled = true
-                        binding.subscribeButtonYearly.text = getString(R.string.become_premium_yearly)
-                    }
-                }
+                billingManager.startPurchaseFlow(requireActivity(), getString(R.string.premium_subscription_yearly))
             }
         }
 
@@ -150,7 +127,6 @@ class SettingFragment : Fragment() {
 
     /**
      * 有料会員状態表示変更処理
-     *
      */
     private fun updateMembershipStatus() {
         val isPremiumMonthly = SubscriptionManager.isPremiumMonthly(requireContext())
@@ -178,28 +154,41 @@ class SettingFragment : Fragment() {
     }
 
     /**
-     * 有料会員状態更新処理
+     * 購入状態を処理し、UIを更新する
      *
-     * @param state
+     * @param state 購入状態
      */
-    private fun handlePurchaseState(state: PurchaseState, buttonText: String, button: Button) {
+    private fun handlePurchaseState(state: PurchaseState) {
         when (state) {
             is PurchaseState.Purchased -> {
                 updateMembershipStatus()
             }
             is PurchaseState.Cancelled -> {
                 Toast.makeText(requireContext(), getString(R.string.subscription_cancelled), Toast.LENGTH_SHORT).show()
-                button.isEnabled = true
-                button.text = buttonText
+                resetButtonState(state.productId)
             }
             is PurchaseState.Error -> {
                 Toast.makeText(requireContext(), getString(R.string.subscription_error) + ": ${state.message}", Toast.LENGTH_LONG).show()
-                button.isEnabled = true
-                button.text = buttonText
+                resetButtonState(state.productId)
             }
             else -> {
                 // NotPurchased などの他の状態では何もしない
             }
+        }
+    }
+
+    /**
+     * 指定された商品IDのボタンの状態を元に戻す
+     *
+     * @param productId 商品ID
+     */
+    private fun resetButtonState(productId: String?) {
+        if (productId == getString(R.string.premium_subscription)) {
+            binding.subscribeButtonMonthly.isEnabled = true
+            binding.subscribeButtonMonthly.text = getString(R.string.become_premium_monthly)
+        } else if (productId == getString(R.string.premium_subscription_yearly)) {
+            binding.subscribeButtonYearly.isEnabled = true
+            binding.subscribeButtonYearly.text = getString(R.string.become_premium_yearly)
         }
     }
 

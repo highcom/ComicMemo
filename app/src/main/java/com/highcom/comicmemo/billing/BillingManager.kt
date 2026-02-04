@@ -14,16 +14,16 @@ import kotlinx.coroutines.flow.asStateFlow
  * Google Play Billing管理クラス
  *
  * @param context コンテキスト
- * @param subscriptionId サブスクリプションID（Google Play Consoleで設定したID）
  */
 class BillingManager(
     private val context: Context,
-    private val subscriptionId: String
 ) : DefaultLifecycleObserver, PurchasesUpdatedListener, BillingClientStateListener {
 
     private var billingClient: BillingClient? = null
     private val _purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.NotPurchased)
     val purchaseState: StateFlow<PurchaseState> = _purchaseState.asStateFlow()
+
+    private var pendingProductId: String? = null
 
     init {
         initializeBillingClient()
@@ -42,7 +42,7 @@ class BillingManager(
     }
 
     /**
-     * 購入状態を確認
+     * 購入状態を確認して、月額・年額それぞれのステータスを更新する
      */
     private fun queryPurchases() {
         val client = billingClient ?: return
@@ -58,25 +58,74 @@ class BillingManager(
 
         client.queryPurchasesAsync(params) { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                val isPurchased = purchases.any { it.products.contains(subscriptionId) }
-                updatePurchaseState(isPurchased)
+                val monthlyId = context.getString(R.string.premium_subscription)
+                val yearlyId = context.getString(R.string.premium_subscription_yearly)
+                val hasMonthly = purchases.any { it.products.contains(monthlyId) }
+                val hasYearly = purchases.any { it.products.contains(yearlyId) }
+                SubscriptionManager.setPremiumMonthly(context, hasMonthly)
+                SubscriptionManager.setPremiumYearly(context, hasYearly)
+
+                if (hasMonthly || hasYearly) {
+                    _purchaseState.value = PurchaseState.Purchased
+                } else {
+                    _purchaseState.value = PurchaseState.NotPurchased
+                }
             }
         }
     }
 
     /**
-     * 購入フローの開始
+     * 指定された商品IDの購入フローを開始する
      *
      * @param activity Activity
-     * @param productDetails プロダクト詳細
+     * @param productId 商品ID
      */
-    fun launchPurchaseFlow(activity: Activity, productDetails: ProductDetails) {
+    fun startPurchaseFlow(activity: Activity, productId: String) {
         val client = billingClient ?: return
 
         if (!client.isReady) {
             client.startConnection(this)
+            _purchaseState.value = PurchaseState.Error("Billing client not ready", productId)
             return
         }
+
+        pendingProductId = productId
+
+        val productList = listOf(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(productId)
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build()
+        )
+
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(productList)
+            .build()
+
+        client.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                val productDetails = productDetailsList.firstOrNull()
+                if (productDetails != null) {
+                    launchPurchaseFlowInternal(activity, productDetails)
+                } else {
+                    _purchaseState.value = PurchaseState.Error("Product not found on Google Play.", pendingProductId)
+                    pendingProductId = null
+                }
+            } else {
+                _purchaseState.value = PurchaseState.Error(billingResult.debugMessage, pendingProductId)
+                pendingProductId = null
+            }
+        }
+    }
+
+    /**
+     * 内部用の購入フローの開始処理
+     *
+     * @param activity Activity
+     * @param productDetails プロダクト詳細
+     */
+    private fun launchPurchaseFlowInternal(activity: Activity, productDetails: ProductDetails) {
+        val client = billingClient ?: return
 
         val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
             ?: return
@@ -95,70 +144,39 @@ class BillingManager(
         client.launchBillingFlow(activity, billingFlowParams)
     }
 
-    /**
-     * プロダクト詳細をクエリ
-     *
-     * @param callback コールバック
-     */
-    fun queryProductDetails(callback: (ProductDetails?) -> Unit) {
-        val client = billingClient ?: return
-
-        if (!client.isReady) {
-            client.startConnection(this)
-            callback(null)
-            return
-        }
-
-        val productList = listOf(
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(subscriptionId)
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build()
-        )
-
-        val params = QueryProductDetailsParams.newBuilder()
-            .setProductList(productList)
-            .build()
-
-        client.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                callback(productDetailsList.firstOrNull())
-            } else {
-                callback(null)
-            }
-        }
-    }
-
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
                 purchases?.forEach { purchase ->
                     handlePurchase(purchase)
                 }
+                pendingProductId = null
             }
             BillingClient.BillingResponseCode.USER_CANCELED -> {
-                _purchaseState.value = PurchaseState.Cancelled
+                _purchaseState.value = PurchaseState.Cancelled(pendingProductId)
+                pendingProductId = null
             }
             else -> {
-                _purchaseState.value = PurchaseState.Error(billingResult.debugMessage)
+                _purchaseState.value = PurchaseState.Error(billingResult.debugMessage, pendingProductId)
+                pendingProductId = null
             }
         }
     }
 
     /**
-     * 購入を処理
+     * 購入を処理する
      */
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
                 acknowledgePurchase(purchase)
             }
-            updatePurchaseState(true)
+            queryPurchases()
         }
     }
 
     /**
-     * 購入を承認
+     * 購入を承認する
      */
     private fun acknowledgePurchase(purchase: Purchase) {
         val client = billingClient ?: return
@@ -169,23 +187,6 @@ class BillingManager(
 
         client.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
             // 承認結果の処理
-        }
-    }
-
-    /**
-     * 購入状態を更新
-     */
-    private fun updatePurchaseState(isPurchased: Boolean) {
-        if (subscriptionId == context.getString(R.string.premium_subscription)) {
-            SubscriptionManager.setPremiumMonthly(context, isPurchased)
-        } else if (subscriptionId == context.getString(R.string.premium_subscription_yearly)) {
-            SubscriptionManager.setPremiumYearly(context, isPurchased)
-        }
-
-        _purchaseState.value = if (isPurchased) {
-            PurchaseState.Purchased
-        } else {
-            PurchaseState.NotPurchased
         }
     }
 
@@ -212,6 +213,6 @@ class BillingManager(
 sealed class PurchaseState {
     object NotPurchased : PurchaseState()
     object Purchased : PurchaseState()
-    object Cancelled : PurchaseState()
-    data class Error(val message: String) : PurchaseState()
+    data class Cancelled(val productId: String?, val timestamp: Long = System.currentTimeMillis()) : PurchaseState()
+    data class Error(val message: String, val productId: String?, val timestamp: Long = System.currentTimeMillis()) : PurchaseState()
 }
