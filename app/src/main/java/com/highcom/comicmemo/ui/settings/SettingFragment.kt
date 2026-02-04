@@ -106,6 +106,20 @@ class SettingFragment : Fragment() {
             }
         }
 
+        // 広告非表示ボタンのクリックリスナー
+        binding.hideAdsButton.setOnClickListener {
+            if (!SubscriptionManager.isPremium(requireContext())) {
+                binding.hideAdsButton.isEnabled = false
+                binding.hideAdsButton.text = getString(R.string.loading)
+                billingManager.startPurchaseFlow(requireActivity(), "hide_ads_in_app")
+            }
+        }
+
+        // 購入の復元ボタンのクリックリスナー
+        binding.restoreButton.setOnClickListener {
+            billingManager.restorePurchases()
+        }
+
         // プライバシーポリシーボタンのクリックリスナー
         binding.privacyPolicyButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy_url)))
@@ -131,6 +145,7 @@ class SettingFragment : Fragment() {
     private fun updateMembershipStatus() {
         val isPremiumMonthly = SubscriptionManager.isPremiumMonthly(requireContext())
         val isPremiumYearly = SubscriptionManager.isPremiumYearly(requireContext())
+        val isHideAds = SubscriptionManager.isHideAds(requireContext())
 
         if (isPremiumMonthly) {
             binding.membershipStatus.text = getString(R.string.premium_member_monthly)
@@ -150,6 +165,14 @@ class SettingFragment : Fragment() {
             binding.subscribeButtonYearly.text = getString(R.string.become_premium_yearly)
             binding.subscribeButtonMonthly.isEnabled = true
             binding.subscribeButtonYearly.isEnabled = true
+        }
+
+        if (isHideAds) {
+            binding.hideAdsButton.text = getString(R.string.already_subscribed)
+            binding.hideAdsButton.isEnabled = false
+        } else {
+            binding.hideAdsButton.text = getString(R.string.hide_ads_price)
+            binding.hideAdsButton.isEnabled = true
         }
     }
 
@@ -183,12 +206,19 @@ class SettingFragment : Fragment() {
      * @param productId 商品ID
      */
     private fun resetButtonState(productId: String?) {
-        if (productId == getString(R.string.premium_subscription)) {
-            binding.subscribeButtonMonthly.isEnabled = true
-            binding.subscribeButtonMonthly.text = getString(R.string.become_premium_monthly)
-        } else if (productId == getString(R.string.premium_subscription_yearly)) {
-            binding.subscribeButtonYearly.isEnabled = true
-            binding.subscribeButtonYearly.text = getString(R.string.become_premium_yearly)
+        when (productId) {
+            getString(R.string.premium_subscription) -> {
+                binding.subscribeButtonMonthly.isEnabled = true
+                binding.subscribeButtonMonthly.text = getString(R.string.become_premium_monthly)
+            }
+            getString(R.string.premium_subscription_yearly) -> {
+                binding.subscribeButtonYearly.isEnabled = true
+                binding.subscribeButtonYearly.text = getString(R.string.become_premium_yearly)
+            }
+            "hide_ads_in_app" -> {
+                binding.hideAdsButton.isEnabled = true
+                binding.hideAdsButton.text = getString(R.string.hide_ads_price)
+            }
         }
     }
 

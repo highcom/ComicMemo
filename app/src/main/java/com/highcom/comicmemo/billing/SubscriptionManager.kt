@@ -10,6 +10,29 @@ object SubscriptionManager {
     private const val PREFS_NAME = "subscription_prefs"
     private const val KEY_IS_PREMIUM_MONTHLY = "is_premium_monthly"
     private const val KEY_IS_PREMIUM_YEARLY = "is_premium_yearly"
+    private const val KEY_IS_HIDE_ADS = "is_hide_ads"
+
+    /**
+     * 広告非表示かどうかを取得
+     *
+     * @param context コンテキスト
+     * @return 広告非表示の場合true
+     */
+    fun isHideAds(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_IS_HIDE_ADS, false)
+    }
+
+    /**
+     * 広告非表示ステータスを設定
+     *
+     * @param context コンテキスト
+     * @param isHideAds 広告非表示の場合true
+     */
+    fun setHideAds(context: Context, isHideAds: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean(KEY_IS_HIDE_ADS, isHideAds).apply()
+    }
 
     /**
      * 有料会員かどうかを取得
@@ -18,7 +41,7 @@ object SubscriptionManager {
      * @return 有料会員の場合true
      */
     fun isPremium(context: Context): Boolean {
-        return isPremiumMonthly(context) || isPremiumYearly(context)
+        return isPremiumMonthly(context) || isPremiumYearly(context) || isHideAds(context)
     }
 
     /**

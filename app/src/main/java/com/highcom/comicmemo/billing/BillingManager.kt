@@ -42,7 +42,7 @@ class BillingManager(
     }
 
     /**
-     * 購入状態を確認して、月額・年額それぞれのステータスを更新する
+     * 購入状態を確認して、月額・年額・買い切りのステータスを更新する
      */
     private fun queryPurchases() {
         val client = billingClient ?: return
@@ -52,11 +52,11 @@ class BillingManager(
             return
         }
 
-        val params = QueryPurchasesParams.newBuilder()
+        // 定期購入のクエリ
+        val subsParams = QueryPurchasesParams.newBuilder()
             .setProductType(BillingClient.ProductType.SUBS)
             .build()
-
-        client.queryPurchasesAsync(params) { billingResult, purchases ->
+        client.queryPurchasesAsync(subsParams) { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val monthlyId = context.getString(R.string.premium_subscription)
                 val yearlyId = context.getString(R.string.premium_subscription_yearly)
@@ -72,6 +72,29 @@ class BillingManager(
                 }
             }
         }
+
+        // 買い切りアイテムのクエリ
+        val inAppParams = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build()
+        client.queryPurchasesAsync(inAppParams) { billingResult, purchases ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                val hideAdsId = "hide_ads_in_app"
+                val hasHideAds = purchases.any { it.products.contains(hideAdsId) }
+                SubscriptionManager.setHideAds(context, hasHideAds)
+
+                if (hasHideAds) {
+                    _purchaseState.value = PurchaseState.Purchased
+                }
+            }
+        }
+    }
+
+    /**
+     * 購入の復元
+     */
+    fun restorePurchases() {
+        queryPurchases()
     }
 
     /**
@@ -91,10 +114,16 @@ class BillingManager(
 
         pendingProductId = productId
 
+        val productType = if (productId == "hide_ads_in_app") {
+            BillingClient.ProductType.INAPP
+        } else {
+            BillingClient.ProductType.SUBS
+        }
+
         val productList = listOf(
             QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(productId)
-                .setProductType(BillingClient.ProductType.SUBS)
+                .setProductType(productType)
                 .build()
         )
 
@@ -106,7 +135,7 @@ class BillingManager(
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val productDetails = productDetailsList.firstOrNull()
                 if (productDetails != null) {
-                    launchPurchaseFlowInternal(activity, productDetails)
+                    launchPurchaseFlowInternal(activity, productDetails, productType)
                 } else {
                     _purchaseState.value = PurchaseState.Error("Product not found on Google Play.", pendingProductId)
                     pendingProductId = null
@@ -123,19 +152,26 @@ class BillingManager(
      *
      * @param activity Activity
      * @param productDetails プロダクト詳細
+     * @param productType プロダクトタイプ
      */
-    private fun launchPurchaseFlowInternal(activity: Activity, productDetails: ProductDetails) {
+    private fun launchPurchaseFlowInternal(activity: Activity, productDetails: ProductDetails, productType: String) {
         val client = billingClient ?: return
 
-        val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
-            ?: return
-
-        val productDetailsParamsList = listOf(
-            BillingFlowParams.ProductDetailsParams.newBuilder()
-                .setProductDetails(productDetails)
-                .setOfferToken(offerToken)
-                .build()
-        )
+        val productDetailsParamsList = if (productType == BillingClient.ProductType.SUBS) {
+            val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: return
+            listOf(
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(productDetails)
+                    .setOfferToken(offerToken)
+                    .build()
+            )
+        } else {
+            listOf(
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(productDetails)
+                    .build()
+            )
+        }
 
         val billingFlowParams = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(productDetailsParamsList)

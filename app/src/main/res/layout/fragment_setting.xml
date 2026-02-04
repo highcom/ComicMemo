@@ -148,6 +148,44 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- 広告の非表示（買い切り） -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/geppaku"
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hide_ads_title"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/hide_ads_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/round_button"
+                    android:text="@string/hide_ads_price"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
         <!-- プライバシーポリシーのCardView -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -181,6 +219,44 @@
                     android:background="@drawable/round_button"
                     android:textColor="@android:color/white"
                     android:layout_marginStart="16dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- 購入の復元 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/geppaku"
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/restore_purchases_title"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/restore_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/round_button"
+                    android:text="@string/restore_button"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 

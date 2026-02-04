@@ -65,7 +65,7 @@
     <string name="subscription_title">有料会員に登録</string>
     <string name="subscription_description">有料会員になると、広告が非表示になり、バーコード検索機能がご利用いただけます。</string>
     <string name="subscribe">購入する</string>
-    <string name="already_subscribed">既に有料会員です</string>
+    <string name="already_subscribed">既に購入済み</string>
     <string name="subscription_error">購入処理でエラーが発生しました</string>
     <string name="subscription_cancelled">購入がキャンセルされました</string>
     <string name="settings">設定</string>
@@ -88,4 +88,8 @@
     <string name="app_store_url">https://play.google.com/store/apps/details?id=com.highcom.comicmemo</string>
     <string name="barcode_feature_url">https://ameblo.jp/highcommunicate/entry-12933460327.html</string>
     <string name="feature_description_link">機能について</string>
+    <string name="hide_ads_title">広告の非表示のみ購入（買い切り）</string>
+    <string name="hide_ads_price">￥500</string>
+    <string name="restore_purchases_title">購入の復元</string>
+    <string name="restore_button">復元</string>
 </resources>
