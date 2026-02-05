@@ -92,4 +92,5 @@
     <string name="hide_ads_price">￥500</string>
     <string name="restore_purchases_title">購入の復元</string>
     <string name="restore_button">復元</string>
+    <string name="empty_message">右下のボタンから書籍の登録ができます</string>
 </resources>

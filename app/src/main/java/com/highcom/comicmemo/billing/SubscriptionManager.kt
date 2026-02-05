@@ -2,6 +2,7 @@ package com.highcom.comicmemo.billing
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 /**
  * サブスクリプション（有料会員）ステータス管理クラス
@@ -31,7 +32,7 @@ object SubscriptionManager {
      */
     fun setHideAds(context: Context, isHideAds: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putBoolean(KEY_IS_HIDE_ADS, isHideAds).apply()
+        prefs.edit { putBoolean(KEY_IS_HIDE_ADS, isHideAds) }
     }
 
     /**
@@ -74,7 +75,7 @@ object SubscriptionManager {
      */
     fun setPremiumMonthly(context: Context, isPremium: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putBoolean(KEY_IS_PREMIUM_MONTHLY, isPremium).apply()
+        prefs.edit { putBoolean(KEY_IS_PREMIUM_MONTHLY, isPremium) }
     }
 
     /**
@@ -85,6 +86,6 @@ object SubscriptionManager {
      */
     fun setPremiumYearly(context: Context, isPremium: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putBoolean(KEY_IS_PREMIUM_YEARLY, isPremium).apply()
+        prefs.edit { putBoolean(KEY_IS_PREMIUM_YEARLY, isPremium) }
     }
 }

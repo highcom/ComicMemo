@@ -180,6 +180,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 continueComics.let {
                     origComicList = it
                     updateComicListListener?.onUpdateContinueComicsCount(origComicList?.size ?: 0)
+                    binding.emptyView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
                     setSearchWordFilter(searchViewWord)
                 }
             }
@@ -188,6 +189,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                 completeComics.let {
                     origComicList = it
                     updateComicListListener?.onUpdateCompleteComicsCount(origComicList?.size ?: 0)
+                    binding.emptyView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
                     setSearchWordFilter(searchViewWord)
                 }
             }
