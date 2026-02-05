@@ -78,8 +78,8 @@
     <string name="premium_member_monthly">月額有料会員</string>
     <string name="premium_member_yearly">年額有料会員</string>
     <string name="become_premium_monthly">月額有料会員になる（￥170／月）</string>
-    <string name="become_premium_yearly">年額有料会員になる（￥1700／年）</string>
-    <string name="yearly_promotion">※年額有料会員は2ヶ月分お得</string>
+    <string name="become_premium_yearly">年額有料会員になる（￥1500／年）</string>
+    <string name="yearly_promotion">※年額有料会員は約3ヶ月分お得</string>
     <string name="loading">読み込み中…</string>
     <string name="privacy_policy_title">プライバシーポリシーの表示</string>
     <string name="app_evaluation_title">巻数メモを評価</string>
@@ -89,7 +89,7 @@
     <string name="barcode_feature_url">https://ameblo.jp/highcommunicate/entry-12933460327.html</string>
     <string name="feature_description_link">機能について</string>
     <string name="hide_ads_title">広告の非表示のみ購入（買い切り）</string>
-    <string name="hide_ads_price">￥500</string>
+    <string name="hide_ads_price">￥800</string>
     <string name="restore_purchases_title">購入の復元</string>
     <string name="restore_button">復元</string>
     <string name="empty_message">右下のボタンから書籍の登録ができます</string>
