@@ -144,6 +144,7 @@ class SettingFragment : Fragment() {
      * 有料会員状態表示変更処理
      */
     private fun updateMembershipStatus() {
+        val isPremium = SubscriptionManager.isPremium(requireContext())
         val isPremiumMonthly = SubscriptionManager.isPremiumMonthly(requireContext())
         val isPremiumYearly = SubscriptionManager.isPremiumYearly(requireContext())
         val isHideAds = SubscriptionManager.isHideAds(requireContext())
@@ -156,24 +157,26 @@ class SettingFragment : Fragment() {
             binding.membershipStatus.text = getString(R.string.free_member)
         }
 
-        if (isPremiumMonthly || isPremiumYearly) {
+        if (isPremium) {
             binding.subscribeButtonMonthly.text = getString(R.string.already_subscribed)
             binding.subscribeButtonYearly.text = getString(R.string.already_subscribed)
             binding.subscribeButtonMonthly.isEnabled = false
             binding.subscribeButtonYearly.isEnabled = false
+            binding.hideAdsButton.text = getString(R.string.already_subscribed)
+            binding.hideAdsButton.isEnabled = false
         } else {
             binding.subscribeButtonMonthly.text = getString(R.string.become_premium_monthly)
             binding.subscribeButtonYearly.text = getString(R.string.become_premium_yearly)
             binding.subscribeButtonMonthly.isEnabled = true
             binding.subscribeButtonYearly.isEnabled = true
-        }
 
-        if (isHideAds) {
-            binding.hideAdsButton.text = getString(R.string.already_subscribed)
-            binding.hideAdsButton.isEnabled = false
-        } else {
-            binding.hideAdsButton.text = getString(R.string.hide_ads_price)
-            binding.hideAdsButton.isEnabled = true
+            if (isHideAds) {
+                binding.hideAdsButton.text = getString(R.string.already_subscribed)
+                binding.hideAdsButton.isEnabled = false
+            } else {
+                binding.hideAdsButton.text = getString(R.string.hide_ads_price)
+                binding.hideAdsButton.isEnabled = true
+            }
         }
     }
 

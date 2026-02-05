@@ -21,7 +21,7 @@ object SubscriptionManager {
      */
     fun isHideAds(context: Context): Boolean {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getBoolean(KEY_IS_HIDE_ADS, false)
+        return prefs.getBoolean(KEY_IS_HIDE_ADS, false) || isPremium(context)
     }
 
     /**
@@ -42,7 +42,7 @@ object SubscriptionManager {
      * @return 有料会員の場合true
      */
     fun isPremium(context: Context): Boolean {
-        return isPremiumMonthly(context) || isPremiumYearly(context) || isHideAds(context)
+        return isPremiumMonthly(context) || isPremiumYearly(context)
     }
 
     /**
