@@ -65,7 +65,7 @@
     <string name="subscription_title">有料会員に登録</string>
     <string name="subscription_description">有料会員になると、広告が非表示になり、バーコード検索機能がご利用いただけます。</string>
     <string name="subscribe">購入する</string>
-    <string name="already_subscribed">既に購入済み</string>
+    <string name="already_subscribed">購入済み</string>
     <string name="subscription_error">購入処理でエラーが発生しました</string>
     <string name="subscription_cancelled">購入がキャンセルされました</string>
     <string name="settings">設定</string>

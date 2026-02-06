@@ -56,7 +56,7 @@ class BarcodeSearchActivity : AppCompatActivity() {
      * 広告の表示/非表示を更新
      */
     private fun updateAdVisibility() {
-        if (SubscriptionManager.isPremium(this)) {
+        if (SubscriptionManager.isPremium(this) || SubscriptionManager.isHideAds(this)) {
             // 有料会員の場合、広告を非表示にして破棄
             binding.adViewBarcodeSearchFrame.visibility = View.GONE
             mAdView?.destroy()
