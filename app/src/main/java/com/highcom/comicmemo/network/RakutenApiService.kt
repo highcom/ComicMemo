@@ -13,10 +13,11 @@ interface RakutenApiService {
      * @param genreId ジャンルID
      * @param page 参照ページ
      * @param appId アプリID
+     * @param affiliateId アフィリエイトID
      * @return 検索結果リスト
      */
     @GET("BooksBook/Search/20170404?format=json&sort=sales&hits=30")
-    fun salesItems(@Query("booksGenreId") genreId: String, @Query("page") page: String, @Query("applicationId") appId: String): retrofit2.Call<RakutenBookData>
+    fun salesItems(@Query("booksGenreId") genreId: String, @Query("page") page: String, @Query("applicationId") appId: String, @Query("affiliateId") affiliateId: String): retrofit2.Call<RakutenBookData>
 
     /**
      * タイトル名検索
@@ -25,28 +26,31 @@ interface RakutenApiService {
      * @param title 検索タイトル
      * @param page 参照ページ
      * @param appId アプリID
+     * @param affiliateId アフィリエイトID
      * @return 検索結果リスト
      */
     @GET("BooksBook/Search/20170404?format=json&hits=30")
-    fun searchItems(@Query("booksGenreId") genreId: String, @Query("title") title: String, @Query("page") page: String, @Query("applicationId") appId: String): retrofit2.Call<RakutenBookData>
+    fun searchItems(@Query("booksGenreId") genreId: String, @Query("title") title: String, @Query("page") page: String, @Query("applicationId") appId: String, @Query("affiliateId") affiliateId: String): retrofit2.Call<RakutenBookData>
 
     /**
      * 著作者検索
      *
      * @param author 検索著作者名リスト
      * @param appId アプリID
+     * @param affiliateId アフィリエイトID
      * @return 検索結果リスト
      */
     @GET("BooksBook/Search/20170404?format=json&sort=-releaseDate&hits=30")
-    fun searchAuthorListItems(@Query("author") author: String, @Query("applicationId") appId: String): retrofit2.Call<RakutenBookData>
+    fun searchAuthorListItems(@Query("author") author: String, @Query("applicationId") appId: String, @Query("affiliateId") affiliateId: String): retrofit2.Call<RakutenBookData>
 
     /**
      * ISBN検索
      *
      * @param isbn ISBN番号
      * @param appId アプリID
+     * @param affiliateId アフィリエイトID
      * @return 検索結果リスト
      */
     @GET("BooksBook/Search/20170404?format=json&sort=-releaseDate&hits=30")
-    fun searchIsbnItems(@Query("isbn") isbn: String, @Query("applicationId") appId: String): retrofit2.Call<RakutenBookData>
+    fun searchIsbnItems(@Query("isbn") isbn: String, @Query("applicationId") appId: String, @Query("affiliateId") affiliateId: String): retrofit2.Call<RakutenBookData>
 }

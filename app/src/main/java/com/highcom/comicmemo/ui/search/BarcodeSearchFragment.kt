@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -23,6 +22,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -98,7 +98,7 @@ class BarcodeSearchFragment : Fragment() {
         }
 
         // ViewModelの初期設定
-        viewModel.initialize(getString(R.string.rakuten_app_id), RakutenBookViewModel.GENRE_ID_COMIC)
+        viewModel.initialize(getString(R.string.rakuten_app_id), getString(R.string.rakuten_affiliate_id), RakutenBookViewModel.GENRE_ID_COMIC)
 
         // 楽天APIの呼び出し状況に応じてプログレスサークルの表示
         viewModel.status.observe(viewLifecycleOwner) { apiStatus ->

@@ -121,7 +121,8 @@ class BookDetailFragment : Fragment() {
         binding.detailCaptionView.text = item.Item.itemCaption
         // 楽天の商品URLに飛ぶ
         binding.detailUrl.setOnClickListener {
-            val uri = Uri.parse(item.Item.itemUrl)
+            val url = if (item.Item.affiliateUrl.isNotEmpty()) item.Item.affiliateUrl else item.Item.itemUrl
+            val uri = url.toUri()
             val intent = Intent(Intent.ACTION_VIEW, uri)
             val chooser = Intent.createChooser(intent, getString(R.string.chooser_title))
             startActivity(chooser)

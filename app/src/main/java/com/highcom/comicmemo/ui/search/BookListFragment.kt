@@ -85,7 +85,7 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         }
         viewModel.title = requireActivity().title.toString()
         // ViewModelの初期設定
-        viewModel.initialize(getString(R.string.rakuten_app_id), currentGenreSelect)
+        viewModel.initialize(getString(R.string.rakuten_app_id), getString(R.string.rakuten_affiliate_id), currentGenreSelect)
 
         requireActivity().addMenuProvider(object : MenuProvider {
             /**
