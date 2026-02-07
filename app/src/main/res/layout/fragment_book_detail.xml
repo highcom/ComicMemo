@@ -106,7 +106,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -223,6 +224,18 @@
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
 
+                <Button
+                    android:id="@+id/detail_url"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:textColor="@color/blue"
+                    android:text="@string/detail_url"
+                    android:drawableRight="@drawable/ic_baseline_open_in_browser_24"
+                    android:drawableEnd="@drawable/ic_baseline_open_in_browser_24" />
+
                 <TextView
                     android:id="@+id/detail_caption_view"
                     android:textSize="12sp"
@@ -231,18 +244,15 @@
                     android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <Button
-                    android:id="@+id/detail_url"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#00000000"
-                    android:textColor="@color/blue"
-                    android:layout_margin="8dp"
-                    android:text="@string/detail_url"
-                    android:drawableRight="@drawable/ic_baseline_open_in_browser_24"
-                    android:drawableEnd="@drawable/ic_baseline_open_in_browser_24" />
+
+                <TextView
+                    android:id="@+id/detail_affiliate_view"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/black"
+                    android:layout_margin="10dp"
+                    android:text="@string/detail_afiliate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
