@@ -14,7 +14,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/SplashTheme">
+        android:theme="@style/SplashTheme"
+        android:memtagMode="async">
         <activity
             android:name=".ui.search.BarcodeSearchActivity"
             android:exported="false" />
