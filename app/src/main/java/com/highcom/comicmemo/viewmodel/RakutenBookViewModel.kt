@@ -37,10 +37,6 @@ enum class LiveDataKind { SALES, SEARCH }
  */
 @HiltViewModel
 class RakutenBookViewModel @Inject constructor(private val repository: ComicMemoRepository, private val rakutenApiService: RakutenApiService) : ViewModel() {
-    /** 楽天APIアプリケーションID */
-    private lateinit var appId: String
-    /** 楽天APIアフィリエイトID */
-    private lateinit var affiliateId: String
     /** 検索ジャンルID1 */
     private lateinit var genreId: String
     /** タイトル */
@@ -112,13 +108,9 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
     /**
      * 楽天書籍検索ViewModelを利用するための初期設定処理
      *
-     * @param appId 楽天APIアプリID
-     * @param affiliateId 楽天APIアフィリエイトID
      * @param genreId 検索ジャンルID
      */
-    fun initialize(appId: String, affiliateId: String, genreId: String) {
-        this.appId = appId
-        this.affiliateId = affiliateId
+    fun initialize(genreId: String) {
         this.genreId = genreId
     }
 
@@ -183,7 +175,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            rakutenApiService.salesItems(genreId, page.toString(), appId, affiliateId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            rakutenApiService.salesItems(genreId, page.toString()).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                     _status.value = RakutenApiStatus.ERROR
                 }
@@ -222,7 +214,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         ++page
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            rakutenApiService.searchItems(genreId, _searchWord.value ?: "", page.toString(), appId, affiliateId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            rakutenApiService.searchItems(genreId, _searchWord.value ?: "", page.toString()).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                     _status.value = RakutenApiStatus.ERROR
                 }
@@ -261,7 +253,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         _bookList.value = null
         viewModelScope.launch {
             _status.value = RakutenApiStatus.LOADING
-            rakutenApiService.searchIsbnItems(isbn, appId, affiliateId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+            rakutenApiService.searchIsbnItems(isbn).enqueue(object : retrofit2.Callback<RakutenBookData> {
                 override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                     _status.value = RakutenApiStatus.ERROR
                 }
@@ -313,7 +305,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         if (!authorItr.hasNext()) return
         val author = authorItr.next().author
         val currentDate = LocalDate.now()
-        rakutenApiService.searchAuthorListItems(author, appId, affiliateId).enqueue(object : retrofit2.Callback<RakutenBookData> {
+        rakutenApiService.searchAuthorListItems(author).enqueue(object : retrofit2.Callback<RakutenBookData> {
             override fun onFailure(call: Call<RakutenBookData>, t: Throwable) {
                 _status.value = RakutenApiStatus.ERROR
             }

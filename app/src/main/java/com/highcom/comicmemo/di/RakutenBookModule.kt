@@ -11,7 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-private const val baseApiUrl = "https://app.rakuten.co.jp/services/api/"
+private const val baseApiUrl = "https://rakuten-api-proxy.highcommunicate.workers.dev/"
 
 @Module
 @InstallIn(SingletonComponent::class)

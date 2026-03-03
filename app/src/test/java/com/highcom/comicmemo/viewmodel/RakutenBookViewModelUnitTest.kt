@@ -101,7 +101,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
 
@@ -168,7 +168,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_NOVEL)
+        target.initialize(RakutenBookViewModel.GENRE_ID_NOVEL)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
 
@@ -235,7 +235,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -265,7 +265,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -291,7 +291,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -322,7 +322,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_NOVEL)
+        target.initialize(RakutenBookViewModel.GENRE_ID_NOVEL)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -353,7 +353,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -385,7 +385,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -415,7 +415,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.searchAuthorList(listOf(Author(1, "知念 実希人"), Author(2, "村上 春樹"), Author(3, "尾田 栄一郎")))
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -446,7 +446,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.searchAuthorList(listOf(Author(1, "芥見 下々")))
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -471,7 +471,7 @@ class RakutenBookViewModelUnitTest {
             setErrorPercent(0)
         }
         val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
-        target.initialize("123", RakutenBookViewModel.GENRE_ID_COMIC)
+        target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.searchAuthorList(listOf(Author(1, "芥見 下々")))
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)

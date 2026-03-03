@@ -98,9 +98,9 @@ class BarcodeSearchFragment : Fragment() {
         }
 
         // ViewModelの初期設定
-        viewModel.initialize(getString(R.string.rakuten_app_id), getString(R.string.rakuten_affiliate_id), RakutenBookViewModel.GENRE_ID_COMIC)
+        viewModel.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
 
-        // 楽天APIの呼び出し状況に応じてプログレスサークルの表示
+        // 楽天APIの呼び出し状況に応じてプログレスサークルを表示
         viewModel.status.observe(viewLifecycleOwner) { apiStatus ->
             when (apiStatus) {
                 RakutenApiStatus.LOADING -> handler.post { binding.progressBar.visibility = View.VISIBLE }

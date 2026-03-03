@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter
  * @property delegate
  */
 class MockRakutenApiService(private val delegate: BehaviorDelegate<RakutenApiService>) : RakutenApiService {
-    override fun salesItems(genreId: String, page: String, appId: String): Call<RakutenBookData> {
+    override fun salesItems(genreId: String, page: String): Call<RakutenBookData> {
         val data: RakutenBookData
         when (genreId) {
             "001001" -> {
@@ -111,10 +111,10 @@ class MockRakutenApiService(private val delegate: BehaviorDelegate<RakutenApiSer
                 )
             }
         }
-        return delegate.returningResponse(data).salesItems(genreId, page, appId)
+        return delegate.returningResponse(data).salesItems(genreId, page)
     }
 
-    override fun searchItems(genreId: String, title: String, page: String, appId: String): Call<RakutenBookData> {
+    override fun searchItems(genreId: String, title: String, page: String): Call<RakutenBookData> {
         val data: RakutenBookData
         when (genreId) {
             "001001" -> {
@@ -210,10 +210,10 @@ class MockRakutenApiService(private val delegate: BehaviorDelegate<RakutenApiSer
                 )
             }
         }
-        return delegate.returningResponse(data).searchItems(genreId, title, page, appId)
+        return delegate.returningResponse(data).searchItems(genreId, title, page)
     }
 
-    override fun searchAuthorListItems(author: String, appId: String): Call<RakutenBookData> {
+    override fun searchAuthorListItems(author: String): Call<RakutenBookData> {
         val data: RakutenBookData
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日")
@@ -371,6 +371,54 @@ class MockRakutenApiService(private val delegate: BehaviorDelegate<RakutenApiSer
                 )
             }
         }
-        return delegate.returningResponse(data).searchAuthorListItems(author, appId)
+        return delegate.returningResponse(data).searchAuthorListItems(author)
+    }
+
+    override fun searchIsbnItems(isbn: String): Call<RakutenBookData> {
+        val data = RakutenBookData(
+            GenreInformation = arrayListOf(),
+            Items = arrayListOf(Item(
+                ItemEntity(
+                    affiliateUrl = "",
+                    author = "尾田 栄一郎",
+                    authorKana = "オダ エイイチロウ",
+                    availability = "1",
+                    booksGenreId = "001001001008",
+                    chirayomiUrl = "",
+                    contents = "",
+                    discountPrice = 0,
+                    discountRate = 0,
+                    isbn = isbn,
+                    itemCaption = "",
+                    itemPrice = 528,
+                    itemUrl = "https://books.rakuten.co.jp/rb/17406316/",
+                    largeImageUrl = "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4368/9784088834368_1_3.jpg?_ex=200x200",
+                    limitedFlag = 0,
+                    listPrice = 0,
+                    mediumImageUrl = "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4368/9784088834368_1_3.jpg?_ex=120x120",
+                    postageFlag = 2,
+                    publisherName = "集英社",
+                    reviewAverage = "4.63",
+                    reviewCount = 127,
+                    salesDate = "2023年03月03日",
+                    seriesName = "ジャンプコミックス",
+                    seriesNameKana = "",
+                    size = "コミック",
+                    smallImageUrl = "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4368/9784088834368_1_3.jpg?_ex=64x64",
+                    subTitle = "",
+                    subTitleKana = "",
+                    title = "ONE PIECE 105",
+                    titleKana = "ワンピース"
+                )
+            )),
+            carrier = 1,
+            count = 100,
+            first = 1,
+            hits = 30,
+            last = 30,
+            page = 1,
+            pageCount = 4
+        )
+        return delegate.returningResponse(data).searchIsbnItems(isbn)
     }
 }
