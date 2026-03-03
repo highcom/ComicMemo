@@ -9,6 +9,7 @@
 
     <!-- ======= カメラ領域 (上半分) ======= -->
     <FrameLayout
+        android:id="@+id/camera_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2">
@@ -43,7 +44,6 @@
         android:id="@+id/detail_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/detail_image_content"
         android:background="@color/geppaku"
         app:cardCornerRadius="6dp"
         android:layout_weight="1"
@@ -57,6 +57,26 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/search_limit_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:textColor="@color/red"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/go_to_premium_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/round_button"
+                android:textColor="@color/white"
+                android:text="@string/go_to_premium_plan"
+                android:visibility="gone"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
                 android:id="@+id/barcode_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,7 +87,7 @@
 
             <EditText
                 android:id="@+id/manual_input"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/barcode_input_isbn"

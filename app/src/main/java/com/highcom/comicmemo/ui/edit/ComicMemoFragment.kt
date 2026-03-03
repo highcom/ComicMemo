@@ -102,16 +102,10 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                     false
                 }
 
-                // バーコード検索メニューの有料/無料状態を設定
+                // バーコード検索メニューの設定（無料会員でも10回までは利用可能になったため常に表示・有効化）
                 val barcodeSearchItem = menu.findItem(R.id.barcode_search)
-                val isPremium = SubscriptionManager.isPremium(requireContext())
-                if (isPremium) {
-                    barcodeSearchItem.title = getString(R.string.barcode_search)
-                    barcodeSearchItem.isEnabled = true
-                } else {
-                    barcodeSearchItem.title = getString(R.string.barcode_search_premium)
-                    barcodeSearchItem.isEnabled = false
-                }
+                barcodeSearchItem.title = getString(R.string.barcode_search)
+                barcodeSearchItem.isEnabled = true
             }
 
             /**
@@ -177,12 +171,9 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                         startActivity(intent)
                     }
                     R.id.barcode_search -> {
-                        // バーコード検索（有料会員のみ）
-                        if (SubscriptionManager.isPremium(requireContext())) {
-                            val intent = Intent(requireActivity(), BarcodeSearchActivity::class.java)
-                            startActivity(intent)
-                        }
-                        // 無料会員の場合は何もしない（メニューがグレーアウトされているため通常は呼ばれない）
+                        // バーコード検索
+                        val intent = Intent(requireActivity(), BarcodeSearchActivity::class.java)
+                        startActivity(intent)
                     }
                     R.id.settings -> {
                         // 設定画面へ遷移

@@ -12,6 +12,8 @@ object SubscriptionManager {
     private const val KEY_IS_PREMIUM_MONTHLY = "is_premium_monthly"
     private const val KEY_IS_PREMIUM_YEARLY = "is_premium_yearly"
     private const val KEY_IS_HIDE_ADS = "is_hide_ads"
+    private const val KEY_FREE_SEARCH_COUNT = "free_search_count"
+    private const val MAX_FREE_SEARCH_COUNT = 10
 
     /**
      * 広告非表示かどうかを取得
@@ -87,5 +89,24 @@ object SubscriptionManager {
     fun setPremiumYearly(context: Context, isPremium: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit { putBoolean(KEY_IS_PREMIUM_YEARLY, isPremium) }
+    }
+
+    /**
+     * 無料検索の残り回数を取得
+     */
+    fun getRemainingFreeSearchCount(context: Context): Int {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getInt(KEY_FREE_SEARCH_COUNT, MAX_FREE_SEARCH_COUNT)
+    }
+
+    /**
+     * 無料検索回数をデクリメントする
+     */
+    fun decrementFreeSearchCount(context: Context) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val currentCount = getRemainingFreeSearchCount(context)
+        if (currentCount > 0) {
+            prefs.edit { putInt(KEY_FREE_SEARCH_COUNT, currentCount - 1) }
+        }
     }
 }

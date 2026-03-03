@@ -94,4 +94,8 @@
     <string name="restore_purchases_title">購入の復元</string>
     <string name="restore_button">復元</string>
     <string name="empty_message">右下のボタンから書籍の登録ができます</string>
+
+    <string name="free_search_limit_message">無料会員ユーザーは、あと%1$d回検索できます</string>
+    <string name="free_search_limit_reached">有料会員ユーザーは引き続きご利用いただけます</string>
+    <string name="go_to_premium_plan">有料会員プランへ</string>
 </resources>

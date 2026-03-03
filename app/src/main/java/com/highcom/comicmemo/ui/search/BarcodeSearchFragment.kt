@@ -33,6 +33,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.FragmentBarcodeSearchBinding
 import com.highcom.comicmemo.viewmodel.RakutenApiStatus
 import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
@@ -72,8 +73,13 @@ class BarcodeSearchFragment : Fragment() {
     private val requestPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) startCamera() else
+        if (granted) {
+            if (shouldStartCamera()) {
+                startCamera()
+            }
+        } else {
             Toast.makeText(requireContext(), "カメラ権限が必要です", Toast.LENGTH_LONG).show()
+        }
     }
 
     /**
@@ -91,8 +97,13 @@ class BarcodeSearchFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        updateSearchLimitUI()
+
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            startCamera()
+            if (shouldStartCamera()) {
+                startCamera()
+            }
         } else {
             requestPermission.launch(Manifest.permission.CAMERA)
         }
@@ -112,11 +123,19 @@ class BarcodeSearchFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.isbnBookList.collect {
                 if (it.isNullOrEmpty()) {
-                    binding.barcodeResult.text = getString(R.string.barcode_result_failure) + codeValue
+                    if (codeValue.isNotEmpty()) {
+                        binding.barcodeResult.text = getString(R.string.barcode_result_failure) + codeValue
+                    }
                 } else {
+                    // 検索結果があった場合にデクリメント（無料会員のみ）
+                    if (!SubscriptionManager.isPremium(requireContext())) {
+                        SubscriptionManager.decrementFreeSearchCount(requireContext())
+                    }
                     // 該当データがあれば詳細画面へ遷移して監視を終了
-                    findNavController().navigate(R.id.action_barcode_search_fragment_to_book_detail_fragment, bundleOf("BUNDLE_ITEM_DATA" to it.first()))
-                    cancel()
+                    if (findNavController().currentDestination?.id == R.id.barcodeSearchFragment) {
+                        findNavController().navigate(R.id.action_barcode_search_fragment_to_book_detail_fragment, bundleOf("BUNDLE_ITEM_DATA" to it.first()))
+                        cancel()
+                    }
                 }
             }
         }
@@ -157,6 +176,44 @@ class BarcodeSearchFragment : Fragment() {
                 Snackbar.make(requireView(), getString(R.string.input_failure), Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }
         }
+
+        // 有料会員プランボタンのクリックリスナー
+        binding.goToPremiumButton.setOnClickListener {
+            if (findNavController().currentDestination?.id == R.id.barcodeSearchFragment) {
+                findNavController().navigate(R.id.action_barcodeSearchFragment_to_settingFragment)
+            }
+        }
+    }
+
+    /**
+     * 検索制限UIの更新
+     */
+    private fun updateSearchLimitUI() {
+        val context = requireContext()
+        if (SubscriptionManager.isPremium(context)) {
+            binding.searchLimitMessage.visibility = View.GONE
+            binding.goToPremiumButton.visibility = View.GONE
+            binding.searchButton.isEnabled = true
+        } else {
+            val remainingCount = SubscriptionManager.getRemainingFreeSearchCount(context)
+            binding.searchLimitMessage.visibility = View.VISIBLE
+            if (remainingCount > 0) {
+                binding.searchLimitMessage.text = getString(R.string.free_search_limit_message, remainingCount)
+                binding.goToPremiumButton.visibility = View.GONE
+                binding.searchButton.isEnabled = true
+            } else {
+                binding.searchLimitMessage.text = getString(R.string.free_search_limit_reached)
+                binding.goToPremiumButton.visibility = View.VISIBLE
+                binding.searchButton.isEnabled = false
+            }
+        }
+    }
+
+    /**
+     * カメラを開始すべきかどうか
+     */
+    private fun shouldStartCamera(): Boolean {
+        return SubscriptionManager.isPremium(requireContext()) || SubscriptionManager.getRemainingFreeSearchCount(requireContext()) > 0
     }
 
 
