@@ -28,6 +28,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -99,6 +101,9 @@ class BarcodeSearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         updateSearchLimitUI()
+        // イベントログ出力
+        val param = Bundle().apply { putInt("free_search_count", SubscriptionManager.getRemainingFreeSearchCount(requireContext())) }
+        Firebase.analytics.logEvent("barcode_search", param)
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             if (shouldStartCamera()) {

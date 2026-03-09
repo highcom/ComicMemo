@@ -20,6 +20,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
@@ -202,18 +205,24 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         // 検索モードによって1行に表示するアイテムの数を変更する
         if (bookMode == ComicMemoConstants.BOOK_MODE_NEW) {
             (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 1
+            val authorList = viewModel.getAuthorListSync()
             // 著作者名が登録されていない場合はプログレスサークルを表示しない
-            if (viewModel.getAuthorListSync().isEmpty()) {
+            if (authorList.isEmpty()) {
                 nowLoading = false
                 handler.post { binding.progressBar.visibility = View.INVISIBLE }
             }
             // 著作者名一覧で新刊書籍検索
-            if ((activity as RakutenBookActivity).isNeedUpdate) viewModel.searchAuthorList(viewModel.getAuthorListSync())
+            if ((activity as RakutenBookActivity).isNeedUpdate) viewModel.searchAuthorList(authorList)
+            // イベントログ出力
+            val param = Bundle().apply { putInt("author_count", authorList.size) }
+            Firebase.analytics.logEvent("new_book_search", param)
         } else {
             (binding.bookItemGridView.layoutManager as GridLayoutManager).spanCount = 3
             binding.bookItemGridView.addOnScrollListener(InfiniteScrollListener())
             // 人気書籍の検索
             if ((activity as RakutenBookActivity).isNeedUpdate) viewModel.getSalesList()
+            // イベントログ出力
+            Firebase.analytics.logEvent("popular_book_search", null)
         }
         (activity as RakutenBookActivity).isNeedUpdate = true
 

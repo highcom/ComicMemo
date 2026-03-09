@@ -12,8 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.FragmentPlaceholderBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
@@ -182,6 +185,9 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                     updateComicListListener?.onUpdateContinueComicsCount(origComicList?.size ?: 0)
                     binding.emptyView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
                     setSearchWordFilter(searchViewWord)
+                    // イベントログ出力
+                    val param = Bundle().apply { putInt("continue_comic_count", origComicList?.size ?: 0) }
+                    Firebase.analytics.logEvent("continue_comic_view", param)
                 }
             }
         } else if (index.toLong() == ComicMemoRepository.STATE_COMPLETE) {
@@ -191,6 +197,9 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
                     updateComicListListener?.onUpdateCompleteComicsCount(origComicList?.size ?: 0)
                     binding.emptyView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
                     setSearchWordFilter(searchViewWord)
+                    // イベントログ出力
+                    val param = Bundle().apply { putInt("complete_comic_count", origComicList?.size ?: 0) }
+                    Firebase.analytics.logEvent("complete_comic_view", param)
                 }
             }
         }

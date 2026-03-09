@@ -19,6 +19,8 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
@@ -129,6 +131,8 @@ class BookDetailFragment : Fragment() {
         }
         // 選択した書籍の情報から巻数メモデータを新規作成する
         binding.detailNewButton.setOnClickListener {
+            // イベントログ出力
+            Firebase.analytics.logEvent("book_detail_new_button", null)
             // 入力画面を生成
             val comic = Comic(0, item.Item.title, item.Item.titleKana, item.Item.author, item.Item.publisherName, item.Item.isbn, "", "", "", 0)
             val status = comic.status
