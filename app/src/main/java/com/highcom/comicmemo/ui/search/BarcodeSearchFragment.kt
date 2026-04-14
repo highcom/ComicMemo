@@ -47,6 +47,7 @@ import kotlinx.coroutines.cancel
  * - カメラ権限を実行時に要求します。
  * - 権限が許可されると CameraX を起動し、Preview と ImageAnalysis をライフサイクルにバインドします。
  * - バーコードを検出したら Navigation を使って結果画面へ遷移します。
+ * - 同一 Activity 内のバナー広告と描画合成が干渉しないよう、プレビューはレイアウトで COMPATIBLE（TextureView）実装を指定しています。
  */
 class BarcodeSearchFragment : Fragment() {
     private lateinit var binding: FragmentBarcodeSearchBinding

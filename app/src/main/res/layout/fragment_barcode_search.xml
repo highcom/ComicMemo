@@ -14,12 +14,13 @@
         android:layout_height="0dp"
         android:layout_weight="2">
 
-        <!-- カメラプレビュー -->
+        <!-- カメラプレビュー（バナー広告と同居時、SurfaceView 実装だと描画合成が崩れることがあるため COMPATIBLE を指定） -->
         <androidx.camera.view.PreviewView
             android:id="@+id/previewView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#000" />
+            android:background="#000"
+            app:implementationMode="compatible" />
 
         <!-- 中央バーコード枠線 (単純な線を4本組み合わせ) -->
         <View
