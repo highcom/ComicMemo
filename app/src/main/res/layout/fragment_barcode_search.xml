@@ -12,7 +12,7 @@
         android:id="@+id/camera_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_weight="3">
 
         <!-- カメラプレビュー（バナー広告と同居時、SurfaceView 実装だと描画合成が崩れることがあるため COMPATIBLE を指定） -->
         <androidx.camera.view.PreviewView
@@ -40,70 +40,80 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <!-- ======= 結果・手入力エリア (下半分) ======= -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/detail_content"
+    <!-- 結果・手入力エリア（内容が多い場合・IME 表示時に縦スクロール） -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/barcode_result_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/geppaku"
-        app:cardCornerRadius="6dp"
-        android:layout_weight="1"
-        app:cardUseCompatPadding="true">
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="ifContentScrolls">
 
-        <LinearLayout
-            android:id="@+id/result_area"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/detail_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:background="@color/geppaku"
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
 
-            <TextView
-                android:id="@+id/search_limit_message"
+            <LinearLayout
+                android:id="@+id/result_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="8dp"
-                android:textColor="@color/red"
-                android:visibility="gone" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <Button
-                android:id="@+id/go_to_premium_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/round_button"
-                android:textColor="@color/white"
-                android:text="@string/go_to_premium_plan"
-                android:visibility="gone"
-                android:layout_marginBottom="8dp"/>
+                <TextView
+                    android:id="@+id/search_limit_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/barcode_result"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/barcode_result"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:paddingBottom="12dp" />
+                <Button
+                    android:id="@+id/go_to_premium_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/round_button"
+                    android:text="@string/go_to_premium_plan"
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/manual_input"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/barcode_input_isbn"
-                android:inputType="number"
-                android:padding="8dp"
-                android:importantForAutofill="no" />
+                <TextView
+                    android:id="@+id/barcode_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="12dp"
+                    android:text="@string/barcode_result"
+                    android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/search_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_button"
-                android:textColor="@color/white"
-                android:text="@string/barcode_search_isbn"
-                android:layout_marginTop="12dp" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <EditText
+                    android:id="@+id/manual_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/barcode_input_isbn"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:padding="8dp" />
+
+                <Button
+                    android:id="@+id/search_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="50dp"
+                    android:background="@drawable/round_button"
+                    android:text="@string/barcode_search_isbn"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

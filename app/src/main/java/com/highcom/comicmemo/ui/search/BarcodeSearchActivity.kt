@@ -23,6 +23,9 @@ import kotlinx.coroutines.launch
 
 /**
  * バーコード検索画面のActivity
+ *
+ * 広告バナーはメインの Fragment コンテナの手前に重ねて表示し、
+ * 広告のロードでメイン領域の高さが変わらないようにしている。
  */
 @AndroidEntryPoint
 class BarcodeSearchActivity : AppCompatActivity() {
@@ -48,6 +51,13 @@ class BarcodeSearchActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(top = systemBars.top)
+            insets
+        }
+
+        // フラグメント側のレイアウトはナビゲーションバーの上までに収める
+        ViewCompat.setOnApplyWindowInsetsListener(binding.barcodeSearchContainer) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
             insets
         }
 

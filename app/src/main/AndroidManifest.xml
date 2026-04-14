@@ -18,7 +18,8 @@
         android:memtagMode="async">
         <activity
             android:name=".ui.search.BarcodeSearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.search.RakutenBookActivity"
             android:exported="false" />
