@@ -14,6 +14,9 @@ interface ComicDao {
     @Query("SELECT SUM(number) FROM comicdata WHERE status = :status")
     fun sumNumber(status: Long): Flow<Long>
 
+    @Query("SELECT COUNT(*) FROM comicdata")
+    suspend fun getCount(): Int
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(comic: Comic)
 
