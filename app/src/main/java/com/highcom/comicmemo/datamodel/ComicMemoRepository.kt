@@ -31,6 +31,11 @@ class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao, pr
     }
 
     @WorkerThread
+    suspend fun getCount(): Int {
+        return comicDao.getCount()
+    }
+
+    @WorkerThread
     suspend fun update(comic: Comic) {
         comicDao.update(comic)
     }

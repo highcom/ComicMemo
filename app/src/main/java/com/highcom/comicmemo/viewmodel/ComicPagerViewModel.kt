@@ -34,6 +34,13 @@ class ComicPagerViewModel @Inject constructor(private val repository: ComicMemoR
     }
 
     /**
+     * 全体の登録数を取得
+     */
+    suspend fun getTotalCount(): Int {
+        return repository.getCount()
+    }
+
+    /**
      * 巻数データの更新
      *
      * @param comic 巻数データ
