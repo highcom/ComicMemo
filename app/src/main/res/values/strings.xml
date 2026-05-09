@@ -98,4 +98,38 @@
     <string name="free_search_limit_message">無料会員ユーザーは、あと%1$d回検索できます</string>
     <string name="free_search_limit_reached">有料会員ユーザーは引き続きご利用いただけます</string>
     <string name="go_to_premium_plan">有料会員プランへ</string>
+
+    <!-- CSVファイル入出力関連 -->
+    <string name="csv_title">CSVファイル入出力</string>
+    <string name="select_operation">操作を選択してください</string>
+    <string name="select_operation_err_message">操作を選択してください</string>
+    <string name="input_csv_override">CSV上書き取込</string>
+    <string name="input_csv_add">CSV追加取込</string>
+    <string name="output_csv">CSV出力</string>
+    <string name="next">次へ</string>
+    <string name="cancel">キャンセル</string>
+    <string name="output_button">出力</string>
+    <string name="input_button">取込</string>
+    <string name="execute">実行</string>
+    <string name="ok">OK</string>
+    <string name="output_message_front">出力先: </string>
+    <string name="output_message_rear">この場所に出力します。よろしいですか？</string>
+    <string name="input_override_message_front">ファイル: </string>
+    <string name="input_override_message_rear">既存データをすべて削除してから、このファイルのデータを取込します。よろしいですか？</string>
+    <string name="input_add_message_front">ファイル: </string>
+    <string name="input_add_message_rear">既存データは削除せず、このファイルのデータを追加取込します。よろしいですか？</string>
+    <string name="csv_output_complete_message">CSVファイルを出力しました:</string>
+    <string name="csv_output_failed_message">CSVファイルの出力に失敗しました</string>
+    <string name="csv_input_complete_message">CSVファイルを取込みました:</string>
+    <string name="csv_input_failed_message">CSVファイルの取込みに失敗しました</string>
+    <string name="csv_input_override_confirm_message">データを上書き取込みしてもよろしいですか？</string>
+    <string name="csv_input_add_confirm_message">データを追加取込みしてもよろしいですか？</string>
+    <string name="csv_input_processing">取込処理中...</string>
+    <string name="csv_input_failed_header_message">CSVファイルのヘッダーが正しくありません</string>
+    <string name="csv_input_failed_counts_message">取込可能な上限を超えています</string>
+    <string name="csv_input_failed_body_message">CSVファイルの </string>
+    <string name="no_access_message">ストレージへのアクセス権限がありません。設定から権限を有効にしてください。</string>
+    <string name="move">設定</string>
+    <string name="end">終了</string>
+    <string name="choose_button">選択</string>
 </resources>

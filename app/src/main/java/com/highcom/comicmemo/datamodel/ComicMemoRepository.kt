@@ -74,4 +74,9 @@ class ComicMemoRepository @Inject constructor(private val comicDao: ComicDao, pr
     suspend fun deleteAuthor(id: Long) {
         authorDao.deleteAuthor(id)
     }
+
+    @WorkerThread
+    suspend fun getAllComics(): List<Comic> {
+        return comicDao.getAllComics()
+    }
 }

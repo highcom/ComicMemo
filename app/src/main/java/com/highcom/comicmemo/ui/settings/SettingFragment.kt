@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -23,9 +24,14 @@ import com.highcom.comicmemo.billing.PurchaseState
 import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.FragmentSettingBinding
 import com.highcom.comicmemo.ui.edit.ComicMemoActivity
+import com.highcom.comicmemo.util.InputExternalFile
+import com.highcom.comicmemo.util.OutputExternalFile
+import com.highcom.comicmemo.util.SelectInputOutputFileDialog
+import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
@@ -34,6 +40,9 @@ class SettingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var billingManager: BillingManager
+
+    @Inject
+    lateinit var repository: ComicMemoRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -138,6 +147,108 @@ class SettingFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, getString(R.string.barcode_feature_url).toUri())
             startActivity(intent)
         }
+
+        // CSVファイル入出力選択ボタンのクリックリスナー
+        binding.csvSelectButton.setOnClickListener {
+            val dialog = SelectInputOutputFileDialog(
+                requireContext(),
+                SelectInputOutputFileDialog.Operation.CSV_INPUT_OUTPUT,
+                object : SelectInputOutputFileDialog.InputOutputFileDialogListener {
+                    override fun onSelectOperationClicked(operation: String?) {
+                        handleCsvOperation(operation)
+                    }
+                }
+            )
+            dialog.createOpenFileDialog().show()
+        }
+    }
+
+    /**
+     * CSV操作を処理する
+     *
+     * @param operation 選択された操作
+     */
+    private fun handleCsvOperation(operation: String?) {
+        when (operation) {
+            getString(R.string.input_csv_override) -> {
+                startInputCsv(isOverride = true)
+            }
+            getString(R.string.input_csv_add) -> {
+                startInputCsv(isOverride = false)
+            }
+            getString(R.string.output_csv) -> {
+                startOutputCsv()
+            }
+        }
+    }
+
+    /**
+     * CSVファイル取込を開始する
+     *
+     * @param isOverride 上書きモード
+     */
+    private fun startInputCsv(isOverride: Boolean) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+        }
+        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    val inputExternalFile = InputExternalFile(requireActivity()) { comicList ->
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            if (isOverride) {
+                                repository.deleteAll()
+                            }
+                            for (comic in comicList) {
+                                repository.insert(comic)
+                            }
+                        }
+                    }
+                    inputExternalFile.confirmInputDialog(uri, isOverride)
+                }
+            }
+        }
+        launcher.launch(intent)
+    }
+
+    /**
+     * CSVファイル出力を開始する
+     */
+    private fun startOutputCsv() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            putExtra(Intent.EXTRA_TITLE, "comic_backup.csv")
+        }
+        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val comicList = repository.getAllComics()
+                        val outputExternalFile = OutputExternalFile(requireContext())
+                        outputExternalFile.outputSelectFolder(uri, comicList) { success ->
+                            if (success) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.csv_output_complete_message),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.csv_output_failed_message),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        launcher.launch(intent)
     }
 
     /**
