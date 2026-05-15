@@ -45,8 +45,13 @@ class ComicMemoActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(left = systemBars.left, right = systemBars.right)
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            v.updatePadding(
+                left = bars.left,
+                right = bars.right,
+                bottom = maxOf(bars.bottom, ime.bottom)
+            )
             insets
         }
 
@@ -56,12 +61,8 @@ class ComicMemoActivity : AppCompatActivity() {
             insets
         }
 
-        // 広告エリアにもインセットを適用してナビゲーションバーと重ならないようにする
-        ViewCompat.setOnApplyWindowInsetsListener(binding.adViewFrame) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(bottom = systemBars.bottom)
-            insets
-        }
+        // 広告エリアのインセット処理はrootの方で一括で行うため削除
+        // ViewCompat.setOnApplyWindowInsetsListener(binding.adViewFrame) ...
 
         // ActionBarの影をなくす
         supportActionBar?.elevation = 0f
