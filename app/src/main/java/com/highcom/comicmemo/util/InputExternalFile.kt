@@ -140,10 +140,15 @@ class InputExternalFile(
     private fun importDatabase(uri: Uri?): Boolean {
         var inputStream: InputStream? = null
         try {
+            // 文字コードを判定し、判定できなければデフォルトをutf8とする
+            val fd = FileCharDetector(activity, uri)
+            var encType = fd.detect()
+            if (encType == null) encType = "UTF-8"
+
             // 判定された文字コードを指定してファイル読み込みを行う
             inputStream = activity.contentResolver.openInputStream(uri!!)
             val reader =
-                BufferedReader(InputStreamReader(Objects.requireNonNull(inputStream), "UTF-8"))
+                BufferedReader(InputStreamReader(Objects.requireNonNull(inputStream), encType))
             var line: String
             var isHeaderCorrect = false
             comicList = ArrayList()
