@@ -44,6 +44,10 @@ class SettingFragment : Fragment() {
     @Inject
     lateinit var repository: ComicMemoRepository
 
+    private lateinit var inputCsvLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+    private lateinit var outputCsvLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+    private var isOverrideMode = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +58,53 @@ class SettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // ActivityResultLauncherの初期化
+        inputCsvLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    val inputExternalFile = InputExternalFile(requireActivity()) { comicList ->
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            if (isOverrideMode) {
+                                repository.deleteAll()
+                            }
+                            for (comic in comicList) {
+                                repository.insert(comic)
+                            }
+                        }
+                    }
+                    inputExternalFile.confirmInputDialog(uri, isOverrideMode)
+                }
+            }
+        }
+
+        outputCsvLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val comicList = repository.getAllComics()
+                        val outputExternalFile = OutputExternalFile(requireContext())
+                        outputExternalFile.outputSelectFolder(uri, comicList) { success ->
+                            if (success) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.csv_output_complete_message),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.csv_output_failed_message),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // アクションバーのタイトルを設定
         requireActivity().title = getString(R.string.settings)
@@ -171,10 +222,12 @@ class SettingFragment : Fragment() {
     private fun handleCsvOperation(operation: String?) {
         when (operation) {
             getString(R.string.input_csv_override) -> {
-                startInputCsv(isOverride = true)
+                isOverrideMode = true
+                startInputCsv()
             }
             getString(R.string.input_csv_add) -> {
-                startInputCsv(isOverride = false)
+                isOverrideMode = false
+                startInputCsv()
             }
             getString(R.string.output_csv) -> {
                 startOutputCsv()
@@ -184,33 +237,13 @@ class SettingFragment : Fragment() {
 
     /**
      * CSVファイル取込を開始する
-     *
-     * @param isOverride 上書きモード
      */
-    private fun startInputCsv(isOverride: Boolean) {
+    private fun startInputCsv() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
         }
-        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == android.app.Activity.RESULT_OK) {
-                val uri = result.data?.data
-                if (uri != null) {
-                    val inputExternalFile = InputExternalFile(requireActivity()) { comicList ->
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            if (isOverride) {
-                                repository.deleteAll()
-                            }
-                            for (comic in comicList) {
-                                repository.insert(comic)
-                            }
-                        }
-                    }
-                    inputExternalFile.confirmInputDialog(uri, isOverride)
-                }
-            }
-        }
-        launcher.launch(intent)
+        inputCsvLauncher.launch(intent)
     }
 
     /**
@@ -222,33 +255,7 @@ class SettingFragment : Fragment() {
             type = "*/*"
             putExtra(Intent.EXTRA_TITLE, "comic_backup.csv")
         }
-        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == android.app.Activity.RESULT_OK) {
-                val uri = result.data?.data
-                if (uri != null) {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        val comicList = repository.getAllComics()
-                        val outputExternalFile = OutputExternalFile(requireContext())
-                        outputExternalFile.outputSelectFolder(uri, comicList) { success ->
-                            if (success) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.csv_output_complete_message),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.csv_output_failed_message),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        launcher.launch(intent)
+        outputCsvLauncher.launch(intent)
     }
 
     /**
