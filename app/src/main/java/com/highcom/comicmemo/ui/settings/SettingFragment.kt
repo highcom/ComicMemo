@@ -1,5 +1,6 @@
 package com.highcom.comicmemo.ui.settings
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -23,9 +25,16 @@ import com.highcom.comicmemo.billing.PurchaseState
 import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.FragmentSettingBinding
 import com.highcom.comicmemo.ui.edit.ComicMemoActivity
+import com.highcom.comicmemo.util.InputExternalFile
+import com.highcom.comicmemo.util.OutputExternalFile
+import com.highcom.comicmemo.util.SelectInputOutputFileDialog
+import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import java.text.SimpleDateFormat
+import java.util.Date
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
@@ -34,6 +43,24 @@ class SettingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var billingManager: BillingManager
+
+    @Inject
+    lateinit var repository: ComicMemoRepository
+
+    private lateinit var inputCsvLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+    private lateinit var outputCsvLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+
+    /** CSV取込の上書きモードかどうか */
+    private var isOverrideMode = false
+
+    /** 現在日付 */
+    private val nowDateString: String
+        @SuppressLint("SimpleDateFormat")
+        get() {
+            val date = Date()
+            val sdf = SimpleDateFormat("yyyyMMdd")
+            return sdf.format(date)
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +72,53 @@ class SettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // ActivityResultLauncherの初期化
+        inputCsvLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    val inputExternalFile = InputExternalFile(requireActivity()) { comicList ->
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            if (isOverrideMode) {
+                                repository.deleteAll()
+                            }
+                            for (comic in comicList) {
+                                repository.insert(comic)
+                            }
+                        }
+                    }
+                    inputExternalFile.confirmInputDialog(uri, isOverrideMode)
+                }
+            }
+        }
+
+        outputCsvLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val comicList = repository.getAllComics()
+                        val outputExternalFile = OutputExternalFile(requireContext())
+                        outputExternalFile.outputSelectFolder(uri, comicList) { success ->
+                            if (success) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.csv_output_complete_message),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.csv_output_failed_message),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // アクションバーのタイトルを設定
         requireActivity().title = getString(R.string.settings)
@@ -138,6 +212,67 @@ class SettingFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, getString(R.string.barcode_feature_url).toUri())
             startActivity(intent)
         }
+
+        // CSVファイル入出力選択ボタンのクリックリスナー
+        binding.csvSelectButton.setOnClickListener {
+            if (!SubscriptionManager.isPremium(requireContext())) {
+                return@setOnClickListener
+            }
+            val dialog = SelectInputOutputFileDialog(
+                requireContext(),
+                SelectInputOutputFileDialog.Operation.CSV_INPUT_OUTPUT,
+                object : SelectInputOutputFileDialog.InputOutputFileDialogListener {
+                    override fun onSelectOperationClicked(operation: String?) {
+                        handleCsvOperation(operation)
+                    }
+                }
+            )
+            dialog.createOpenFileDialog().show()
+        }
+    }
+
+    /**
+     * CSV操作を処理する
+     *
+     * @param operation 選択された操作
+     */
+    private fun handleCsvOperation(operation: String?) {
+        when (operation) {
+            getString(R.string.input_csv_override) -> {
+                isOverrideMode = true
+                startInputCsv()
+            }
+            getString(R.string.input_csv_add) -> {
+                isOverrideMode = false
+                startInputCsv()
+            }
+            getString(R.string.output_csv) -> {
+                startOutputCsv()
+            }
+        }
+    }
+
+    /**
+     * CSVファイル取込を開始する
+     */
+    private fun startInputCsv() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+        }
+        inputCsvLauncher.launch(intent)
+    }
+
+    /**
+     * CSVファイル出力を開始する
+     */
+    private fun startOutputCsv() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            putExtra(Intent.EXTRA_TITLE, "comic_list_$nowDateString.csv")
+        }
+        outputCsvLauncher.launch(intent)
     }
 
     /**
@@ -177,6 +312,15 @@ class SettingFragment : Fragment() {
                 binding.hideAdsButton.text = getString(R.string.hide_ads_price)
                 binding.hideAdsButton.isEnabled = true
             }
+        }
+
+        // CSVボタンの状態を設定
+        if (isPremium) {
+            binding.csvSelectButton.text = getString(R.string.choose_button)
+            binding.csvSelectButton.isEnabled = true
+        } else {
+            binding.csvSelectButton.text = getString(R.string.csv_button_premium)
+            binding.csvSelectButton.isEnabled = false
         }
     }
 
