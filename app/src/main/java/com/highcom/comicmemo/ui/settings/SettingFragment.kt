@@ -1,5 +1,6 @@
 package com.highcom.comicmemo.ui.settings
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -31,6 +32,8 @@ import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,7 +49,18 @@ class SettingFragment : Fragment() {
 
     private lateinit var inputCsvLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
     private lateinit var outputCsvLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+
+    /** CSV取込の上書きモードかどうか */
     private var isOverrideMode = false
+
+    /** 現在日付 */
+    private val nowDateString: String
+        @SuppressLint("SimpleDateFormat")
+        get() {
+            val date = Date()
+            val sdf = SimpleDateFormat("yyyyMMdd")
+            return sdf.format(date)
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -256,7 +270,7 @@ class SettingFragment : Fragment() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
-            putExtra(Intent.EXTRA_TITLE, "comic_backup.csv")
+            putExtra(Intent.EXTRA_TITLE, "comic_list_$nowDateString.csv")
         }
         outputCsvLauncher.launch(intent)
     }
