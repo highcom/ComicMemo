@@ -74,6 +74,7 @@
     <string name="premium_features_description">有料会員になると以下の機能が利用できます：</string>
     <string name="premium_feature_ads">• 広告の非表示</string>
     <string name="premium_feature_barcode">• バーコード検索機能</string>
+    <string name="premium_feature_csv">• CSVファイル入出力</string>
     <string name="current_status">現在のステータス：</string>
     <string name="free_member">無料会員</string>
     <string name="premium_member_monthly">月額有料会員</string>
@@ -132,4 +133,5 @@
     <string name="move">設定</string>
     <string name="end">終了</string>
     <string name="choose_button">選択</string>
+    <string name="csv_button_premium">選択(有料)</string>
 </resources>

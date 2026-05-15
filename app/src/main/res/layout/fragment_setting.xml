@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_marginStart="16dp"
                     android:gravity="center_vertical">
 
@@ -91,6 +91,15 @@
                         app:drawableRightCompat="@drawable/ic_baseline_open_in_browser_24" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/premium_feature_csv"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginStart="16dp" />
 
                 <!-- 現在のステータス -->
                 <TextView
@@ -186,7 +195,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- プライバシーポリシーのCardView -->
+        <!-- CSVファイル入出力のCardView -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -199,26 +208,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginVertical="8dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/privacy_policy_title"
-                    android:textSize="16sp"
-                    android:textColor="@color/black" />
+                    android:text="@string/csv_title"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
                 <Button
-                    android:id="@+id/privacy_policy_button"
+                    android:id="@+id/csv_select_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/move_button"
-                    android:textSize="14sp"
+                    android:layout_marginStart="16dp"
                     android:background="@drawable/round_button"
+                    android:text="@string/choose_button"
                     android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -300,7 +309,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- CSVファイル入出力のCardView -->
+        <!-- プライバシーポリシーのCardView -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -313,26 +322,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginVertical="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/csv_title"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:text="@string/privacy_policy_title"
+                    android:textSize="16sp"
+                    android:textColor="@color/black" />
 
                 <Button
-                    android:id="@+id/csv_select_button"
+                    android:id="@+id/privacy_policy_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:text="@string/move_button"
+                    android:textSize="14sp"
                     android:background="@drawable/round_button"
-                    android:text="@string/choose_button"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:layout_marginStart="16dp" />
 
             </LinearLayout>
 

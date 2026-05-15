@@ -201,6 +201,9 @@ class SettingFragment : Fragment() {
 
         // CSVファイル入出力選択ボタンのクリックリスナー
         binding.csvSelectButton.setOnClickListener {
+            if (!SubscriptionManager.isPremium(requireContext())) {
+                return@setOnClickListener
+            }
             val dialog = SelectInputOutputFileDialog(
                 requireContext(),
                 SelectInputOutputFileDialog.Operation.CSV_INPUT_OUTPUT,
@@ -295,6 +298,15 @@ class SettingFragment : Fragment() {
                 binding.hideAdsButton.text = getString(R.string.hide_ads_price)
                 binding.hideAdsButton.isEnabled = true
             }
+        }
+
+        // CSVボタンの状態を設定
+        if (isPremium) {
+            binding.csvSelectButton.text = getString(R.string.choose_button)
+            binding.csvSelectButton.isEnabled = true
+        } else {
+            binding.csvSelectButton.text = getString(R.string.csv_button_premium)
+            binding.csvSelectButton.isEnabled = false
         }
     }
 
