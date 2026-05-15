@@ -123,8 +123,8 @@
     <string name="csv_output_failed_message">CSVファイルの出力に失敗しました</string>
     <string name="csv_input_complete_message">CSVファイルを取込みました:</string>
     <string name="csv_input_failed_message">CSVファイルの取込みに失敗しました</string>
-    <string name="csv_input_override_confirm_message">データを上書き取込みしてもよろしいですか？</string>
-    <string name="csv_input_add_confirm_message">データを追加取込みしてもよろしいですか？</string>
+    <string name="csv_input_override_confirm_message">確認：データを上書き取込みしてもよろしいですか？</string>
+    <string name="csv_input_add_confirm_message">確認：データを追加取込みしてもよろしいですか？</string>
     <string name="csv_input_processing">取込処理中...</string>
     <string name="csv_input_failed_header_message">CSVファイルのヘッダーが正しくありません</string>
     <string name="csv_input_failed_counts_message">取込可能な上限を超えています</string>
