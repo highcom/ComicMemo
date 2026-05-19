@@ -315,16 +315,17 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
                 response: Response<RakutenBookData>
             ) {
                 if (response.isSuccessful) {
-                    response.body()?.let { it ->
+                    response.body()?.let { body ->
                         _status.value = RakutenApiStatus.DONE
+                        val items = body.Items ?: arrayListOf()
                         // 現在の日付より過去に発売されているものは削除する
-                        it.Items.removeIf {
+                        items.removeIf {
                             val arr = it.Item.salesDate.split("年", "月", "日").toMutableList()
                             val salesDate = LocalDate.of(arr[0].toIntOrNull() ?: 2000, arr[1].toIntOrNull() ?: 1, arr[2].toIntOrNull() ?: 1)
                             salesDate.isBefore(currentDate)
                         }
                         // ヘッダーとして著作者名を挿入する
-                        it.Items.add(0, Item(ItemEntity(
+                        items.add(0, Item(ItemEntity(
                             affiliateUrl = "",
                             author = author,
                             authorKana = "",
@@ -356,7 +357,7 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
                             title = "",
                             titleKana = ""
                         )))
-                        setBookList(it)
+                        setBookList(body.copy(Items = items))
                     }
                 }
             }
@@ -372,14 +373,11 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         val items = mutableListOf<Item>()
         // 既に表示しているデータを一度設定
         _bookList.value?.let {
-            for (item in it.iterator()) {
-                items.add(item)
-            }
+            items.addAll(it)
         }
         // APIで新しく取得したデータを追加する
-        val res = data.Items.iterator()
-        for (item in res) {
-            items.add(item)
+        data.Items?.let {
+            items.addAll(it)
         }
 
         _bookList.value = items
