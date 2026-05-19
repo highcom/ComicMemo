@@ -170,7 +170,7 @@ class InputExternalFile(
                     }
                 }
 
-                // 入力最大レコード数を10000件とする
+                // 入力最大レコード数を100000件とする
                 if (id > MAX_RECORD) return false
 
                 // データ行をパースして Comic エンティティを作成
@@ -315,7 +315,7 @@ class InputExternalFile(
         /** ヘッダーレコード行 */
         private const val HEADER_RECORD = 1L
         /** 取込最大レコード数 */
-        private const val MAX_RECORD = 10000
+        private const val MAX_RECORD = 100000
         /** カラム数が9 */
         private const val COLUMN_COUNT_9 = 9
     }
