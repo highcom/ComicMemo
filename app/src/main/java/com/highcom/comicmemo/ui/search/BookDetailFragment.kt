@@ -1,7 +1,6 @@
 package com.highcom.comicmemo.ui.search
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,7 +25,6 @@ import com.highcom.comicmemo.R
 import com.highcom.comicmemo.databinding.FragmentBookDetailBinding
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.network.Item
-import com.highcom.comicmemo.ui.edit.ComicMemoActivity
 import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 
 /**

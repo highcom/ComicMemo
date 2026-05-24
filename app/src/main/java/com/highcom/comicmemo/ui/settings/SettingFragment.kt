@@ -2,7 +2,6 @@ package com.highcom.comicmemo.ui.settings
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
@@ -32,6 +30,8 @@ import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -87,6 +87,8 @@ class SettingFragment : Fragment() {
                                 repository.insert(comic)
                             }
                         }
+                        // イベントログ出力
+                        Firebase.analytics.logEvent("csv_input_complete", null)
                     }
                     inputExternalFile.confirmInputDialog(uri, isOverrideMode)
                 }
@@ -102,6 +104,8 @@ class SettingFragment : Fragment() {
                         val outputExternalFile = OutputExternalFile(requireContext())
                         outputExternalFile.outputSelectFolder(uri, comicList) { success ->
                             if (success) {
+                                // イベントログ出力
+                                Firebase.analytics.logEvent("csv_output_complete", null)
                                 Toast.makeText(
                                     requireContext(),
                                     getString(R.string.csv_output_complete_message),

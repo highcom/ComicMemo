@@ -8,8 +8,6 @@ import android.provider.Settings
 import android.widget.Toast
 import com.highcom.comicmemo.R
 import com.highcom.comicmemo.datamodel.Comic
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.OutputStream
 
