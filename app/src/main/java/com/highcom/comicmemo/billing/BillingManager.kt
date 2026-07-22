@@ -35,7 +35,12 @@ class BillingManager(
     private fun initializeBillingClient() {
         billingClient = BillingClient.newBuilder(context)
             .setListener(this)
-            .enablePendingPurchases()
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder()
+                    .enableOneTimeProducts()
+                    .build()
+            )
+            .enableAutoServiceReconnection()
             .build()
 
         billingClient?.startConnection(this)
@@ -131,9 +136,9 @@ class BillingManager(
             .setProductList(productList)
             .build()
 
-        client.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
+        client.queryProductDetailsAsync(params) { billingResult, queryResult ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                val productDetails = productDetailsList.firstOrNull()
+                val productDetails = queryResult.productDetailsList.firstOrNull()
                 if (productDetails != null) {
                     launchPurchaseFlowInternal(activity, productDetails, productType)
                 } else {
