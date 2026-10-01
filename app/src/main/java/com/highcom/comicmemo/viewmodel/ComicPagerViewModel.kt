@@ -1,5 +1,6 @@
 package com.highcom.comicmemo.viewmodel
 
+import android.os.Parcelable
 import androidx.lifecycle.*
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
@@ -23,6 +24,29 @@ class ComicPagerViewModel @Inject constructor(private val repository: ComicMemoR
     val sumContinueNumber: LiveData<Long> = repository.sumContinueNumber.asLiveData()
     /** 完結の総巻数 */
     val sumCompleteNumber: LiveData<Long> = repository.sumCompleteNumber.asLiveData()
+
+    /** RecyclerViewのスクロール位置状態 */
+    private val recyclerViewStates = mutableMapOf<Int, Parcelable?>()
+
+    /**
+     * RecyclerViewのスクロール位置状態を保存
+     *
+     * @param index 0:続刊 1:完結
+     * @param state LayoutManagerのスクロール位置状態
+     */
+    fun saveRecyclerViewState(index: Int, state: Parcelable?) {
+        recyclerViewStates[index] = state
+    }
+
+    /**
+     * RecyclerViewのスクロール位置状態を復元（取得後に保存状態を削除）
+     *
+     * @param index 0:続刊 1:完結
+     * @return LayoutManagerのスクロール位置状態
+     */
+    fun restoreRecyclerViewState(index: Int): Parcelable? {
+        return recyclerViewStates.remove(index)
+    }
 
     /**
      * 作成した巻数データの登録処理

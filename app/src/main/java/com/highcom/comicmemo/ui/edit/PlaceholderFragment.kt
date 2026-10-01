@@ -170,7 +170,7 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         isInitPositionSet = false
         adapter = ComicListAdapter(index, pageViewModel, viewLifecycleOwner, this)
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         recyclerView = binding.comicListView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = adapter
@@ -417,6 +417,8 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
     override fun onPause() {
         super.onPause()
         ComicListPersistent.lastUpdateId = 0L
+        val state = recyclerView?.layoutManager?.onSaveInstanceState()
+        pageViewModel.saveRecyclerViewState(index, state)
     }
 
     /**
@@ -449,10 +451,17 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
             ) {
                 val resultList = sortComicList(sortType, results.values as MutableList<Comic>?)
                 adapter.submitList(resultList) {
-                    // 初期表示の時は先頭位置にする
-                    if (!isInitPositionSet) {
-                        recyclerView?.scrollToPosition(0)
-                        isInitPositionSet = true
+                    recyclerView?.post {
+                        val savedState = pageViewModel.restoreRecyclerViewState(index)
+                        if (savedState != null) {
+                            // 他画面から戻ってきた場合はスクロール位置を復元する
+                            recyclerView?.layoutManager?.onRestoreInstanceState(savedState)
+                            isInitPositionSet = true
+                        } else if (!isInitPositionSet) {
+                            // 初期表示の時は先頭位置にする
+                            recyclerView?.scrollToPosition(0)
+                            isInitPositionSet = true
+                        }
                     }
                 }
             }
