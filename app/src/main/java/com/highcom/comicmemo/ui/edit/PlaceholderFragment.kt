@@ -128,24 +128,17 @@ class PlaceholderFragment : Fragment(), AdapterListener, Filterable {
 
             // --- データベースの更新 ---
             // 1. DB永続化用に、IDを再採番したリストを作成
-            // この時点ではまだ origComicList は古い並び順
             val listForDb = rearrangeComicList(fromPos, toPos)
             pageViewModel.update(listForDb)
 
             // --- UIの即時更新とちらつき防止 ---
-            // 2. UI表示用に、IDを変更せずに並び替えたリストを作成
-            val currentList = origComicList?.toMutableList() ?: mutableListOf()
-            val movedComic = currentList.removeAt(fromPos)
-            currentList.add(toPos, movedComic)
-            val newListForUi = currentList.toList()
+            // 2. LiveDataの更新が走ったときにUIが戻らないよう、Fragmentが持つリストも更新
+            origComicList = listForDb
 
-            // 3. LiveDataの更新が走ったときにUIが戻らないよう、Fragmentが持つリストも更新
-            origComicList = newListForUi
+            // 3. adapterに新しいリストを渡し、データの最終状態を通知する
+            adapter.submitList(listForDb)
 
-            // 4. adapterに新しいリストを渡し、データの最終状態を通知する
-            adapter.submitList(newListForUi)
-
-            // 5. 移動位置情報を初期化
+            // 4. 移動位置情報を初期化
             fromPos = -1
             toPos = -1
         }

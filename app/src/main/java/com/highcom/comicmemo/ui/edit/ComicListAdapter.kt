@@ -307,9 +307,8 @@ class ComicListAdapter (
                 return oldItem.id == newItem.id
             }
 
-            @SuppressLint("DiffUtilEquals")
             override fun areContentsTheSame(oldItem: Comic, newItem: Comic): Boolean {
-                return oldItem === newItem
+                return oldItem == newItem
             }
         }
     }
