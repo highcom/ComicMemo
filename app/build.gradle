@@ -14,8 +14,8 @@ android {
         applicationId "com.highcom.comicmemo"
         minSdkVersion 26
         targetSdkVersion 37
-        versionCode 38
-        versionName "4.6.2"
+        versionCode 39
+        versionName "4.6.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
