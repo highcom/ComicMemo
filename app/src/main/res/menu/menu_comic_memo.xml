@@ -45,4 +45,7 @@
     <item
         android:id="@+id/settings"
         android:title="@string/settings" />
+    <item
+        android:id="@+id/notification_list"
+        android:title="@string/notification_list" />
 </menu>

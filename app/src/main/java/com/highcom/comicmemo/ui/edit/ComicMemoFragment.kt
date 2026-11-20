@@ -180,6 +180,11 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                         val action = ComicMemoFragmentDirections.actionComicMemoFragmentToSettingFragment()
                         findNavController().navigate(action)
                     }
+                    R.id.notification_list -> {
+                        // お知らせ一覧画面へ遷移
+                        val action = ComicMemoFragmentDirections.actionComicMemoFragmentToNotificationListFragment()
+                        findNavController().navigate(action)
+                    }
                     else -> return false
                 }
                 return true

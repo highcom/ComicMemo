@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:name=".ComicMemoApplication"
@@ -22,6 +25,10 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.search.RakutenBookActivity"
+            android:exported="false" />
+
+        <receiver
+            android:name=".notification.NotificationReceiver"
             android:exported="false" />
 
         <meta-data

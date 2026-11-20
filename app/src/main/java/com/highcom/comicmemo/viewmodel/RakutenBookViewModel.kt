@@ -2,12 +2,15 @@ package com.highcom.comicmemo.viewmodel
 
 import androidx.lifecycle.*
 import com.highcom.comicmemo.datamodel.Author
+import com.highcom.comicmemo.datamodel.BookNotification
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.network.ItemEntity
 import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
+import com.highcom.comicmemo.notification.NotificationScheduler
+import android.content.Context
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -137,6 +140,18 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      */
     fun insert(comic: Comic) = viewModelScope.launch {
         repository.insert(comic)
+    }
+
+    /**
+     * お知らせ通知データの登録処理およびアラーム登録
+     *
+     * @param notification お知らせ通知データ
+     * @param context コンテキスト
+     */
+    fun insertNotification(notification: BookNotification, context: Context) = viewModelScope.launch {
+        val insertedId = repository.insertNotification(notification)
+        val savedNotification = notification.copy(id = insertedId)
+        NotificationScheduler.scheduleNotification(context, savedNotification)
     }
 
     /**

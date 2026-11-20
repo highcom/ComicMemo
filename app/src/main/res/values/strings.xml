@@ -134,4 +134,20 @@
     <string name="end">終了</string>
     <string name="choose_button">選択</string>
     <string name="csv_button_premium">選択(有料)</string>
+
+    <!-- お知らせ通知関連 -->
+    <string name="notification_list">お知らせ一覧</string>
+    <string name="notification_setting_title">お知らせ通知設定</string>
+    <string name="notification_date">お知らせ日</string>
+    <string name="notification_time">お知らせ時刻</string>
+    <string name="notification_registered_toast">お知らせ通知を登録しました</string>
+    <string name="notification_empty_message">お知らせ通知は登録されていません</string>
+    <string name="notification_channel_name">新刊お知らせ通知</string>
+    <string name="notification_channel_description">書籍の新刊発売に関するお知らせ通知</string>
+    <string name="notification_content_title">新刊発売のお知らせ</string>
+    <string name="notification_content_text">%1$s が発売されます</string>
+    <string name="notification_content_text_with_author">%1$s（%2$s）が発売されます</string>
+    <string name="notification_time_format">通知日時：%1$s</string>
+    <string name="dialog_register">登録</string>
+    <string name="dialog_cancel">キャンセル</string>
 </resources>

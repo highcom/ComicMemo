@@ -23,4 +23,7 @@
     <item
         android:id="@+id/search_mode_new_book"
         android:title="@string/search_new_book" />
+    <item
+        android:id="@+id/notification_list"
+        android:title="@string/notification_list" />
 </menu>

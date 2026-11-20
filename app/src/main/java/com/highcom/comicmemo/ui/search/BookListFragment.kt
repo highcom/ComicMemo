@@ -24,10 +24,19 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.databinding.DialogNotificationSettingBinding
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
+import com.highcom.comicmemo.datamodel.BookNotification
 import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.viewmodel.RakutenApiStatus
 import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * 楽天APIを利用して取得した書籍の一覧を表示するFragment
@@ -161,6 +170,12 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                         findNavController().navigate(BookListFragmentDirections.actionBookListFragmentToAuthorEditFragment(), null)
                         requireActivity().title = getString(R.string.edit_author)
                         menuItem.isVisible = false
+                        return true
+                    }
+                    R.id.notification_list -> {
+                        (activity as RakutenBookActivity).isNeedUpdate = false
+                        viewModel.timer.cancel()
+                        findNavController().navigate(BookListFragmentDirections.actionBookListFragmentToNotificationListFragment())
                         return true
                     }
                     R.id.search_mode_comic -> {
@@ -305,5 +320,133 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         (activity as RakutenBookActivity).isNeedUpdate = false
         mMenu?.findItem(R.id.action_edit)?.isVisible = false
         findNavController().navigate(R.id.action_bookListFragment_to_bookDetailFragment, bundleOf("BUNDLE_ITEM_DATA" to item))
+    }
+
+    /**
+     * 書籍長押し時のお知らせ通知設定ダイアログ表示処理
+     */
+    override fun bookItemLongSelected(item: Item) {
+        showNotificationSettingDialog(item)
+    }
+
+    /**
+     * お知らせ通知設定ダイアログの生成・表示
+     *
+     * @param item 対象書籍データ
+     */
+    private fun showNotificationSettingDialog(item: Item) {
+        val context = requireContext()
+        val dialogBinding = DialogNotificationSettingBinding.inflate(layoutInflater)
+
+        dialogBinding.dialogBookTitle.text = item.Item.title
+        val authorPublisher = when {
+            item.Item.author.isNotEmpty() && item.Item.publisherName.isNotEmpty() -> "${item.Item.author} / ${item.Item.publisherName}"
+            item.Item.author.isNotEmpty() -> item.Item.author
+            item.Item.publisherName.isNotEmpty() -> item.Item.publisherName
+            else -> ""
+        }
+        dialogBinding.dialogBookAuthor.text = authorPublisher
+
+        val calendar = Calendar.getInstance()
+        // デフォルト時刻は 9時00分
+        calendar.set(Calendar.HOUR_OF_DAY, 9)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        // 検索結果データから発売日をパースして設定
+        val salesDate = item.Item.salesDate
+        val regex = Regex("""(\d{4})[年/.-]?(\d{1,2})[月/.-]?(\d{1,2})?""")
+        val match = regex.find(salesDate)
+        if (match != null) {
+            val year = match.groupValues[1].toIntOrNull()
+            val month = match.groupValues[2].toIntOrNull()
+            val day = match.groupValues[3].toIntOrNull()
+            if (year != null && month != null) {
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month - 1)
+                if (day != null) {
+                    calendar.set(Calendar.DAY_OF_MONTH, day)
+                } else {
+                    calendar.set(Calendar.DAY_OF_MONTH, 15)
+                }
+            }
+        }
+
+        // デフォルト日時が過去の場合は現在日時に合わせる
+        if (calendar.timeInMillis < System.currentTimeMillis()) {
+            val currentCal = Calendar.getInstance()
+            currentCal.add(Calendar.DAY_OF_MONTH, 1)
+            currentCal.set(Calendar.HOUR_OF_DAY, 9)
+            currentCal.set(Calendar.MINUTE, 0)
+            currentCal.set(Calendar.SECOND, 0)
+            currentCal.set(Calendar.MILLISECOND, 0)
+            calendar.timeInMillis = currentCal.timeInMillis
+        }
+
+        fun updateDateTimeDisplay() {
+            val dateFormat = SimpleDateFormat("yyyy/MM/dd (E)", Locale.JAPAN)
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.JAPAN)
+            dialogBinding.dialogDateView.text = dateFormat.format(calendar.time)
+            dialogBinding.dialogTimeView.text = timeFormat.format(calendar.time)
+        }
+
+        updateDateTimeDisplay()
+
+        dialogBinding.dialogDateView.setOnClickListener {
+            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                updateDateTimeDisplay()
+            }
+            DatePickerDialog(
+                context,
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        dialogBinding.dialogTimeView.setOnClickListener {
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                updateDateTimeDisplay()
+            }
+            TimePickerDialog(
+                context,
+                timeSetListener,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            ).show()
+        }
+
+        val alertDialog = AlertDialog.Builder(context)
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.dialogCancelButton.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        dialogBinding.dialogRegisterButton.setOnClickListener {
+            val notification = BookNotification(
+                title = item.Item.title,
+                author = item.Item.author,
+                publisher = item.Item.publisherName,
+                isbn = item.Item.isbn,
+                imageUrl = item.Item.mediumImageUrl,
+                salesDate = item.Item.salesDate,
+                notifyDateTime = calendar.timeInMillis
+            )
+            viewModel.insertNotification(notification, context)
+            Toast.makeText(context, getString(R.string.notification_registered_toast), Toast.LENGTH_SHORT).show()
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
     }
 }

@@ -51,7 +51,19 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_comicMemoFragment_to_notificationListFragment"
+            app:destination="@id/notificationListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/notificationListFragment"
+        android:name="com.highcom.comicmemo.ui.notification.NotificationListFragment"
+        android:label="NotificationListFragment"
+        tools:layout="@layout/fragment_notification_list" />
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.highcom.comicmemo.ui.settings.SettingFragment"

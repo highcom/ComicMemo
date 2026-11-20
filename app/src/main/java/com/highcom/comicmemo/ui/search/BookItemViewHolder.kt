@@ -46,6 +46,11 @@ class BookItemViewHolder: RecyclerView.ViewHolder {
          * 書籍選択時イベント
          */
         fun bookItemSelected(item: Item)
+
+        /**
+         * 書籍長押し時イベント
+         */
+        fun bookItemLongSelected(item: Item) {}
     }
 
     fun bind(item: Item, listener: BookItemListener) {
@@ -89,6 +94,10 @@ class BookItemViewHolder: RecyclerView.ViewHolder {
 
             binding.itemContentView.setOnClickListener {
                 listener.bookItemSelected(item)
+            }
+            binding.itemContentView.setOnLongClickListener {
+                listener.bookItemLongSelected(item)
+                true
             }
         }
     }
