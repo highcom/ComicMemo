@@ -74,6 +74,7 @@
     <string name="premium_features_description">有料会員になると以下の機能が利用できます：</string>
     <string name="premium_feature_ads">• 広告の非表示</string>
     <string name="premium_feature_barcode">• バーコード検索機能</string>
+    <string name="premium_feature_notification">• お知らせ通知機能</string>
     <string name="premium_feature_csv">• CSVファイル入出力</string>
     <string name="current_status">現在のステータス：</string>
     <string name="free_member">無料会員</string>
@@ -137,13 +138,14 @@
 
     <!-- お知らせ通知関連 -->
     <string name="notification_list">お知らせ一覧</string>
+    <string name="notification_list_premium">お知らせ一覧（有料）</string>
     <string name="notification_setting_title">お知らせ通知設定</string>
     <string name="notification_edit_setting_title">お知らせ通知変更</string>
     <string name="notification_date">お知らせ日</string>
     <string name="notification_time">お知らせ時刻</string>
     <string name="notification_registered_toast">お知らせ通知を登録しました</string>
     <string name="notification_updated_toast">お知らせ通知を変更しました</string>
-    <string name="notification_empty_message">お知らせ通知は登録されていません</string>
+    <string name="notification_empty_message">新刊検索画面で検索した書籍を長押しすることで、お知らせ通知を登録できます</string>
     <string name="notification_channel_name">新刊お知らせ通知</string>
     <string name="notification_channel_description">書籍の新刊発売に関するお知らせ通知</string>
     <string name="notification_content_title">新刊発売のお知らせ</string>
@@ -157,4 +159,6 @@
     <string name="notification_limit_message">お知らせ通知の登録件数が上限（100件）に達しているため、これ以上登録できません。</string>
     <string name="notification_permission_disabled_title">通知設定が無効です</string>
     <string name="notification_permission_disabled_message">アプリの通知設定がオフになっています。お知らせ通知を受け取るには、設定画面で通知を許可してください。</string>
+    <string name="premium_notification_title">有料会員限定機能</string>
+    <string name="premium_notification_message">お知らせ通知機能は有料会員限定の機能です。</string>
 </resources>

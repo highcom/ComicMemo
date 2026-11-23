@@ -24,6 +24,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.highcom.comicmemo.ComicMemoConstants
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.billing.SubscriptionManager
 import com.highcom.comicmemo.databinding.DialogNotificationSettingBinding
 import com.highcom.comicmemo.databinding.FragmentBookListBinding
 import com.highcom.comicmemo.datamodel.BookNotification
@@ -123,6 +124,16 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
                 mMenu = menu
                 mMenu?.findItem(currentMenuSelect)?.title = mMenu?.findItem(currentMenuSelect)?.title.toString()
                     .replace(getString(R.string.no_select_menu_icon), getString(R.string.select_menu_icon))
+
+                // お知らせ一覧メニューの設定（有料会員のみ利用可能）
+                val notificationListItem = menu.findItem(R.id.notification_list)
+                if (SubscriptionManager.isPremium(requireContext())) {
+                    notificationListItem?.title = getString(R.string.notification_list)
+                    notificationListItem?.isEnabled = true
+                } else {
+                    notificationListItem?.title = getString(R.string.notification_list_premium)
+                    notificationListItem?.isEnabled = false
+                }
                 // 文字列検索の処理を設定
                 val searchMenuView = menu.findItem(R.id.menu_rakuten_book_search_view)
                 val searchActionView = searchMenuView?.actionView as SearchView
@@ -329,6 +340,15 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
      * 書籍長押し時のお知らせ通知設定ダイアログ表示処理
      */
     override fun bookItemLongSelected(item: Item) {
+        // 有料会員でない場合は、有料会員限定機能ダイアログを表示する
+        if (!SubscriptionManager.isPremium(requireContext())) {
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.premium_notification_title))
+                .setMessage(getString(R.string.premium_notification_message))
+                .setPositiveButton(getString(R.string.ok), null)
+                .show()
+            return
+        }
         showNotificationSettingDialog(item)
     }
 

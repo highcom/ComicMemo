@@ -106,6 +106,16 @@ class ComicMemoFragment : Fragment(), PlaceholderFragment.UpdateComicListListene
                 val barcodeSearchItem = menu.findItem(R.id.barcode_search)
                 barcodeSearchItem.title = getString(R.string.barcode_search)
                 barcodeSearchItem.isEnabled = true
+
+                // お知らせ一覧メニューの設定（有料会員のみ利用可能）
+                val notificationListItem = menu.findItem(R.id.notification_list)
+                if (SubscriptionManager.isPremium(requireContext())) {
+                    notificationListItem?.title = getString(R.string.notification_list)
+                    notificationListItem?.isEnabled = true
+                } else {
+                    notificationListItem?.title = getString(R.string.notification_list_premium)
+                    notificationListItem?.isEnabled = false
+                }
             }
 
             /**
