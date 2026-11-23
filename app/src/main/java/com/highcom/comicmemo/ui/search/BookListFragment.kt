@@ -33,7 +33,10 @@ import com.highcom.comicmemo.viewmodel.RakutenBookViewModel
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.provider.Settings
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -433,6 +436,23 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         }
 
         dialogBinding.dialogRegisterButton.setOnClickListener {
+            // アプリの通知設定がOFFの場合、システムの設定画面へ導くダイアログを表示
+            if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+                AlertDialog.Builder(context)
+                    .setTitle(getString(R.string.notification_permission_disabled_title))
+                    .setMessage(getString(R.string.notification_permission_disabled_message))
+                    .setPositiveButton(getString(R.string.move)) { _, _ ->
+                        val intent = Intent().apply {
+                            action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                            putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                        }
+                        startActivity(intent)
+                    }
+                    .setNegativeButton(getString(R.string.dialog_cancel), null)
+                    .show()
+                return@setOnClickListener
+            }
+
             // お知らせ通知の登録上限数(100件)チェック
             if (viewModel.getNotificationCountSync() >= RakutenBookViewModel.MAX_NOTIFICATION_COUNT) {
                 AlertDialog.Builder(context)
