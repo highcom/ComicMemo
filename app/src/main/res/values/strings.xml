@@ -150,4 +150,6 @@
     <string name="notification_time_format">通知日時：%1$s</string>
     <string name="dialog_register">登録</string>
     <string name="dialog_cancel">キャンセル</string>
+    <string name="notification_limit_title">登録上限エラー</string>
+    <string name="notification_limit_message">お知らせ通知の登録件数が上限（100件）に達しているため、これ以上登録できません。</string>
 </resources>

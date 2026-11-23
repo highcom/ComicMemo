@@ -433,6 +433,16 @@ class BookListFragment : Fragment(), BookItemViewHolder.BookItemListener {
         }
 
         dialogBinding.dialogRegisterButton.setOnClickListener {
+            // お知らせ通知の登録上限数(100件)チェック
+            if (viewModel.getNotificationCountSync() >= RakutenBookViewModel.MAX_NOTIFICATION_COUNT) {
+                AlertDialog.Builder(context)
+                    .setTitle(getString(R.string.notification_limit_title))
+                    .setMessage(getString(R.string.notification_limit_message))
+                    .setPositiveButton(getString(R.string.ok), null)
+                    .show()
+                return@setOnClickListener
+            }
+
             val notification = BookNotification(
                 title = item.Item.title,
                 author = item.Item.author,

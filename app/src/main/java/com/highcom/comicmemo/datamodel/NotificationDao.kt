@@ -31,4 +31,10 @@ interface NotificationDao {
 
     @Query("DELETE FROM book_notification WHERE notifyDateTime < :currentMillis")
     suspend fun deleteExpiredNotifications(currentMillis: Long)
+
+    @Query("SELECT COUNT(*) FROM book_notification")
+    suspend fun getNotificationCount(): Int
+
+    @Query("SELECT COUNT(*) FROM book_notification")
+    fun getNotificationCountSync(): Int
 }

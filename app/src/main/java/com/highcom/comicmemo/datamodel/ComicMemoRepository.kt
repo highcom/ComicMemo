@@ -109,4 +109,13 @@ class ComicMemoRepository @Inject constructor(
     suspend fun deleteExpiredNotifications(currentMillis: Long) {
         notificationDao.deleteExpiredNotifications(currentMillis)
     }
+
+    @WorkerThread
+    suspend fun getNotificationCount(): Int {
+        return notificationDao.getNotificationCount()
+    }
+
+    fun getNotificationCountSync(): Int {
+        return notificationDao.getNotificationCountSync()
+    }
 }

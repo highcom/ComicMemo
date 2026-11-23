@@ -407,6 +407,22 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         _isbnBookList.emit(data.Items)
     }
 
+    /**
+     * お知らせ通知の登録件数を取得処理
+     * DBからのデータ取得をrunBlockingするので注意
+     *
+     * @return お知らせ通知登録件数
+     */
+    fun getNotificationCountSync(): Int {
+        var count = 0
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                count = repository.getNotificationCount()
+            }
+        }
+        return count
+    }
+
     companion object {
         /** 検索ジャンル：漫画（コミック） */
         const val GENRE_ID_COMIC = "001001"
@@ -420,6 +436,8 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         const val GENRE_ID_NEW_BOOK = "001020"
         /** 新刊書籍ヘッダー判別値 */
         const val TYPE_HEADER_ITEM = "999"
+        /** お知らせ通知登録上限件数 */
+        const val MAX_NOTIFICATION_COUNT = 100
         /** 検索結果の最大ページ数 */
         private const val MAX_PAGE_COUNT = 100
         /** 楽天API呼び出し遅延時間 */
