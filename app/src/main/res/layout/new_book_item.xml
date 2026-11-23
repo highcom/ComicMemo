@@ -26,8 +26,9 @@
             tools:ignore="UseCompoundDrawables">
             <TextView
                 android:id="@+id/item_title_view"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textColor="@android:color/black"
+                android:textStyle="bold"
                 android:textAlignment="center"
                 android:padding="4dp"
                 android:layout_width="match_parent"

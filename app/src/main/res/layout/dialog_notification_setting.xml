@@ -61,7 +61,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="8dp"
-            android:textColor="@android:color/holo_blue_dark"
+            android:textColor="@color/appcolor"
             android:textSize="14sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -89,7 +89,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="8dp"
-            android:textColor="@android:color/holo_blue_dark"
+            android:textColor="@color/appcolor"
             android:textSize="14sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/dialog_register"
-            android:textColor="@android:color/holo_blue_dark"
+            android:textColor="@color/appcolor"
             android:textStyle="bold" />
     </LinearLayout>
 

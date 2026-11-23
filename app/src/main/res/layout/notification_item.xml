@@ -12,22 +12,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/notificationImageView"
-            android:layout_width="70dp"
-            android:layout_height="90dp"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter" />
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@null" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="12dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/notificationTitleView"
@@ -52,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/appcolor"
                 android:textSize="12sp"
                 tools:text="通知日時：2025/03/15 09:00" />
         </LinearLayout>
