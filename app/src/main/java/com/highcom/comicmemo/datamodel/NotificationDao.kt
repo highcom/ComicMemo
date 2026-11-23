@@ -23,6 +23,9 @@ interface NotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNotification(notification: BookNotification): Long
 
+    @androidx.room.Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateNotification(notification: BookNotification)
+
     @Query("DELETE FROM book_notification WHERE id = :id")
     suspend fun deleteNotification(id: Long)
 

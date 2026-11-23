@@ -17,8 +17,12 @@ import java.util.Locale
 
 /**
  * お知らせ通知一覧表示用のアダプター
+ *
+ * @property onItemLongClickListener アイテム長押し時イベントリスナー
  */
-class NotificationListAdapter : ListAdapter<BookNotification, NotificationListAdapter.NotificationViewHolder>(
+class NotificationListAdapter(
+    private val onItemLongClickListener: ((BookNotification) -> Unit)? = null
+) : ListAdapter<BookNotification, NotificationListAdapter.NotificationViewHolder>(
     DiffCallback
 ) {
     companion object DiffCallback : DiffUtil.ItemCallback<BookNotification>() {
@@ -37,15 +41,20 @@ class NotificationListAdapter : ListAdapter<BookNotification, NotificationListAd
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onItemLongClickListener)
     }
 
     class NotificationViewHolder(val binding: NotificationItemBinding) : RecyclerView.ViewHolder(binding.root) {
         var notificationItem: BookNotification? = null
 
-        fun bind(item: BookNotification) {
+        fun bind(item: BookNotification, onItemLongClickListener: ((BookNotification) -> Unit)? = null) {
             notificationItem = item
             binding.notificationTitleView.text = item.title
+
+            binding.notificationContentLayout.setOnLongClickListener {
+                onItemLongClickListener?.invoke(item)
+                true
+            }
 
             val authorPublisher = when {
                 item.author.isNotEmpty() && item.publisher.isNotEmpty() -> "${item.author} / ${item.publisher}"

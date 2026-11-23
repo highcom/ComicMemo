@@ -13,11 +13,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.highcom.comicmemo.R
+import com.highcom.comicmemo.databinding.DialogNotificationSettingBinding
 import com.highcom.comicmemo.databinding.FragmentNotificationListBinding
+import com.highcom.comicmemo.datamodel.BookNotification
 import com.highcom.comicmemo.ui.SimpleCallbackHelper
 import com.highcom.comicmemo.ui.edit.ComicMemoActivity
 import com.highcom.comicmemo.viewmodel.NotificationListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * お知らせ通知一覧画面Fragment
@@ -63,7 +72,9 @@ class NotificationListFragment : Fragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        adapter = NotificationListAdapter()
+        adapter = NotificationListAdapter { item ->
+            showEditNotificationDialog(item)
+        }
         binding.notificationRecyclerView.adapter = adapter
 
         // スワイプによる削除ボタンの表示・削除操作の設定 (SimpleCallbackHelper)
@@ -121,6 +132,88 @@ class NotificationListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.cleanExpiredNotifications()
+    }
+
+    /**
+     * お知らせ通知設定変更ダイアログの表示処理
+     *
+     * @param item 対象のお知らせ通知データ
+     */
+    private fun showEditNotificationDialog(item: BookNotification) {
+        val context = requireContext()
+        val dialogBinding = DialogNotificationSettingBinding.inflate(layoutInflater)
+
+        dialogBinding.dialogHeaderTitle.text = getString(R.string.notification_edit_setting_title)
+        dialogBinding.dialogRegisterButton.text = getString(R.string.dialog_update)
+
+        dialogBinding.dialogBookTitle.text = item.title
+        val authorPublisher = when {
+            item.author.isNotEmpty() && item.publisher.isNotEmpty() -> "${item.author} / ${item.publisher}"
+            item.author.isNotEmpty() -> item.author
+            item.publisher.isNotEmpty() -> item.publisher
+            else -> ""
+        }
+        dialogBinding.dialogBookAuthor.text = authorPublisher
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = item.notifyDateTime
+
+        fun updateDateTimeDisplay() {
+            val dateFormat = SimpleDateFormat("yyyy/MM/dd (E)", Locale.JAPAN)
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.JAPAN)
+            dialogBinding.dialogDateView.text = dateFormat.format(calendar.time)
+            dialogBinding.dialogTimeView.text = timeFormat.format(calendar.time)
+        }
+
+        updateDateTimeDisplay()
+
+        dialogBinding.dialogDateView.setOnClickListener {
+            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                updateDateTimeDisplay()
+            }
+            DatePickerDialog(
+                context,
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        dialogBinding.dialogTimeView.setOnClickListener {
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                updateDateTimeDisplay()
+            }
+            TimePickerDialog(
+                context,
+                timeSetListener,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            ).show()
+        }
+
+        val alertDialog = AlertDialog.Builder(context)
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.dialogCancelButton.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        dialogBinding.dialogRegisterButton.setOnClickListener {
+            val updated = item.copy(notifyDateTime = calendar.timeInMillis)
+            viewModel.updateNotification(updated, context)
+            Toast.makeText(context, getString(R.string.notification_updated_toast), Toast.LENGTH_SHORT).show()
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
     }
 
     override fun onDestroyView() {

@@ -97,6 +97,11 @@ class ComicMemoRepository @Inject constructor(
     }
 
     @WorkerThread
+    suspend fun updateNotification(notification: BookNotification) {
+        notificationDao.updateNotification(notification)
+    }
+
+    @WorkerThread
     suspend fun deleteNotification(id: Long) {
         notificationDao.deleteNotification(id)
     }

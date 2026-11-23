@@ -50,4 +50,17 @@ class NotificationListViewModel @Inject constructor(
             repository.deleteNotification(id)
         }
     }
+
+    /**
+     * お知らせ通知データの更新およびアラームの再スケジュール
+     *
+     * @param notification 更新後のお知らせ通知データ
+     * @param context コンテキスト
+     */
+    fun updateNotification(notification: BookNotification, context: Context) {
+        viewModelScope.launch {
+            repository.updateNotification(notification)
+            NotificationScheduler.scheduleNotification(context, notification)
+        }
+    }
 }
