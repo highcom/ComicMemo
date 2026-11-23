@@ -108,12 +108,40 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
 }
 
 /**
+ * お知らせ通知テーブル追加によるマイグレーション
+ */
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.beginTransaction()
+        try {
+            db.execSQL("""
+                CREATE TABLE IF NOT EXISTS `book_notification` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `title` TEXT NOT NULL DEFAULT '',
+                    `author` TEXT NOT NULL DEFAULT '',
+                    `publisher` TEXT NOT NULL DEFAULT '',
+                    `isbn` TEXT NOT NULL DEFAULT '',
+                    `imageUrl` TEXT NOT NULL DEFAULT '',
+                    `salesDate` TEXT NOT NULL DEFAULT '',
+                    `notifyDateTime` INTEGER NOT NULL DEFAULT 0
+                )
+                """.trimIndent()
+            )
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+}
+
+/**
  * 巻数データのRoomデータベース
  */
-@Database(entities = [Comic::class, Author::class],
-    version = 5,
+@Database(entities = [Comic::class, Author::class, BookNotification::class],
+    version = 6,
     exportSchema = false)
 abstract class ComicMemoRoomDatabase : RoomDatabase() {
     abstract fun comicDao(): ComicDao
     abstract fun authorDao(): AuthorDao
+    abstract fun notificationDao(): NotificationDao
 }

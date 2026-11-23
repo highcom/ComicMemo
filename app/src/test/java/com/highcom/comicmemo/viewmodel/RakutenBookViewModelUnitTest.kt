@@ -45,6 +45,7 @@ class RakutenBookViewModelUnitTest {
 
     private lateinit var comicDao: ComicDao
     private lateinit var authorDao: AuthorDao
+    private lateinit var notificationDao: NotificationDao
     private lateinit var db: ComicMemoRoomDatabase
 
     private lateinit var behavior: NetworkBehavior
@@ -61,6 +62,7 @@ class RakutenBookViewModelUnitTest {
         db = Room.inMemoryDatabaseBuilder(context, ComicMemoRoomDatabase::class.java).build()
         comicDao = db.comicDao()
         authorDao = db.authorDao()
+        notificationDao = db.notificationDao()
 
         // Retrofitのモックライブラリを作成
         val httpLogging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -100,7 +102,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -167,7 +169,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_NOVEL)
         val mockObserver = spyk<Observer<List<Item>?>>()
         target.bookList.observeForever(mockObserver)
@@ -234,7 +236,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -264,7 +266,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -290,7 +292,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -321,7 +323,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_NOVEL)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -352,7 +354,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -384,7 +386,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.getSalesList()
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -414,7 +416,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.searchAuthorList(listOf(Author(1, "知念 実希人"), Author(2, "村上 春樹"), Author(3, "尾田 栄一郎")))
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -445,7 +447,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(0)
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.searchAuthorList(listOf(Author(1, "芥見 下々")))
         val mockObserver = spyk<Observer<List<Item>?>>()
@@ -470,7 +472,7 @@ class RakutenBookViewModelUnitTest {
             setFailurePercent(100) // 100%失敗させる
             setErrorPercent(0)
         }
-        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao), mockRakutenApiService)
+        val target = RakutenBookViewModel(ComicMemoRepository(comicDao, authorDao, notificationDao), mockRakutenApiService)
         target.initialize(RakutenBookViewModel.GENRE_ID_COMIC)
         target.searchAuthorList(listOf(Author(1, "芥見 下々")))
         val mockObserver = spyk<Observer<List<Item>?>>()

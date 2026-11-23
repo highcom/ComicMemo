@@ -2,12 +2,15 @@ package com.highcom.comicmemo.viewmodel
 
 import androidx.lifecycle.*
 import com.highcom.comicmemo.datamodel.Author
+import com.highcom.comicmemo.datamodel.BookNotification
 import com.highcom.comicmemo.datamodel.Comic
 import com.highcom.comicmemo.datamodel.ComicMemoRepository
 import com.highcom.comicmemo.network.Item
 import com.highcom.comicmemo.network.ItemEntity
 import com.highcom.comicmemo.network.RakutenApiService
 import com.highcom.comicmemo.network.RakutenBookData
+import com.highcom.comicmemo.notification.NotificationScheduler
+import android.content.Context
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -137,6 +140,18 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
      */
     fun insert(comic: Comic) = viewModelScope.launch {
         repository.insert(comic)
+    }
+
+    /**
+     * お知らせ通知データの登録処理およびアラーム登録
+     *
+     * @param notification お知らせ通知データ
+     * @param context コンテキスト
+     */
+    fun insertNotification(notification: BookNotification, context: Context) = viewModelScope.launch {
+        val insertedId = repository.insertNotification(notification)
+        val savedNotification = notification.copy(id = insertedId)
+        NotificationScheduler.scheduleNotification(context, savedNotification)
     }
 
     /**
@@ -392,6 +407,22 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         _isbnBookList.emit(data.Items)
     }
 
+    /**
+     * お知らせ通知の登録件数を取得処理
+     * DBからのデータ取得をrunBlockingするので注意
+     *
+     * @return お知らせ通知登録件数
+     */
+    fun getNotificationCountSync(): Int {
+        var count = 0
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                count = repository.getNotificationCount()
+            }
+        }
+        return count
+    }
+
     companion object {
         /** 検索ジャンル：漫画（コミック） */
         const val GENRE_ID_COMIC = "001001"
@@ -405,6 +436,8 @@ class RakutenBookViewModel @Inject constructor(private val repository: ComicMemo
         const val GENRE_ID_NEW_BOOK = "001020"
         /** 新刊書籍ヘッダー判別値 */
         const val TYPE_HEADER_ITEM = "999"
+        /** お知らせ通知登録上限件数 */
+        const val MAX_NOTIFICATION_COUNT = 100
         /** 検索結果の最大ページ数 */
         private const val MAX_PAGE_COUNT = 100
         /** 楽天API呼び出し遅延時間 */
